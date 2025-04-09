@@ -1,0 +1,17 @@
+
+> discountmart-client@1.0.0 dev
+> vite
+
+
+  VITE v6.2.5  ready in 361 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+  ➜  press h + enter to show help
+10:51:58 AM [vite] Pre-transform error: parsing /workspaces/DiscountMart/client/tsconfig.node.json failed: Error: ENOENT: no such file or directory, open '/workspaces/DiscountMart/client/tsconfig.node.json'
+  Plugin: vite:esbuild
+  File: /workspaces/DiscountMart/client/src/main.tsx
+10:51:59 AM [vite] Internal server error: parsing /workspaces/DiscountMart/client/tsconfig.node.json failed: Error: ENOENT: no such file or directory, open '/workspaces/DiscountMart/client/tsconfig.node.json'
+  Plugin: vite:esbuild
+  File: /workspaces/DiscountMart/client/src/main.tsx
+      at file:///workspaces/DiscountMart/client/node_modules/vite/dist/node/chunks/dep-Pj_jxEzN.js:11709:10
