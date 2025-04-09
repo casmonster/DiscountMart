@@ -7,6 +7,26 @@ import { Button } from "@/components/ui/button";
 import { Search, ShoppingCart, MapPin, Heart } from "lucide-react";
 import logoPath from "@/assets/logo.svg";
 
+import React, { useContext } from 'react';
+import { CartContext } from '../../context/CartContext';
+
+const Header = () => {
+  const contextValue = useContext(CartContext);
+
+  if (!contextValue) {
+    return <div>Error: CartContext is not available</div>;
+  }
+
+  return (
+    <header>
+      <h1>DiscountMart</h1>
+      <p>Cart Items: {contextValue.cart.length}</p>
+    </header>
+  );
+};
+
+export default Header;
+
 export default function Header() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
