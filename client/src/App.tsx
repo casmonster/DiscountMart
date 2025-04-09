@@ -81,6 +81,11 @@ import { CartContext } from './context/CartContext';
 
 const App = () => {
   const { cart } = useContext(CartContext);
+  console.log('CartContext value in App:', contextValue);
+
+  if (!contextValue) {
+    return <div>Error: CartContext is not available</div>;
+  }
 
   return (
     <div>
