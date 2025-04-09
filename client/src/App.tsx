@@ -76,5 +76,18 @@ function App() {
     </QueryClientProvider>
   );
 }
+import React, { useContext } from 'react';
+import { CartContext } from './context/CartContext';
+
+const App = () => {
+  const { cart } = useContext(CartContext);
+
+  return (
+    <div>
+      <h1>Welcome to DiscountMart</h1>
+      <p>Items in cart: {cart.length}</p>
+    </div>
+  );
+};
 
 export default App;
