@@ -180,7 +180,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     (count, item) => count + item.quantity,
     0
   );
-
+console.log('CartContext initialized:', { cart, setCart });
   return (
     <CartContext.Provider
       value={{
