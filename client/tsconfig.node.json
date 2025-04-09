@@ -6,8 +6,4 @@
     "allowSyntheticDefaultImports": true
   },
   "include": ["vite.config.ts"]
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 514e627 (Fix CartContext and ensure proper useContext usage)
