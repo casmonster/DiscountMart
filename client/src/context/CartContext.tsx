@@ -180,7 +180,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     (count, item) => count + item.quantity,
     0
   );
-  
+
+const contextValue = useContext(CartContext);
+console.log('CartContext value:', contextValue);
   return (
     <CartContext.Provider
       value={{
