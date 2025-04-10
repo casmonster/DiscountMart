@@ -1,33 +1,15 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
-import { useCart } from "@/context/CartContext";
-import CartDrawer from "@/components/ui/cart-drawer";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import CartDrawer from "../../components/ui/cart-drawer";
+import { Input } from "../../components/ui/input";
+import { Button } from "../../components/ui/button";
 import { Search, ShoppingCart, MapPin, Heart } from "lucide-react";
-import logoPath from "@/assets/logo.svg";
+import { useCart } from "../../context/CartContext";
 
-import React, { useContext } from 'react';
-import { CartContext } from '../../context/CartContext';
+// filepath: /workspaces/DiscountMart/client/src/components/layout/Header.tsx
+import { ReactComponent as Logo } from "../../assets/logo.svg";
 
-const Header = () => {
-  const contextValue = useContext(CartContext);
-
-  if (!contextValue) {
-    return <div>Error: CartContext is not available</div>;
-  }
-
-  return (
-    <header>
-      <h1>DiscountMart</h1>
-      <p>Cart Items: {contextValue.cart.length}</p>
-    </header>
-  );
-};
-
-export default Header;
-
-export default function Header() {
+function Header() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [location, navigate] = useLocation();
@@ -66,9 +48,9 @@ export default function Header() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </span>
-            <p className="text-sm font-medium">Free store pickup on all orders! 🎉</p>
-          </div>
-          <div className="flex items-center gap-4">
+    <p className="text-sm font-medium">Free store pickup on all orders! 🎉</p>
+  </div>
+  <div className="flex items-center gap-4">
             <p className="text-sm hidden sm:flex items-center">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -89,7 +71,7 @@ export default function Header() {
       <div className="container mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="flex items-center">
           <Link href="/" className="text-2xl font-bold text-primary flex items-center group">
-            <img src={logoPath} alt="RwandaShop Logo" className="h-12 mr-2" />
+            <Logo className="h-12 mr-2" />
           </Link>
         </div>
         
@@ -120,7 +102,6 @@ export default function Header() {
         <div className="flex items-center gap-4">
           <Link href="/wishlist">
             <Button 
-              variant="ghost" 
               size="icon"
               className="text-gray-700 hover:text-secondary relative p-2 hover:bg-secondary/5 rounded-full transition-colors"
             >

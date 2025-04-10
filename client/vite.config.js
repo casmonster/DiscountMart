@@ -1,11 +1,12 @@
 import { defineConfig } from 'vite';
 import reactRefresh from '@vitejs/plugin-react-refresh';
 import path from 'path';
+import svgr from 'vite-plugin-svgr';
 
 
 export default defineConfig({
   base: '/DiscountMart/', 
-  plugins: [reactRefresh()],
+  plugins: [reactRefresh(), svgr],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),

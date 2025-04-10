@@ -14,8 +14,11 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+  "jsx": "react-jsx",
+  "typeRoots": ["./node_modules/@types", "./src/types"]
   },
-  "include": ["src"],
+  "include": ["src/**/*", "src/types/svg.d.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
+
+ 
