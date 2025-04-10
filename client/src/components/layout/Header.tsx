@@ -6,10 +6,10 @@ import { Button } from "../../components/ui/button";
 import { Search, ShoppingCart, MapPin, Heart } from "lucide-react";
 import { useCart } from "../../context/CartContext";
 
-// filepath: /workspaces/DiscountMart/client/src/components/layout/Header.tsx
-import { ReactComponent as Logo } from "../../assets/logo.svg";
 
-function Header() {
+// Removed unused logoSvg import
+
+export default function Header() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [location, navigate] = useLocation();
@@ -71,7 +71,7 @@ function Header() {
       <div className="container mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="flex items-center">
           <Link href="/" className="text-2xl font-bold text-primary flex items-center group">
-            <Logo className="h-12 mr-2" />
+            <img src="/path/to/logo.svg" alt="Logo" className="h-12 mr-2" />
           </Link>
         </div>
         

@@ -6,7 +6,18 @@ import svgr from 'vite-plugin-svgr';
 
 export default defineConfig({
   base: '/DiscountMart/', 
-  plugins: [reactRefresh(), svgr],
+  plugins: [
+    reactRefresh(),
+     svgr({
+      svgrOptions: {
+        exportType: 'named',
+        refresh: true,
+        svgo: false,
+        titleProp: true,
+      },
+      include: '**/*.svg',
+     }),
+  ],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),

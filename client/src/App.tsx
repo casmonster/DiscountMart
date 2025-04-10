@@ -19,7 +19,7 @@ function ScrollToTop() {
  // Added ScrollRestoration
 
 import Header from "./components/layout/Header";
- import Footer from "./components/layout/Footer";
+import Footer from "./components/layout/Footer";
 import Home from "./pages/Home";
 import Category from "./pages/Category";
 import ProductDetail from "./pages/ProductDetail";
