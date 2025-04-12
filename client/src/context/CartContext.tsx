@@ -181,8 +181,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     0
   );
 
-const contextValue = useContext(CartContext);
-console.log('CartContext value:', contextValue);
   return (
     <CartContext.Provider
       value={{
