@@ -6,6 +6,7 @@ import { CartProvider } from "./context/CartContext";
 import { WishlistProvider } from "./context/WishlistContext";
 import { RecentlyViewedProvider } from "./context/RecentlyViewedContext";
 import { useEffect } from "react";
+import { useCart } from "./context/CartContext";
 
 function ScrollToTop() {
   const [location] = useLocation();
@@ -31,7 +32,6 @@ import NewArrivals from "./pages/NewArrivals";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import PickupPolicy from "./pages/PickupPolicy";
-
 
 
 function Router() {
@@ -62,6 +62,7 @@ function Router() {
 }
 
 function App() {
+  const { cartItems } = useCart(); // Verify context is working
   return (
     <QueryClientProvider client={queryClient}>
       <CartProvider>

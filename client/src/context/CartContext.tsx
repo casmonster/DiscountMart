@@ -202,6 +202,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
+export type { CartContextType };  // Add this line to export the type
+export { CartContext };  // Add this line to export the context
+
+
 // Removed duplicate declaration of CartContext and CartProvider
 
 export const useCart = () => {
