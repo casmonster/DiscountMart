@@ -17,6 +17,10 @@ export type CartItemWithProduct = {
     stockLevel: string;
   };
 };
+type CartError = {
+  message: string;
+  code?: string;
+};
 
 type CartContextType = {
   cartItems: CartItemWithProduct[];
@@ -30,6 +34,9 @@ type CartContextType = {
   getTaxAmount: () => number;
   getFinalTotal: () => number;
   itemCount: number;
+  error: CartError | null;
+  isInitialized: boolean;  // Add initialization state
+  resetError: () => void;
 };
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -39,6 +46,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cartId, setCartId] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const [error, setError] = useState<CartError | null>(null);
+const [isInitialized, setIsInitialized] = useState(false);
+
+const resetError = () => setError(null);
+
 
   // Initialize cart ID from localStorage or create a new one
   useEffect(() => {
@@ -77,10 +89,14 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       setIsLoading(false);
     }
   };
-
+  const validateQuantity = (quantity: number) => {
+    if (quantity < 0) throw new Error("Quantity cannot be negative");
+    if (quantity > 99) throw new Error("Quantity cannot exceed 99");
+  };
   const addToCart = async (productId: number, quantity = 1) => {
     setIsLoading(true);
     try {
+      validateQuantity(quantity);
       await apiRequest("POST", "/api/cart", { 
         cartId, 
         productId, 
@@ -195,6 +211,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         getTaxAmount,
         getFinalTotal,
         itemCount,
+        error,
+        isInitialized,
+        resetError,
       }}
     >
       {children}

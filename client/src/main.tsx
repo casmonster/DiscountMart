@@ -8,6 +8,9 @@ import MyContextProvider from "./MyContextProvider";
 import { WishlistProvider } from "./context/WishlistContext"; // if needed
 import { RecentlyViewedProvider } from "./context/RecentlyViewedContext"; // if needed
 import { CartProvider } from "./context/CartContext";
+import { useCart } from './context/CartContext';
+
+// Remove unused component until needed
 
 // React Query setup
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
