@@ -1,16 +1,16 @@
 {
   "name": "discountmart-client",
   "version": "1.0.0",
-  "homepage": "https://casmonster.github.io/DiscountMart",
-  "description": "Client-side application for DiscountMart",
+ 
+  "description":  "DiscountMart E-commerce Platform",
   "main": "index.js",
   "scripts": {
-    "dev": "vite --host 0.0.0.0",
-    "build": "vite build --host 0.0.0.0",
-    "serve": "vite preview",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist",
-     "preview": "vite preview --host 0.0.0.0",
+    "dev": "cd client && npm run dev",
+    "build": "cd client && npm run build",
+    "serve": "cd client && npm run serve",
+    "predeploy": "cd client && npm run build",
+    "deploy":  "cd client && npm run deploy",
+     "preview": "cd client && npm run preview",
     "push": "git add . && git commit -m \"update\" && git push"
   },
   "dependencies": {
