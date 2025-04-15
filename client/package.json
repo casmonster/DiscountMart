@@ -1,18 +1,18 @@
 {
   "name": "discountmart-client",
   "version": "1.0.0",
- 
-  "description":  "DiscountMart E-commerce Platform",
-  "main": "index.js",
+  "homepage": "https://casmonster.github.io/DiscountMart",
+  "description": "DiscountMart E-commerce Platform",
+  "private": true,
   "scripts": {
-    "dev": "cd client && npm run dev",
-    "build": "cd client && npm run build",
-    "serve": "cd client && npm run serve",
-    "predeploy": "cd client && npm run build",
-    "deploy":  "cd client && npm run deploy",
-     "preview": "cd client && npm run preview",
-    "push": "git add . && git commit -m \"update\" && git push"
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist",
+    "preview": "vite preview"
   },
+  
   "dependencies": {
     "@tanstack/react-query": "^5.72.1",
     "react": "^18.2.0",
