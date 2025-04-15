@@ -21,24 +21,24 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
+      '@shared': path.resolve(__dirname, '../shared'),
     },
   },
   server: {
     port: 5173,
-    host: true,
+    host:'0.0.0.0',
     strictPort: true,
     open: true,
 
   },
   build: {
-    chunkSizeWarningLimit: 1000, // Increase limit to 1000kB
-  },
+    chunkSizeWarningLimit: 1000, // Increase limit to 1000kB,
     rollupOptions: {
-       
       output: {
         manualChunks: {
-          vendor: ['react', 'react-dom', '@tanstack/react-query', 'react-query'],
+          vendor: ['react', 'react-dom', '@tanstack/react-query'],
         },
       },
     },
+  },
 });
