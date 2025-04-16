@@ -45,7 +45,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cartItems, setCartItems] = useState<CartItemWithProduct[]>([]);
   const [cartId, setCartId] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast();
+ 
   const [error, setError] = useState<CartError | null>(null);
 const [isInitialized, setIsInitialized] = useState(false);
 
@@ -73,6 +73,8 @@ const resetError = () => setError(null);
 
   const fetchCartItems = async () => {
     setIsLoading(true);
+    const { toast } = useToast();
+
     try {
       const response = await fetch(`/api/cart/${cartId}`);
       if (response.ok) {
@@ -95,6 +97,8 @@ const resetError = () => setError(null);
   };
   const addToCart = async (productId: number, quantity = 1) => {
     setIsLoading(true);
+    const { toast } = useToast();
+
     try {
       validateQuantity(quantity);
       await apiRequest("POST", "/api/cart", { 
@@ -126,6 +130,8 @@ const resetError = () => setError(null);
     }
     
     setIsLoading(true);
+    const { toast } = useToast();
+
     try {
       await apiRequest("PUT", `/api/cart/${itemId}`, { quantity });
       await fetchCartItems();
@@ -142,6 +148,8 @@ const resetError = () => setError(null);
 
   const removeItem = async (itemId: number) => {
     setIsLoading(true);
+    const { toast } = useToast();
+
     try {
       await apiRequest("DELETE", `/api/cart/${itemId}`);
       await fetchCartItems();
@@ -163,6 +171,8 @@ const resetError = () => setError(null);
 
   const clearCart = async () => {
     setIsLoading(true);
+    const { toast } = useToast();
+
     try {
       await apiRequest("DELETE", `/api/cart/clear/${cartId}`);
       setCartItems([]);
@@ -185,7 +195,7 @@ const resetError = () => setError(null);
   };
 
   const getTaxAmount = () => {
-    return getCartTotal() * 0.08; // 8% tax
+    return getCartTotal() * 0.10; // 10% tax
   };
 
   const getFinalTotal = () => {
