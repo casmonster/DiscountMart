@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./index.css";
 import { Toaster } from "./components/ui/toaster";
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 // Your context provider (replace with correct import if needed)
 import MyContextProvider from "./MyContextProvider";
@@ -19,6 +20,7 @@ const queryClient = new QueryClient();
 // ✅ Single root render with all providers
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
+    <ErrorBoundary>
     <QueryClientProvider client={queryClient}>
       <MyContextProvider>
         <CartProvider> 
@@ -31,6 +33,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         </CartProvider>
       </MyContextProvider>
     </QueryClientProvider>
+    </ErrorBoundary>
   </React.StrictMode>
 );
 

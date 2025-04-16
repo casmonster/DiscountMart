@@ -74,15 +74,17 @@ const resetError = () => setError(null);
 
   const fetchCartItems = async () => {
     setIsLoading(true);
-  
-
     try {
       const response = await fetch(`/api/cart/${cartId}`);
-      if (response.ok) {
-        const data = await response.json();
-        setCartItems(data);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
+      const data = await response.json();
+      setCartItems(data);
+      setIsInitialized(true);
     } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Failed to fetch cart items';
+    setError({ message: errorMessage });
       toast({
         title: "Error",
         description: "Failed to fetch cart items",
