@@ -1,4 +1,3 @@
-/** @jsxImportSource react */
 import * as React from "react"
 import * as ToastPrimitives from "@radix-ui/react-toast"
 
@@ -10,16 +9,17 @@ export interface ToastProps extends React.ComponentPropsWithoutRef<typeof ToastP
 
 export type ToastActionElement = React.ReactElement
 
-export const Toast = Object.assign(
-  React.forwardRef<React.ElementRef<typeof ToastPrimitives.Root>, ToastProps>(
-    ({ children, ...props }: ToastProps, ref) => (
-      <ToastPrimitives.Root {...props} ref={ref}>
-        {children}
-      </ToastPrimitives.Root>
-    )
-  ),
-  { displayName: "Toast" }
-);
+export const Toast = React.forwardRef<
+  React.ElementRef<typeof ToastPrimitives.Root>,
+  React.ComponentPropsWithoutRef<typeof ToastPrimitives.Root>
+>(({ children, ...props }, ref) => {
+  return (
+    <ToastPrimitives.Root ref={ref} {...props}>
+      {children}
+    </ToastPrimitives.Root>
+  )
+});
+Toast.displayName = 'Toast'
 const TOAST_LIMIT = 1
 const TOAST_REMOVE_DELAY = 1000000
 

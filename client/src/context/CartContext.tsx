@@ -1,3 +1,4 @@
+import * as React from "react";
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { useToast } from "../hooks/use-toast";
 import { apiRequest } from "../lib/queryClient";
@@ -46,11 +47,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cartItems, setCartItems] = useState<CartItemWithProduct[]>([]);
   const [cartId, setCartId] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
- 
-  const [error, setError] = useState<CartError | null>(null);
+const [error, setError] = useState<CartError | null>(null);
 const [isInitialized, setIsInitialized] = useState(false);
 
 const resetError = () => setError(null);
+
 
 
   // Initialize cart ID from localStorage or create a new one
@@ -87,8 +88,8 @@ const resetError = () => setError(null);
     setError({ message: errorMessage });
       toast({
         title: "Error",
-        description: "Failed to fetch cart items",
-        variant: "destructive",
+        description: errorMessage,
+        type: "background",
       });
     } finally {
       setIsLoading(false);
@@ -120,7 +121,7 @@ const resetError = () => setError(null);
       toast({
         title: "Error",
         description: "Failed to add item to cart",
-        variant: "destructive",
+        type: "background",
       });
     } finally {
       setIsLoading(false);
@@ -142,7 +143,7 @@ const resetError = () => setError(null);
       toast({
         title: "Error",
         description: "Failed to update item quantity",
-        variant: "destructive",
+        type: "background",
       });
     } finally {
       setIsLoading(false);
@@ -163,9 +164,9 @@ const resetError = () => setError(null);
       });
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to remove item from cart",
-        variant: "destructive",
+        title: "Success",
+        description: "Item added to cart",
+        type: "foreground",
       });
     } finally {
       setIsLoading(false);
@@ -183,7 +184,7 @@ const resetError = () => setError(null);
       toast({
         title: "Error",
         description: "Failed to clear cart",
-        variant: "destructive",
+        type: "background",
       });
     } finally {
       setIsLoading(false);
