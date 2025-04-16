@@ -8,7 +8,6 @@ import MyContextProvider from "./MyContextProvider";
 import { WishlistProvider } from "./context/WishlistContext"; // if needed
 import { RecentlyViewedProvider } from "./context/RecentlyViewedContext"; // if needed
 import { CartProvider } from "./context/CartContext";
-import { useCart } from './context/CartContext';
 
 // Remove unused component until needed
 
@@ -21,7 +20,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <MyContextProvider>
-        <CartProvider> {/* ✅ MUST wrap App */}
+        <CartProvider> 
           <WishlistProvider>
             <RecentlyViewedProvider>
               <App />
