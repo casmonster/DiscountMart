@@ -42,6 +42,7 @@ type CartContextType = {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
+  const { toast } = useToast();
   const [cartItems, setCartItems] = useState<CartItemWithProduct[]>([]);
   const [cartId, setCartId] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
@@ -73,7 +74,7 @@ const resetError = () => setError(null);
 
   const fetchCartItems = async () => {
     setIsLoading(true);
-    const { toast } = useToast();
+  
 
     try {
       const response = await fetch(`/api/cart/${cartId}`);
@@ -97,7 +98,7 @@ const resetError = () => setError(null);
   };
   const addToCart = async (productId: number, quantity = 1) => {
     setIsLoading(true);
-    const { toast } = useToast();
+   
 
     try {
       validateQuantity(quantity);
@@ -130,7 +131,7 @@ const resetError = () => setError(null);
     }
     
     setIsLoading(true);
-    const { toast } = useToast();
+   
 
     try {
       await apiRequest("PUT", `/api/cart/${itemId}`, { quantity });
@@ -148,7 +149,7 @@ const resetError = () => setError(null);
 
   const removeItem = async (itemId: number) => {
     setIsLoading(true);
-    const { toast } = useToast();
+   
 
     try {
       await apiRequest("DELETE", `/api/cart/${itemId}`);
@@ -171,7 +172,7 @@ const resetError = () => setError(null);
 
   const clearCart = async () => {
     setIsLoading(true);
-    const { toast } = useToast();
+   
 
     try {
       await apiRequest("DELETE", `/api/cart/clear/${cartId}`);
