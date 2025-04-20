@@ -1,4 +1,4 @@
-/** @jsxImportSource react */
+/** @jsx React.createElement */
 import * as React from "react"
 import * as ToastPrimitives from "@radix-ui/react-toast"
 
@@ -12,11 +12,13 @@ export type ToastActionElement = React.ReactElement
 
 export const Toast = Object.assign(
   React.forwardRef<React.ElementRef<typeof ToastPrimitives.Root>, ToastProps>(
-    ({ children, ...props }: ToastProps, ref) => (
-      <ToastPrimitives.Root {...props} ref={ref}>
-        {children}
-      </ToastPrimitives.Root>
-    )
+    ({ children, ...props }, ref) => {
+      return React.createElement(
+        ToastPrimitives.Root,
+        { ...props, ref },
+        children
+      );
+    }
   ),
   { displayName: "Toast" }
 );

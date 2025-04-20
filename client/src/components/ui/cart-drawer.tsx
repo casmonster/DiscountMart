@@ -1,17 +1,117 @@
-import { useCart, CartItemWithProduct } from "@/context/CartContext";
-import { useState } from "react";
+import * as React from "react";
+import { createContext, useContext, useEffect, useState } from 'react';
+
+export type CartItemWithProduct = {
+  id: number;
+  quantity: number;
+  product: {
+    id: number;
+    name: string;
+    price: number;
+    discountPrice: number | null;
+    imageUrl: string;
+    stockLevel: "In Stock" | "Low Stock" | "Out of Stock";
+  };
+};
+
+type CartContextType = {
+  cartItems: CartItemWithProduct[];
+  isLoading: boolean;
+  removeItem: (id: number) => Promise<void>;
+  updateQuantity: (id: number, quantity: number) => Promise<void>;
+  getCartTotal: () => number;
+  getTaxAmount: () => number;
+  getFinalTotal: () => number;
+  itemCount: number;
+};
+
+const CartContext = createContext<CartContextType | undefined>(undefined);
+
+export function CartProvider({ children }: { children: React.ReactNode }) {
+  const [cartItems, setCartItems] = useState<CartItemWithProduct[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const removeItem = async (id: number) => {
+    setIsLoading(true);
+    setCartItems(items => items.filter(item => item.id !== id));
+    setIsLoading(false);
+  };
+
+  const updateQuantity = async (id: number, quantity: number) => {
+    setIsLoading(true);
+    setCartItems(items => 
+      items.map(item => 
+        item.id === id ? { ...item, quantity } : item
+      )
+    );
+    setIsLoading(false);
+  };
+
+  const getCartTotal = () => {
+    return cartItems.reduce((total, item) => {
+      const price = item.product.discountPrice || item.product.price;
+      return total + (price * item.quantity);
+    }, 0);
+  };
+
+  const getTaxAmount = () => getCartTotal() * 0.08;
+  const getFinalTotal = () => getCartTotal() + getTaxAmount();
+  const itemCount = cartItems.reduce((count, item) => count + item.quantity, 0);
+
+  return (
+    <CartContext.Provider value={{
+      cartItems,
+      isLoading,
+      removeItem,
+      updateQuantity,
+      getCartTotal,
+      getTaxAmount,
+      getFinalTotal,
+      itemCount
+    }}>
+      {children}
+    </CartContext.Provider>
+  );
+}
+
+export function useCart() {
+  const context = useContext(CartContext);
+  if (context === undefined) {
+    throw new Error('useCart must be used within a CartProvider');
+  }
+  return context;
+}
 import { useLocation } from "wouter";
-import { 
-  Sheet, 
-  SheetContent, 
-  SheetHeader, 
-  SheetTitle, 
-  SheetFooter 
-} from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { Trash2, Plus, Minus, X, ShoppingCart, AlertCircle } from "lucide-react";
-import { convertToRwandanFrancs, formatRwandanFrancs } from "@/lib/currency";
+import { Button } from "./button";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "./sheet";
+import { ShoppingCart, X, AlertCircle, Minus, Plus, Trash2 } from "lucide-react";
+import { Separator } from "./separator";
+
+
+
+// /lib/currency.tsx
+
+// Function to convert USD to Rwandan Francs (RWF)
+export const convertToRwandanFrancs = (amountInUSD: number): number => {
+  // Using an approximate exchange rate (1 USD = 1200 RWF)
+  const exchangeRate = 1200;
+  return Math.round(amountInUSD * exchangeRate);
+};
+
+// Function to format amount in Rwandan Francs
+export const formatRwandanFrancs = (amount: number): string => {
+  return new Intl.NumberFormat('rw-RW', {
+    style: 'currency',
+    currency: 'RWF',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(amount);
+};
 
 type CartDrawerProps = {
   open: boolean;

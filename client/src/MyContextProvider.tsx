@@ -1,4 +1,6 @@
-import React, { createContext, ReactNode, useState, useCallback, useContext } from "react";
+import * as React from "react";
+const { createContext, useState, useCallback, useContext } = React;
+type ReactNode = React.ReactNode;
 
 // Define the context type
 interface MyContextType {

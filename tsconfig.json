@@ -1,15 +1,12 @@
 {
-
   "compilerOptions": {
     "types": ["node"],
     "baseUrl": ".",
-
     "paths": {
-
       "@/*": ["./src/*"]
-
     }
-
+  },
+  "import": {
+    "cn": "@/lib/utils"
   }
-
 }

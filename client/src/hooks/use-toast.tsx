@@ -11,15 +11,16 @@ export type ToastActionElement = React.ReactElement
 
 export const Toast = React.forwardRef<
   React.ElementRef<typeof ToastPrimitives.Root>,
-  React.ComponentPropsWithoutRef<typeof ToastPrimitives.Root>
->(({ children, ...props }, ref) => {
+  ToastProps
+>((props, ref) => {
   return (
     <ToastPrimitives.Root ref={ref} {...props}>
-      {children}
+      {props.children}
     </ToastPrimitives.Root>
   )
-});
-Toast.displayName = 'Toast'
+})
+
+Toast.displayName = "Toast"
 const TOAST_LIMIT = 1
 const TOAST_REMOVE_DELAY = 1000000
 
