@@ -1,42 +1,41 @@
 {
   "name": "discountmart-client",
   "version": "1.0.0",
-  "homepage": "https://casmonster.github.io/DiscountMart",
-  "description": "DiscountMart E-commerce Platform",
   "private": true,
+  "description": "DiscountMart E-commerce Platform",
+  "author": "Trinity",
+  "license": "MIT",
+  "homepage": "https://casmonster.github.io/DiscountMart",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview",
+    "preview": "vite preview",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist",
-    "preview": "vite preview"
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.22.3",
     "@radix-ui/react-dialog": "^1.1.10",
     "@radix-ui/react-separator": "^1.1.4",
     "@radix-ui/react-toast": "^1.2.7",
     "@tanstack/react-query": "^5.72.1",
-    "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "class-variance-authority": "^0.7.1",
     "lucide-react": "^0.488.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^6.22.3",
     "sonner": "^2.0.3",
     "tailwind-merge": "^3.2.0",
     "wouter": "^3.7.0"
   },
   "devDependencies": {
-    "@types/react": "^18.3.20",
-    "@types/react-dom": "^18.3.6",
+    "vite": "^5.2.0",
     "@vitejs/plugin-react": "^4.3.4",
-    "@vitejs/plugin-react-refresh": "^1.3.6",
+    "vite-plugin-svgr": "^4.3.0",
     "gh-pages": "^6.3.0",
-    "typescript": "^4.4.4",
-    "vite": "^6.2.5",
-    "vite-plugin-svgr": "^4.3.0"
-  },
-  "author": "Trinity",
-  "license": "MIT"
+    "typescript": "^5.4.2",
+    "@types/react": "^18.2.44",
+    "@types/react-dom": "^18.2.17"
+  }
 }

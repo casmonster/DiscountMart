@@ -1,12 +1,22 @@
 {
   "compilerOptions": {
-    "types": ["node"],
+    "target": "ESNext",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "jsx": "react-jsx",
+    "module": "ESNext",
+    "moduleResolution": "Node",
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "types": ["node"],
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true
   },
-  "import": {
-    "cn": "@/lib/utils"
-  }
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
 }
+
