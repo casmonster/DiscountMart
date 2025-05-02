@@ -188,3 +188,10 @@ export function useToast() {
     dismiss: (toastId?: string) => dispatch({ type: "DISMISS_TOAST", toastId }),
   }
 }
+import { Toaster as SonnerToaster } from "sonner";
+
+export const Toaster = () => {
+  return <SonnerToaster richColors position="top-center" />;
+};
+// This is a workaround for the Toaster component to be used in the app
+// and to be able to use the toast function in the app
