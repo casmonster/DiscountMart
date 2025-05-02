@@ -1,6 +1,7 @@
 {
   "name": "discountmart-client",
   "version": "1.0.0",
+  "type": "module",
   "description": "DiscountMart E-commerce Platform",
   "homepage": "https://casmonster.github.io/DiscountMart",
   "repository": {
@@ -29,6 +30,7 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.0.1",
     "@radix-ui/react-accordion": "^1.2.8",
     "@radix-ui/react-alert-dialog": "^1.1.11",
     "@radix-ui/react-aspect-ratio": "^1.1.4",
@@ -44,6 +46,7 @@
     "@radix-ui/react-popover": "^1.1.11",
     "@radix-ui/react-progress": "^1.1.4",
     "@radix-ui/react-radio-group": "^1.3.4",
+    "@radix-ui/react-select": "^2.2.2",
     "@radix-ui/react-separator": "^1.1.4",
     "@radix-ui/react-slider": "^1.3.2",
     "@radix-ui/react-switch": "^1.2.2",
@@ -66,14 +69,20 @@
     "recharts": "^2.15.3",
     "sonner": "^2.0.3",
     "tailwind-merge": "^3.2.0",
+    "uuid": "^11.1.0",
     "vaul": "^1.1.2",
-    "wouter": "^3.7.0"
+    "wouter": "^3.7.0",
+    "zod": "^3.24.3"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.5",
     "@types/react": "^18.2.44",
     "@types/react-dom": "^18.2.17",
     "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.21",
     "gh-pages": "^6.3.0",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^4.1.5",
     "typescript": "^5.4.2",
     "vite": "^5.2.0",
     "vite-plugin-svgr": "^4.3.0"
