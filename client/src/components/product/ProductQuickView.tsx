@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
-import { Link } from "wouter";
-import { useCart } from "@/context/CartContext";
-import { useWishlist } from "@/context/WishlistContext";
-import { useToast } from "@/hooks/use-toast";
+import { Link } from "react-router-dom";
+import { useCart } from "../../context/CartContext";
+import { useWishlist } from "../../context/WishlistContext";
+import { useToast } from "../../hooks/use-toast";
 import {
   Dialog,
   DialogContent,
   DialogClose,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+} from "../ui/dialog";
+import { Button } from "../ui/button";
 import { 
   X, 
   Heart, 
@@ -19,7 +19,7 @@ import {
   Minus,
   Plus
 } from "lucide-react";
-import { convertToRwandanFrancs, formatRwandanFrancs } from "@/lib/currency";
+import { convertToRwandanFrancs, formatRwandanFrancs } from "../../lib/currency";
 
 interface ProductQuickViewProps {
   open: boolean;
@@ -80,7 +80,6 @@ export default function ProductQuickView({
       toast({
         title: "Error",
         description: "Failed to add item to cart. Please try again.",
-        variant: "destructive",
       });
     } finally {
       setIsAdding(false);
@@ -254,7 +253,7 @@ export default function ProductQuickView({
                   </Button>
                 </div>
                 
-                <Link href={`/product/${product.slug}`} onClick={() => onOpenChange(false)}>
+                <Link ref={`/product/${product.slug}`} onClick={() => onOpenChange(false)} to={""}>
                   <Button
                     variant="outline"
                     className="w-full rounded-full"

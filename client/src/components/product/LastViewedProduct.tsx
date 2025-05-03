@@ -1,8 +1,9 @@
-import { useRecentlyViewed } from "@/context/RecentlyViewedContext";
-import { Link } from "wouter";
-import { Button } from "@/components/ui/button";
+import { useRecentlyViewed } from "../../context/RecentlyViewedContext";
+import { Link } from "react-router-dom";
+import { Button } from "../ui/button";
 import { ChevronRight } from "lucide-react";
 
+ 
 export default function LastViewedProduct() {
   const { lastViewedProduct } = useRecentlyViewed();
 
@@ -52,7 +53,7 @@ export default function LastViewedProduct() {
               )}
             </div>
             <div className="flex space-x-2 mt-3">
-              <Link href={`/product/${slug}`}>
+              <Link ref={`/product/${slug}`} to={""}>
                 <Button
                   variant="outline"
                   size="sm"

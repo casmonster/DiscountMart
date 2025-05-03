@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { Link } from "wouter";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { useCart } from "@/context/CartContext";
-import { useWishlist } from "@/context/WishlistContext";
+import { Link } from "react-router-dom";
+
+import { Button } from "../ui/button";
+import { Badge } from "../ui/badge";
+import { useCart } from "../../context/CartContext";
+import { useWishlist } from "../../context/WishlistContext";
 import { Heart, ShoppingCart, Plus, Minus, Check } from "lucide-react";
-import { convertToRwandanFrancs, formatRwandanFrancs } from "@/lib/currency";
+import { convertToRwandanFrancs, formatRwandanFrancs } from "../../lib/currency";
 
 type ProductProperty = {
   name: string;
@@ -209,7 +210,7 @@ export default function FeaturedProductShowcase({
             </div>
           </div>
           
-          <Link href={`/product/${product.slug}`}>
+          <Link ref={`/product/${product.slug}`} to={""}>
             <Button variant="link" className="px-0 text-primary">
               View Full Details
             </Button>

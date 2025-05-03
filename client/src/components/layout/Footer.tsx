@@ -1,4 +1,4 @@
-import { Link } from "wouter";
+import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
@@ -32,36 +32,36 @@ export default function Footer() {
           <div>
             <h4 className="font-bold mb-4">Shop</h4>
             <ul className="space-y-2">
-              <li><Link href="/" className="text-gray-300 hover:text-white">All Products</Link></li>
-              <li><Link href="/category/clothing" className="text-gray-300 hover:text-white">Clothing</Link></li>
-              <li><Link href="/category/tableware" className="text-gray-300 hover:text-white">Tableware</Link></li>
-              <li><Link href="/category/kitchen" className="text-gray-300 hover:text-white">Kitchen</Link></li>
-              <li><Link href="/category/home-decor" className="text-gray-300 hover:text-white">Home Decor</Link></li>
+              <li><Link ref="/" className="text-gray-300 hover:text-white" to={""}>All Products</Link></li>
+              <li><Link ref="/category/clothing" className="text-gray-300 hover:text-white" to={""}>Clothing</Link></li>
+              <li><Link ref="/category/tableware" className="text-gray-300 hover:text-white" to={""}>Tableware</Link></li>
+              <li><Link ref="/category/kitchen" className="text-gray-300 hover:text-white" to={""}>Kitchen</Link></li>
+              <li><Link ref="/category/home-decor" className="text-gray-300 hover:text-white" to={""}>Home Decor</Link></li>
             </ul>
           </div>
           
           <div>
             <h4 className="font-bold mb-4">Information</h4>
             <ul className="space-y-2">
-              <li><Link href="/about" className="text-gray-300 hover:text-white">About Us</Link></li>
-              <li><Link href="/contact" className="text-gray-300 hover:text-white">Contact Us</Link></li>
-              <li><Link href="/store-info" className="text-gray-300 hover:text-white">Store Location</Link></li>
-              <li><Link href="/pickup-policy" className="text-gray-300 hover:text-white">Pickup Policy</Link></li>
-              <li><Link href="/return-policy" className="text-gray-300 hover:text-white">Return Policy</Link></li>
-              <li><Link href="/testimonials" className="text-gray-300 hover:text-white">Testimonials</Link></li>
-              <li><Link href="/shipping" className="text-gray-300 hover:text-white">Shipping Info</Link></li>
-              <li><Link href="/size-guide" className="text-gray-300 hover:text-white">Size Guide</Link></li>
+              <li><Link ref="/about" className="text-gray-300 hover:text-white" to={""}>About Us</Link></li>
+              <li><Link ref="/contact" className="text-gray-300 hover:text-white" to={""}>Contact Us</Link></li>
+              <li><Link ref="/store-info" className="text-gray-300 hover:text-white" to={""}>Store Location</Link></li>
+              <li><Link ref="/pickup-policy" className="text-gray-300 hover:text-white" to={""}>Pickup Policy</Link></li>
+              <li><Link ref="/return-policy" className="text-gray-300 hover:text-white" to={""}>Return Policy</Link></li>
+              <li><Link ref="/testimonials" className="text-gray-300 hover:text-white" to={""}>Testimonials</Link></li>
+              <li><Link ref="/shipping" className="text-gray-300 hover:text-white" to={""}>Shipping Info</Link></li>
+              <li><Link ref="/size-guide" className="text-gray-300 hover:text-white" to={""}>Size Guide</Link></li>
             </ul>
           </div>
           
           <div>
             <h4 className="font-bold mb-4">Customer Service</h4>
             <ul className="space-y-2">
-              <li><Link href="/account" className="text-gray-300 hover:text-white">My Account</Link></li>
-              <li><Link href="/orders" className="text-gray-300 hover:text-white">Order Status</Link></li>
-              <li><Link href="/faq" className="text-gray-300 hover:text-white">FAQ</Link></li>
-              <li><Link href="/help" className="text-gray-300 hover:text-white">Help Center</Link></li>
-              <li><Link href="/newsletter" className="text-gray-300 hover:text-white">Newsletter</Link></li>
+              <li><Link ref="/account" className="text-gray-300 hover:text-white" to={""}>My Account</Link></li>
+              <li><Link ref="/orders" className="text-gray-300 hover:text-white" to={""}>Order Status</Link></li>
+              <li><Link ref="/faq" className="text-gray-300 hover:text-white" to={""}>FAQ</Link></li>
+              <li><Link ref="/help" className="text-gray-300 hover:text-white" to={""}>Help Center</Link></li>
+              <li><Link ref="/newsletter" className="text-gray-300 hover:text-white" to={""}>Newsletter</Link></li>
             </ul>
           </div>
         </div>
@@ -70,9 +70,9 @@ export default function Footer() {
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm">© {new Date().getFullYear()} DiscountMart. All rights reserved.</p>
             <div className="flex space-x-4 mt-4 md:mt-0">
-              <Link href="/privacy" className="text-gray-400 text-sm hover:text-white">Privacy Policy</Link>
-              <Link href="/terms" className="text-gray-400 text-sm hover:text-white">Terms of Service</Link>
-              <Link href="/sitemap" className="text-gray-400 text-sm hover:text-white">Sitemap</Link>
+              <Link ref="/privacy" className="text-gray-400 text-sm hover:text-white" to={""}>Privacy Policy</Link>
+              <Link ref="/terms" className="text-gray-400 text-sm hover:text-white" to={""}>Terms of Service</Link>
+              <Link ref="/sitemap" className="text-gray-400 text-sm hover:text-white" to={""}>Sitemap</Link>
             </div>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import { useRecentlyViewed } from "@/context/RecentlyViewedContext";
+import { useRecentlyViewed } from "../../context/RecentlyViewedContext";
 import ProductCard from "./ProductCard";
 
 export default function RecentlyViewedProducts() {

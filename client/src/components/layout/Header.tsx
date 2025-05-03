@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "wouter";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import CartDrawer from "../../components/ui/cart-drawer";
 import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
@@ -12,7 +12,8 @@ import { useCart } from "../../context/CartContext";
 export default function Header() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [location, navigate] = useLocation();
+  const location = useLocation();
+  const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
   const { itemCount } = useCart();
   
@@ -82,7 +83,7 @@ export default function Header() {
       {/* Main Header */}
       <div className="container mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="flex items-center">
-          <Link href="/" className="text-2xl font-bold text-primary flex items-center group">
+          <Link ref="/" className="text-2xl font-bold text-primary flex items-center group" to={""}>
             <img src="/path/to/logo.svg" alt="Logo" className="h-12 mr-2" />
           </Link>
         </div>
@@ -112,7 +113,7 @@ export default function Header() {
         
         {/* Navigation Actions */}
         <div className="flex items-center gap-4">
-          <Link href="/wishlist">
+          <Link ref="/wishlist" to={""}>
             <Button 
               size="icon"
               className="text-gray-700 hover:text-secondary relative p-2 hover:bg-secondary/5 rounded-full transition-colors"
@@ -133,7 +134,7 @@ export default function Header() {
               </span>
             )}
           </Button>
-          <Link href="/store-info">
+          <Link ref="/store-info" to={""}>
             <Button variant="ghost" size="icon" className="text-gray-700 hover:text-primary p-2 hover:bg-primary/5 rounded-full transition-colors">
               <MapPin className="h-6 w-6" />
             </Button>
@@ -145,67 +146,61 @@ export default function Header() {
       <nav className={`bg-white border-t border-gray-100 py-3 overflow-x-auto whitespace-nowrap transition-shadow duration-300 ${isScrolled ? 'shadow-sm' : ''}`}>
         <div className="container mx-auto px-4 flex space-x-8">
           <Link 
-            href="/" 
-            className={`font-medium relative px-1 transition-colors ${location === '/' 
-              ? 'text-primary' 
-              : 'text-gray-600 hover:text-primary'}`}
-          >
+            ref="/"
+            className={`font-medium relative px-1 transition-colors ${
+              location.pathname === '/'
+              ? 'text-primary'
+              : 'text-gray-600 hover:text-primary'}`} to={""}          >
             <span>All Products</span>
-            {location === '/' && <span className="absolute bottom-[-12px] left-0 w-full h-0.5 bg-primary rounded-full"></span>}
+            {location.pathname === '/' && <span className="absolute bottom-[-12px] left-0 w-full h-0.5 bg-primary rounded-full"></span>}
           </Link>
           <Link 
-            href="/category/clothing" 
-            className={`font-medium relative px-1 transition-colors ${location === '/category/clothing' 
-              ? 'text-primary' 
-              : 'text-gray-600 hover:text-primary'}`}
-          >
+            ref="/category/clothing"
+            className={`font-medium relative px-1 transition-colors ${location.pathname === '/category/clothing'
+              ? 'text-primary'
+              : 'text-gray-600 hover:text-primary'}`} to={""}          >
             <span>Clothing</span>
-            {location === '/category/clothing' && <span className="absolute bottom-[-12px] left-0 w-full h-0.5 bg-primary rounded-full"></span>}
+            {location.pathname === '/category/clothing' && <span className="absolute bottom-[-12px] left-0 w-full h-0.5 bg-primary rounded-full"></span>}
           </Link>
           <Link 
-            href="/category/tableware" 
-            className={`font-medium relative px-1 transition-colors ${location === '/category/tableware' 
-              ? 'text-primary' 
-              : 'text-gray-600 hover:text-primary'}`}
-          >
+            ref="/category/tableware"
+            className={`font-medium relative px-1 transition-colors ${location.pathname === '/category/tableware'
+              ? 'text-primary'
+              : 'text-gray-600 hover:text-primary'}`} to={""}          >
             <span>Tableware</span>
-            {location === '/category/tableware' && <span className="absolute bottom-[-12px] left-0 w-full h-0.5 bg-primary rounded-full"></span>}
+            {location.pathname === '/category/tableware' && <span className="absolute bottom-[-12px] left-0 w-full h-0.5 bg-primary rounded-full"></span>}
           </Link>
           <Link 
-            href="/category/kitchen" 
-            className={`font-medium relative px-1 transition-colors ${location === '/category/kitchen' 
-              ? 'text-primary' 
-              : 'text-gray-600 hover:text-primary'}`}
-          >
+            ref="/category/kitchen"
+            className={`font-medium relative px-1 transition-colors ${location.pathname === '/category/kitchen'
+              ? 'text-primary'
+              : 'text-gray-600 hover:text-primary'}`} to={""}          >
             <span>Kitchen</span>
-            {location === '/category/kitchen' && <span className="absolute bottom-[-12px] left-0 w-full h-0.5 bg-primary rounded-full"></span>}
+            {location.pathname === '/category/kitchen' && <span className="absolute bottom-[-12px] left-0 w-full h-0.5 bg-primary rounded-full"></span>}
           </Link>
           <Link 
-            href="/category/home-decor" 
-            className={`font-medium relative px-1 transition-colors ${location === '/category/home-decor' 
-              ? 'text-primary' 
-              : 'text-gray-600 hover:text-primary'}`}
-          >
+            ref="/category/home-decor"
+            className={`font-medium relative px-1 transition-colors ${location.pathname === '/category/home-decor'
+              ? 'text-primary'
+              : 'text-gray-600 hover:text-primary'}`} to={""}          >
             <span>Home Decor</span>
-            {location === '/category/home-decor' && <span className="absolute bottom-[-12px] left-0 w-full h-0.5 bg-primary rounded-full"></span>}
+            {location.pathname === '/category/home-decor' && <span className="absolute bottom-[-12px] left-0 w-full h-0.5 bg-primary rounded-full"></span>}
           </Link>
           <Link 
-            href="/new-arrivals" 
-            className={`font-medium relative px-1 transition-colors ${location === '/new-arrivals' 
-              ? 'text-primary' 
-              : 'text-gray-600 hover:text-primary'}`}
-          >
+            ref="/new-arrivals"
+            className={`font-medium relative px-1 transition-colors ${location.pathname === '/new-arrivals'
+              ? 'text-primary'
+              : 'text-gray-600 hover:text-primary'}`} to={""}          >
             <span>New Arrivals</span>
-            {location === '/new-arrivals' && <span className="absolute bottom-[-12px] left-0 w-full h-0.5 bg-primary rounded-full"></span>}
+            {location.pathname === '/new-arrivals' && <span className="absolute bottom-[-12px] left-0 w-full h-0.5 bg-primary rounded-full"></span>}
           </Link>
           <Link 
-            href="/clearance"
-            className={`font-medium relative px-1 transition-colors ${location === '/clearance' 
-              ? 'text-primary' 
-              : 'text-gray-600 hover:text-primary'}`}
-          >
+            ref="/clearance"
+            className={`font-medium relative px-1 transition-colors ${location.pathname === '/clearance'
+              ? 'text-primary'
+              : 'text-gray-600 hover:text-primary'}`} to={""}          >
             <span className="text-secondary">Clearance</span>
-            {location === '/clearance' && <span className="absolute bottom-[-12px] left-0 w-full h-0.5 bg-secondary rounded-full"></span>}
+            {location.pathname === '/clearance' && <span className="absolute bottom-[-12px] left-0 w-full h-0.5 bg-secondary rounded-full"></span>}
           </Link>
         </div>
       </nav>

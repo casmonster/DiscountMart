@@ -1,13 +1,13 @@
-import { Link } from "wouter";
-import { Button } from "@/components/ui/button";
-import { useCart } from "@/context/CartContext";
-import { useWishlist } from "@/context/WishlistContext";
+import { Link } from "react-router-dom";
+import { Button } from "../ui/button";
+import { useCart } from "../../context/CartContext";
+import { useWishlist } from "../../context/WishlistContext";
 import { CheckCircle, AlertCircle, ShoppingCart, Eye, Heart } from "lucide-react";
 import { useState } from "react";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "../../hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import ProductQuickView from "./ProductQuickView";
-import { convertToRwandanFrancs, formatRwandanFrancs } from "@/lib/currency";
+import { convertToRwandanFrancs, formatRwandanFrancs } from "../../lib/currency";
 
 type ProductCardProps = {
   id: number;
@@ -64,7 +64,6 @@ export default function ProductCard({
       toast({
         title: "Error",
         description: "Failed to add item to cart. Please try again.",
-        variant: "destructive",
       });
     } finally {
       setIsAdding(false);
@@ -186,7 +185,7 @@ export default function ProductCard({
             </div>
           </div>
 
-          <Link href={`/product/${slug}`} className="block">
+          <Link ref={`/product/${slug}`} className="block" to={""}>
             <div className="p-4 flex flex-col flex-grow">
               {/* Stock status above title */}
               <div className="mb-1.5">

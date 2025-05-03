@@ -1,4 +1,5 @@
-import { Link } from "wouter";
+import React from "react";
+import { Link } from "react-router-dom";
 
 type CategoryCardProps = {
   name: string;
@@ -6,9 +7,10 @@ type CategoryCardProps = {
   imageUrl: string;
 };
 
+
 export default function CategoryCard({ name, slug, imageUrl }: CategoryCardProps) {
   return (
-    <Link href={`/category/${slug}`} className="group">
+    <Link ref={`/category/${slug}`} className="group" to={""}>
       <div className="relative overflow-hidden rounded-lg aspect-square shadow-md hover:shadow-xl transition-all duration-300 transform group-hover:-translate-y-1">
         <img 
           src={imageUrl} 
