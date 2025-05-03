@@ -62,11 +62,9 @@ function Router() {
 }
 
 function App() {
-  const { cartItems } = useCart(); // Verify context is working
   return (
     <QueryClientProvider client={queryClient}>
       <CartProvider>
-        
         <WishlistProvider>
           <RecentlyViewedProvider>
             <Router />
