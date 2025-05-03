@@ -1,5 +1,10 @@
 import * as React from "react";
 const { createContext, useState, useCallback, useContext } = React;
+
+import { CartProvider } from "./context/CartContext";
+import { WishlistProvider } from "./context/WishlistContext";
+import { RecentlyViewedProvider } from "./context/RecentlyViewedContext";
+
 type ReactNode = React.ReactNode;
 
 // Define the context type
@@ -21,19 +26,21 @@ export const useMyContext = () => {
   }
   return context;
 };
-// Create the provider component
-const MyContextProvider = ({ children, initialValue = "default value" }: {
+
+// Provider component
+const MyContextProvider = ({
+  children,
+  initialValue = "default value"
+}: {
   children: ReactNode;
   initialValue?: string;
 }) => {
   const [value, setValue] = useState(initialValue);
 
-   // Add reset functionality
-   const resetValue = useCallback(() => {
+  const resetValue = useCallback(() => {
     setValue(initialValue);
   }, [initialValue]);
 
-  // Add update functionality with validation
   const updateValue = useCallback((newValue: string) => {
     if (typeof newValue !== 'string') {
       throw new Error('Value must be a string');
@@ -41,20 +48,24 @@ const MyContextProvider = ({ children, initialValue = "default value" }: {
     setValue(newValue);
   }, []);
 
-  // Check if current value is default
   const isDefaultValue = value === initialValue;
 
   const contextValue = {
     value,
     setValue,
-    resetValue,
     updateValue,
     isDefaultValue,
   };
 
   return (
     <MyContext.Provider value={contextValue}>
-      {children}
+      <CartProvider>
+        <WishlistProvider>
+          <RecentlyViewedProvider>
+            {children}
+          </RecentlyViewedProvider>
+        </WishlistProvider>
+      </CartProvider>
     </MyContext.Provider>
   );
 };
