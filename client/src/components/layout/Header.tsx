@@ -16,6 +16,18 @@ export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const { itemCount } = useCart();
   
+  const Header = () => {
+    const cart = useCart();
+    
+    return (
+      <>
+        {/* Header layout */}
+        {cart && <CartDrawer open={false} onClose={function (): void {
+          throw new Error("Function not implemented.");
+        } } />}
+      </>
+    );
+  };
   // Handle scroll effect for sticky header
   useEffect(() => {
     const handleScroll = () => {
