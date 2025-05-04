@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { Component, ErrorInfo, ReactNode, ReactElement } from 'react';
+import { Component, ErrorInfo, ReactNode } from 'react';
 
 interface Props {
   children: ReactNode;
-  fallback?: ReactElement;
+  fallback?: ReactNode;
 }
 
 interface State {
@@ -12,11 +12,8 @@ interface State {
 }
 
 export class ErrorBoundary extends Component<Props, State> {
-  public static displayName = 'ErrorBoundary';
-
   public state: State = {
-    hasError: false,
-    error: undefined,
+    hasError: false
   };
 
   public static getDerivedStateFromError(error: Error): State {
@@ -29,17 +26,22 @@ export class ErrorBoundary extends Component<Props, State> {
 
   private resetError = () => {
     this.setState({ hasError: false, error: undefined });
+    // Optionally trigger a page reload:
+    // window.location.reload();
   };
 
   public render() {
     if (this.state.hasError) {
       return this.props.fallback || (
-        <div className="error-boundary">
-          <h2>Something went wrong.</h2>
-          <details style={{ whiteSpace: 'pre-wrap', marginBottom: '1rem' }}>
+        <div className="error-boundary p-8 border-2 border-red-600 bg-red-100 text-red-800 rounded-lg shadow-sm max-w-xl mx-auto my-10">
+          <h2 className="text-2xl font-semibold mb-4">Something went wrong.</h2>
+          <details className="whitespace-pre-wrap mb-6">
             {this.state.error?.toString()}
           </details>
-          <button onClick={this.resetError} className="retry-button">
+          <button
+            onClick={this.resetError}
+            className="retry-button bg-red-700 hover:bg-red-800 text-white font-medium px-5 py-2 rounded transition"
+          >
             Try Again
           </button>
         </div>
