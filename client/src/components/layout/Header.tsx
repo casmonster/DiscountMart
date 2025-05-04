@@ -19,7 +19,7 @@ export default function Header() {
   
   const Header = () => {
     const cart = useCart();
-    
+    console.log("Cart context inside CartDrawer:", cart);
     return (
       <>
         {/* Header layout */}

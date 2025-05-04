@@ -81,7 +81,8 @@ export function useCart() {
   }
   return context;
 }
-import { useLocation } from "wouter";
+import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { Button } from "./button";
 import {
   Sheet,
@@ -119,7 +120,8 @@ type CartDrawerProps = {
 };
 
 export default function CartDrawer({ open, onClose }: CartDrawerProps) {
-  const [, navigate] = useLocation();
+  const location = useLocation();
+  const navigate = useNavigate();
   const { 
     cartItems, 
     isLoading, 
