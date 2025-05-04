@@ -37,7 +37,7 @@ const Toggle = React.forwardRef<
     VariantProps<typeof toggleVariants>
 >(({ className, variant, size, ...props }, ref) => (
   <TogglePrimitive.Root
-    ref={ref}
+   /* ref={ref} */ /* ⚠️ Check: convert to useRef + forwardRef if needed */
     className={cn(toggleVariants({ variant, size, className }))}
     {...props}
   />

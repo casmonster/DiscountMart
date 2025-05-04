@@ -29,7 +29,7 @@ const Label = React.forwardRef<
     VariantProps<typeof labelVariants>
 >(({ className, ...props }, ref) => (
   <LabelPrimitive.Root
-    ref={ref}
+   /* ref={ref} */ /* ⚠️ Check: convert to useRef + forwardRef if needed */
     className={cn(labelVariants(), className)}
     {...props}
   />
@@ -103,7 +103,7 @@ const FormItem = React.forwardRef<
 
   return (
     <FormItemContext.Provider value={{ id }}>
-      <div ref={ref} className={cn("space-y-2", className)} {...props} />
+      <div/* ref={ref} */ /* ⚠️ Check: convert to useRef + forwardRef if needed */ className={cn("space-y-2", className)} {...props} />
     </FormItemContext.Provider>
   )
 })
@@ -117,7 +117,7 @@ const FormLabel = React.forwardRef<
 
   return (
     <Label
-      ref={ref}
+     /* ref={ref} */ /* ⚠️ Check: convert to useRef + forwardRef if needed */
       className={cn(error && "text-destructive", className)}
       htmlFor={formItemId}
       {...props}
@@ -134,7 +134,7 @@ const FormControl = React.forwardRef<
 
   return (
     <Slot
-      ref={ref}
+     /* ref={ref} */ /* ⚠️ Check: convert to useRef + forwardRef if needed */
       id={formItemId}
       aria-describedby={
         !error
@@ -156,7 +156,7 @@ const FormDescription = React.forwardRef<
 
   return (
     <p
-      ref={ref}
+     /* ref={ref} */ /* ⚠️ Check: convert to useRef + forwardRef if needed */
       id={formDescriptionId}
       className={cn("text-sm text-muted-foreground", className)}
       {...props}
@@ -178,7 +178,7 @@ const FormMessage = React.forwardRef<
 
   return (
     <p
-      ref={ref}
+     /* ref={ref} */ /* ⚠️ Check: convert to useRef + forwardRef if needed */
       id={formMessageId}
       className={cn("text-sm font-medium text-destructive", className)}
       {...props}

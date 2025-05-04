@@ -1,3 +1,4 @@
+/* ⚠️ Consider wrapping this component with React.forwardRef if it needs to accept refs */
 import { useRecentlyViewed } from "../../context/RecentlyViewedContext";
 import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
@@ -53,7 +54,7 @@ export default function LastViewedProduct() {
               )}
             </div>
             <div className="flex space-x-2 mt-3">
-              <Link ref={`/product/${slug}`} to={""}>
+              <Link to={""}>
                 <Button
                   variant="outline"
                   size="sm"

@@ -1,3 +1,4 @@
+/* ⚠️ Consider wrapping this component with React.forwardRef if it needs to accept refs */
 import { Link } from "wouter";
 import { useWishlist } from "@/context/WishlistContext";
 import { Button } from "@/components/ui/button";

@@ -18,7 +18,7 @@ const Switch = React.forwardRef<
       className
     )}
     {...props}
-    ref={ref}
+   /* ref={ref} */ /* ⚠️ Check: convert to useRef + forwardRef if needed */
   >
     <SwitchPrimitives.Thumb
       className={cn(

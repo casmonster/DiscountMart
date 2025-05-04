@@ -1,3 +1,4 @@
+/* ⚠️ Consider wrapping this component with React.forwardRef if it needs to accept refs */
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -210,7 +211,7 @@ export default function FeaturedProductShowcase({
             </div>
           </div>
           
-          <Link ref={`/product/${product.slug}`} to={""}>
+          <Link to={""}>
             <Button variant="link" className="px-0 text-primary">
               View Full Details
             </Button>

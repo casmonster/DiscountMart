@@ -14,7 +14,7 @@ export const Toast = React.forwardRef<
   ToastProps
 >((props, ref) => {
   return (
-    <ToastPrimitives.Root ref={ref} {...props}>
+    <ToastPrimitives.Root/* ref={ref} */ /* ⚠️ Check: convert to useRef + forwardRef if needed */ {...props}>
       {props.children}
     </ToastPrimitives.Root>
   )

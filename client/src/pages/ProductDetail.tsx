@@ -1,3 +1,4 @@
+/* ⚠️ Consider wrapping this component with React.forwardRef if it needs to accept refs */
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";

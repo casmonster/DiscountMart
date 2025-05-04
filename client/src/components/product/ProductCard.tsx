@@ -1,3 +1,4 @@
+/* ⚠️ Consider wrapping this component with React.forwardRef if it needs to accept refs */
 import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
 import { useCart } from "../../context/CartContext";
@@ -185,7 +186,7 @@ export default function ProductCard({
             </div>
           </div>
 
-          <Link ref={`/product/${slug}`} className="block" to={""}>
+          <Link className="block" to={""}>
             <div className="p-4 flex flex-col flex-grow">
               {/* Stock status above title */}
               <div className="mb-1.5">

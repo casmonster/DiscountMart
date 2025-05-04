@@ -54,7 +54,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
-        ref={ref}
+       /* ref={ref} */ /* ⚠️ Check: convert to useRef + forwardRef if needed */
         {...props}
       />
     )
@@ -190,7 +190,7 @@ const Carousel = React.forwardRef<
         }}
       >
         <div
-          ref={ref}
+         /* ref={ref} */ /* ⚠️ Check: convert to useRef + forwardRef if needed */
           onKeyDownCapture={handleKeyDown}
           className={cn("relative", className)}
           role="region"
@@ -212,9 +212,9 @@ const CarouselContent = React.forwardRef<
   const { carouselRef, orientation } = useCarousel()
 
   return (
-    <div ref={carouselRef} className="overflow-hidden">
+    <div/* ref={carouselRef} */ /* ⚠️ Check: convert to useRef + forwardRef if needed */ className="overflow-hidden">
       <div
-        ref={ref}
+       /* ref={ref} */ /* ⚠️ Check: convert to useRef + forwardRef if needed */
         className={cn(
           "flex",
           orientation === "horizontal" ? "-ml-4" : "-mt-4 flex-col",
@@ -235,7 +235,7 @@ const CarouselItem = React.forwardRef<
 
   return (
     <div
-      ref={ref}
+     /* ref={ref} */ /* ⚠️ Check: convert to useRef + forwardRef if needed */
       role="group"
       aria-roledescription="slide"
       className={cn(
@@ -257,7 +257,7 @@ const CarouselPrevious = React.forwardRef<
 
   return (
     <Button
-      ref={ref}
+     /* ref={ref} */ /* ⚠️ Check: convert to useRef + forwardRef if needed */
       variant={variant}
       size={size}
       className={cn(
@@ -286,7 +286,7 @@ const CarouselNext = React.forwardRef<
 
   return (
     <Button
-      ref={ref}
+     /* ref={ref} */ /* ⚠️ Check: convert to useRef + forwardRef if needed */
       variant={variant}
       size={size}
       className={cn(

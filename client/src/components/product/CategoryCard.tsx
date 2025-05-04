@@ -1,3 +1,4 @@
+/* ⚠️ Consider wrapping this component with React.forwardRef if it needs to accept refs */
 import React from "react";
 import { Link } from "react-router-dom";
 
@@ -10,7 +11,7 @@ type CategoryCardProps = {
 
 export default function CategoryCard({ name, slug, imageUrl }: CategoryCardProps) {
   return (
-    <Link ref={`/category/${slug}`} className="group" to={""}>
+    <Link className="group" to={""}>
       <div className="relative overflow-hidden rounded-lg aspect-square shadow-md hover:shadow-xl transition-all duration-300 transform group-hover:-translate-y-1">
         <img 
           src={imageUrl} 

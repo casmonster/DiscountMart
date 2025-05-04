@@ -1,3 +1,4 @@
+/* ⚠️ Consider wrapping this component with React.forwardRef if it needs to accept refs */
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
@@ -253,7 +254,7 @@ export default function ProductQuickView({
                   </Button>
                 </div>
                 
-                <Link ref={`/product/${product.slug}`} onClick={() => onOpenChange(false)} to={""}>
+                <Link onClick={() => onOpenChange(false)} to={""}>
                   <Button
                     variant="outline"
                     className="w-full rounded-full"
