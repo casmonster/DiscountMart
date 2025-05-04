@@ -35,7 +35,7 @@ export default function Wishlist() {
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
         <div className="flex items-center gap-2 mb-2">
-          <Link href="/">
+          <Link h>
             <Button variant="ghost" size="sm" className="gap-1">
               <ChevronLeft className="h-4 w-4" />
               Back to Shopping
@@ -60,7 +60,7 @@ export default function Wishlist() {
           <p className="text-gray-500 mb-6 max-w-md mx-auto">
             Save your favorite items to your wishlist so you can easily find them later.
           </p>
-          <Link href="/">
+          <Link h>
             <Button className="px-6">Start Shopping</Button>
           </Link>
         </div>

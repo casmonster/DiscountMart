@@ -159,7 +159,7 @@ export default function OrderConfirmation({ params }: { params: { id: string } }
           </div>
         </CardContent>
         <CardFooter className="flex justify-center">
-          <Link href="/">
+          <Link h>
             <Button>Continue Shopping</Button>
           </Link>
         </CardFooter>

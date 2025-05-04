@@ -31,12 +31,12 @@ export default function Home() {
             <h1 className="text-3xl md:text-4xl font-bold mb-4">Quality Products at Amazing Discounts</h1>
             <p className="text-lg mb-6">Shop our wide selection and pick up your order at our local store!</p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Link href="#featured">
+              <Link h>
                 <Button variant="secondary" size="lg" className="bg-white text-primary hover:bg-gray-100">
                   Shop Now
                 </Button>
               </Link>
-              <Link href="/store-info">
+              <Link h>
                 <Button variant="outline" size="lg" className="bg-white/20 backdrop-blur-sm text-white hover:bg-white/30">
                   Find Our Store
                 </Button>
@@ -79,7 +79,7 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-2xl font-bold">Hot Deals This Week</h2>
-            <Link href="/clearance" className="text-primary font-medium hover:underline">
+            <Link h className="text-primary font-medium hover:underline">
               View All
             </Link>
           </div>
@@ -167,7 +167,7 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-2xl font-bold">New Arrivals</h2>
-            <Link href="/new-arrivals" className="text-primary font-medium hover:underline">
+            <Link h className="text-primary font-medium hover:underline">
               View All
             </Link>
           </div>

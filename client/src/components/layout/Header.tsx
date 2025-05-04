@@ -70,7 +70,7 @@ export default function Header() {
               </svg>
               Store Hours: Mon-Sat 9AM-8PM
             </p>
-            <a href="tel:+250780152723" className="text-sm hidden md:flex items-center hover:text-white/80 transition-colors">
+            <a  className="text-sm hidden md:flex items-center hover:text-white/80 transition-colors">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
               </svg>
@@ -83,7 +83,7 @@ export default function Header() {
       {/* Main Header */}
       <div className="container mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="flex items-center">
-          <Link ref="/" className="text-2xl font-bold text-primary flex items-center group" to={""}>
+          <Link  className="text-2xl font-bold text-primary flex items-center group" to={""}>
             <img src="/path/to/logo.svg" alt="Logo" className="h-12 mr-2" />
           </Link>
         </div>
@@ -113,7 +113,7 @@ export default function Header() {
         
         {/* Navigation Actions */}
         <div className="flex items-center gap-4">
-          <Link ref="/wishlist" to={""}>
+          <Link  to={""}>
             <Button 
               size="icon"
               className="text-gray-700 hover:text-secondary relative p-2 hover:bg-secondary/5 rounded-full transition-colors"
@@ -134,7 +134,7 @@ export default function Header() {
               </span>
             )}
           </Button>
-          <Link ref="/store-info" to={""}>
+          <Link  to={""}>
             <Button variant="ghost" size="icon" className="text-gray-700 hover:text-primary p-2 hover:bg-primary/5 rounded-full transition-colors">
               <MapPin className="h-6 w-6" />
             </Button>
@@ -146,7 +146,7 @@ export default function Header() {
       <nav className={`bg-white border-t border-gray-100 py-3 overflow-x-auto whitespace-nowrap transition-shadow duration-300 ${isScrolled ? 'shadow-sm' : ''}`}>
         <div className="container mx-auto px-4 flex space-x-8">
           <Link 
-            ref="/"
+            
             className={`font-medium relative px-1 transition-colors ${
               location.pathname === '/'
               ? 'text-primary'
@@ -155,7 +155,7 @@ export default function Header() {
             {location.pathname === '/' && <span className="absolute bottom-[-12px] left-0 w-full h-0.5 bg-primary rounded-full"></span>}
           </Link>
           <Link 
-            ref="/category/clothing"
+            
             className={`font-medium relative px-1 transition-colors ${location.pathname === '/category/clothing'
               ? 'text-primary'
               : 'text-gray-600 hover:text-primary'}`} to={""}          >
@@ -163,7 +163,7 @@ export default function Header() {
             {location.pathname === '/category/clothing' && <span className="absolute bottom-[-12px] left-0 w-full h-0.5 bg-primary rounded-full"></span>}
           </Link>
           <Link 
-            ref="/category/tableware"
+            
             className={`font-medium relative px-1 transition-colors ${location.pathname === '/category/tableware'
               ? 'text-primary'
               : 'text-gray-600 hover:text-primary'}`} to={""}          >
@@ -171,7 +171,7 @@ export default function Header() {
             {location.pathname === '/category/tableware' && <span className="absolute bottom-[-12px] left-0 w-full h-0.5 bg-primary rounded-full"></span>}
           </Link>
           <Link 
-            ref="/category/kitchen"
+            
             className={`font-medium relative px-1 transition-colors ${location.pathname === '/category/kitchen'
               ? 'text-primary'
               : 'text-gray-600 hover:text-primary'}`} to={""}          >
@@ -179,7 +179,7 @@ export default function Header() {
             {location.pathname === '/category/kitchen' && <span className="absolute bottom-[-12px] left-0 w-full h-0.5 bg-primary rounded-full"></span>}
           </Link>
           <Link 
-            ref="/category/home-decor"
+            
             className={`font-medium relative px-1 transition-colors ${location.pathname === '/category/home-decor'
               ? 'text-primary'
               : 'text-gray-600 hover:text-primary'}`} to={""}          >
@@ -187,7 +187,7 @@ export default function Header() {
             {location.pathname === '/category/home-decor' && <span className="absolute bottom-[-12px] left-0 w-full h-0.5 bg-primary rounded-full"></span>}
           </Link>
           <Link 
-            ref="/new-arrivals"
+            
             className={`font-medium relative px-1 transition-colors ${location.pathname === '/new-arrivals'
               ? 'text-primary'
               : 'text-gray-600 hover:text-primary'}`} to={""}          >
@@ -195,7 +195,7 @@ export default function Header() {
             {location.pathname === '/new-arrivals' && <span className="absolute bottom-[-12px] left-0 w-full h-0.5 bg-primary rounded-full"></span>}
           </Link>
           <Link 
-            ref="/clearance"
+            
             className={`font-medium relative px-1 transition-colors ${location.pathname === '/clearance'
               ? 'text-primary'
               : 'text-gray-600 hover:text-primary'}`} to={""}          >
