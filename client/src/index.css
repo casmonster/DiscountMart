@@ -11,3 +11,13 @@
     @apply font-sans antialiased bg-background text-foreground;
   }
 }
+
+@layer components {
+  .error-boundary {
+    @apply p-8 border-2 border-red-600 bg-red-100 text-red-800 rounded-lg shadow-sm max-w-xl mx-auto my-10;
+  }
+
+  .retry-button {
+    @apply mt-4 bg-red-700 hover:bg-red-800 text-white font-medium px-5 py-2 rounded transition;
+  }
+}
