@@ -5,7 +5,7 @@
   "description": "DiscountMart E-commerce Platform",
   "author": "Trinity",
   "license": "MIT",
-  "homepage": "https://casmonster.github.io/DiscountMart",
+  "homepage": "/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

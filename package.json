@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "type": "module",
   "description": "DiscountMart E-commerce Platform",
-  "homepage": "https://casmonster.github.io/DiscountMart",
   "repository": {
     "type": "git",
     "url": "https://github.com/casmonster/DiscountMart.git"
@@ -25,9 +24,7 @@
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview",
-    "preview": "vite preview",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",
@@ -87,7 +84,6 @@
     "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.21",
     "drizzle-kit": "^0.31.1",
-    "gh-pages": "^6.3.0",
     "postcss": "^8.5.3",
     "tailwindcss": "^4.1.5",
     "typescript": "^5.4.2",

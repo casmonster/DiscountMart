@@ -7,6 +7,7 @@ import { ErrorBoundary } from "./components/ErrorBoundary";
 import { BrowserRouter } from "react-router-dom";
 import MyContextProvider from "./MyContextProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import ReactDOM from "react-dom/client";
 
 const queryClient = new QueryClient();
 
