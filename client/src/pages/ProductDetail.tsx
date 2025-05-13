@@ -1,25 +1,39 @@
 /* ⚠️ Consider wrapping this component with React.forwardRef if it needs to accept refs */
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { useLocation } from "wouter";
-import { useCart } from "@/context/CartContext";
-import { useRecentlyViewed } from "@/context/RecentlyViewedContext";
-import RecentlyViewedProducts from "@/components/product/RecentlyViewedProducts";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Separator } from "@/components/ui/separator";
+import { useLocation } from "react-router-dom";
+import { useCart } from "../context/CartContext";
+import { useRecentlyViewed } from "../context/RecentlyViewedContext";
+import RecentlyViewedProducts from "../components/product/RecentlyViewedProducts";
+import { Button } from "../components/ui/button";
+import { Card, CardContent } from "../components/ui/card";
+import { Skeleton } from "../components/ui/skeleton";
+import { Separator } from "../components/ui/separator";
 import { CheckCircle, AlertCircle, Minus, Plus, Heart } from "lucide-react";
-import { convertToRwandanFrancs, formatRwandanFrancs } from "@/lib/currency";
+import { convertToRwandanFrancs, formatRwandanFrancs } from "../lib/currency";
+import { useNavigate } from 'react-router-dom';
+
+interface Product {
+  id: string | number;
+  slug: string;
+  name: string;
+  imageUrl: string;
+  price: number;
+  discountPrice?: number;
+  stockLevel: string | number; // Fixed: Changed to accept string or number
+  categoryId: string | number;
+  description?: string;
+}
 
 export default function ProductDetail({ params }: { params: { slug: string } }) {
   const { slug } = params;
-  const [, setLocation] = useLocation();
+  const location = useLocation();
+
   const [quantity, setQuantity] = useState(1);
   const { addToCart, isLoading: isCartLoading } = useCart();
   const { addToRecentlyViewed } = useRecentlyViewed();
 
-  const { data: product, isLoading } = useQuery({
+  const { data: product, isLoading } = useQuery<Product>({
     queryKey: [`/api/products/${slug}`],
   });
 
@@ -30,38 +44,45 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
 
   // Add product to recently viewed when it loads
   useEffect(() => {
-    if (product && product.id) {
+    if (product && typeof product === 'object' && 'id' in product) {
       addToRecentlyViewed({
-        id: product.id,
+        id: typeof product.id === "string" ? parseInt(product.id, 10) : product.id,
         slug: product.slug,
         name: product.name,
         imageUrl: product.imageUrl,
         price: product.price,
-        discountPrice: product.discountPrice,
-        stockLevel: product.stockLevel,
-        categoryId: product.categoryId
+        discountPrice: product.discountPrice ?? null,
+        stockLevel: product.stockLevel.toString(),
+        categoryId: Number(product.categoryId)
       });
     }
   }, [product, addToRecentlyViewed]);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (product === null) {
-      setLocation("/not-found");
+      navigate("/not-found");
     }
-  }, [product, setLocation]);
+  }, [product, navigate]);
 
   const handleAddToCart = () => {
     if (product) {
-      addToCart(product.id, quantity);
+      // Safely convert id to number
+      const productId = typeof product.id === 'string' ? parseInt(product.id, 10) : product.id;
+      addToCart(productId, quantity);
     }
   };
 
   const incrementQuantity = () => setQuantity(q => q + 1);
   const decrementQuantity = () => setQuantity(q => Math.max(1, q - 1));
   
-  const isInStock = product?.stockLevel === "In Stock";
-  const isLowStock = product?.stockLevel === "Low Stock";
-  const discountPercentage = product?.discountPrice 
+  // Fixed: Handle stockLevel as string or number
+  const stockLevelStr = product?.stockLevel?.toString().toLowerCase() || '';
+  const isInStock = stockLevelStr === "in stock";
+  const isLowStock = stockLevelStr === "low stock";
+
+  const discountPercentage = product?.discountPrice && product?.price
     ? Math.round(((product.price - product.discountPrice) / product.price) * 100) 
     : 0;
 
@@ -89,7 +110,9 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
     return null;
   }
 
-  const filteredRelatedProducts = relatedProducts?.filter(p => p.id !== product.id).slice(0, 4) || [];
+  const filteredRelatedProducts = relatedProducts && Array.isArray(relatedProducts)
+  ? relatedProducts?.filter(p => p.id !== product.id).slice(0, 4) 
+  : [];
 
   return (
     <div className="container mx-auto px-4 py-8">

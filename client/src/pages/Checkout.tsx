@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { useLocation } from "wouter";
-import { useCart } from "@/context/CartContext";
-import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useCart } from "../context/CartContext";
+import { useToast } from "../hooks/use-toast";
+import { apiRequest } from "../lib/queryClient";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Button } from "@/components/ui/button";
+import { Button } from "../components/ui/button";
 import {
   Card,
   CardContent,
@@ -14,7 +14,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "../components/ui/card";
 import {
   Form,
   FormControl,
@@ -23,11 +23,11 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
+} from "../components/ui/form";
+import { Input } from "../components/ui/input";
+import { Separator } from "../components/ui/separator";
 import { Trash2, Minus, Plus } from "lucide-react";
-import { convertToRwandanFrancs, formatRwandanFrancs } from "@/lib/currency";
+import { convertToRwandanFrancs, formatRwandanFrancs } from "../lib/currency";
 
 const checkoutFormSchema = z.object({
   customerName: z.string().min(2, { message: "Name must be at least 2 characters" }),
@@ -38,7 +38,10 @@ const checkoutFormSchema = z.object({
 type CheckoutFormValues = z.infer<typeof checkoutFormSchema>;
 
 export default function Checkout() {
-  const [, navigate] = useLocation();
+ 
+const location = useLocation();
+const navigate = useNavigate();
+
   const { toast } = useToast();
   const { 
     cartItems, 
@@ -67,7 +70,6 @@ export default function Checkout() {
       toast({
         title: "Cart is empty",
         description: "Add some items to your cart before checking out",
-        variant: "destructive",
       });
       return;
     }
@@ -105,7 +107,6 @@ export default function Checkout() {
       toast({
         title: "Error placing order",
         description: "There was a problem placing your order. Please try again.",
-        variant: "destructive",
       });
     } finally {
       setIsSubmitting(false);

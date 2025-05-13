@@ -1,5 +1,6 @@
 import * as React from "react"
 import * as ToastPrimitives from "@radix-ui/react-toast"
+import { Category, Product } from "../types";
 
 export interface ToastProps extends React.ComponentPropsWithoutRef<typeof ToastPrimitives.Root> {
   open?: boolean

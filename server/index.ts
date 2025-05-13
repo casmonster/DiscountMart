@@ -41,7 +41,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
 (async () => {
   // Register API routes under /api
-  await registerRoutes(app);
+  registerRoutes(app);
 
   // Global error handler
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {

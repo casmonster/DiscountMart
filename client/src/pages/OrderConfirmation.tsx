@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { Link, useLocation } from "wouter";
-import { Button } from "@/components/ui/button";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Button } from "../components/ui/button";
 import { 
   Card,
   CardContent,
@@ -9,18 +9,25 @@ import {
   CardFooter,
   CardHeader,
   CardTitle
-} from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "../components/ui/card";
+import { Separator } from "../components/ui/separator";
+import { Skeleton } from "../components/ui/skeleton";
 import { CheckCircle, MapPin, Phone, Mail } from "lucide-react";
-import { formatRwandanFrancs, convertToRwandanFrancs } from "@/lib/currency";
+import { formatRwandanFrancs, convertToRwandanFrancs } from "../lib/currency";
+import { Order } from '../types/order';
 
 export default function OrderConfirmation({ params }: { params: { id: string } }) {
   const { id } = params;
-  const [, navigate] = useLocation();
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  const { data: order, isLoading, error } = useQuery({
+  const { data: order, isLoading, error } = useQuery<Order>({
     queryKey: [`/api/orders/${id}`],
+    queryFn: async () => {
+      const res = await fetch(`/api/orders/${id}`);
+      if (!res.ok) throw new Error('Order not found');
+      return res.json();
+    },
   });
 
   useEffect(() => {
@@ -114,7 +121,7 @@ export default function OrderConfirmation({ params }: { params: { id: string } }
             <h3 className="font-bold mb-4">Order Summary</h3>
             <div className="space-y-3">
               {order.items.map((item) => (
-                <div key={item.id} className="flex items-center py-2 border-b border-gray-200 last:border-b-0">
+                <div key={item.product.id} className="flex items-center py-2 border-b border-gray-200 last:border-b-0">
                   <img
                     src={item.product.imageUrl}
                     alt={item.product.name}
@@ -148,8 +155,8 @@ export default function OrderConfirmation({ params }: { params: { id: string } }
               <MapPin className="h-5 w-5 mr-1" /> Pickup Information
             </h3>
             <p className="text-sm mb-3">
-                Your order will be ready for pickup at our store within one week. We'll send you an email notification as soon as it's available.
-              </p>
+              Your order will be ready for pickup at our store within one week. We'll send you an email notification as soon as it's available.
+            </p>
             <div className="text-sm">
               <p className="font-medium">DiscountMart</p>
               <p>15 KN 4 Ave</p>
@@ -159,7 +166,7 @@ export default function OrderConfirmation({ params }: { params: { id: string } }
           </div>
         </CardContent>
         <CardFooter className="flex justify-center">
-          <Link h>
+          <Link to="/">
             <Button>Continue Shopping</Button>
           </Link>
         </CardFooter>

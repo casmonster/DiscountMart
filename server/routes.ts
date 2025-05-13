@@ -3,10 +3,12 @@ import { createServer, Server } from "http";
 import { storage } from "./storage";
 import { z } from "zod";
 import { insertCartItemSchema, insertOrderSchema, insertOrderItemSchema } from "../shared/schema";
-export async function registerRoutes(app: Application): Promise<Server> {
+
+export function registerRoutes(app: Application): Server {
   const apiRouter: Router = express.Router();
+
   // Categories
-  apiRouter.get("/categories", async function(_req: Request, res: Response) {
+  apiRouter.get("/categories", async (_req, res) => {
     try {
       const categories = await storage.getCategories();
       res.json(categories);
@@ -14,7 +16,8 @@ export async function registerRoutes(app: Application): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch categories" });
     }
   });
-  apiRouter.get("/categories/:slug", async function(req: Request, res: Response)  {
+
+  apiRouter.get("/categories/:slug", async (req, res) => {
     try {
       const category = await storage.getCategoryBySlug(req.params.slug);
       if (!category) return res.status(404).json({ message: "Category not found" });
@@ -23,8 +26,9 @@ export async function registerRoutes(app: Application): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch category" });
     }
   });
+
   // Products
-  apiRouter.get("/products", async function(_req: Request, res: Response) {
+  apiRouter.get("/products", async (_req, res) => {
     try {
       const products = await storage.getProducts();
       res.json(products);
@@ -32,7 +36,8 @@ export async function registerRoutes(app: Application): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch products" });
     }
   });
-  apiRouter.get("/products/featured", async function(_req: Request, res: Response) {
+
+  apiRouter.get("/products/featured", async (_req, res) => {
     try {
       const products = await storage.getFeaturedProducts();
       res.json(products);
@@ -40,7 +45,8 @@ export async function registerRoutes(app: Application): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch featured products" });
     }
   });
-  apiRouter.get("/products/new", async function(_req: Request, res: Response) {
+
+  apiRouter.get("/products/new", async (_req, res) => {
     try {
       const products = await storage.getNewProducts();
       res.json(products);
@@ -48,7 +54,8 @@ export async function registerRoutes(app: Application): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch new products" });
     }
   });
-  apiRouter.get("/products/category/:categoryId", async function(req: Request, res: Response) {
+
+  apiRouter.get("/products/category/:categoryId", async (req, res) => {
     try {
       const categoryId = parseInt(req.params.categoryId);
       if (isNaN(categoryId)) return res.status(400).json({ message: "Invalid category ID" });
@@ -58,7 +65,8 @@ export async function registerRoutes(app: Application): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch products by category" });
     }
   });
-  apiRouter.get("/products/search", async function(req: Request, res: Response) {
+
+  apiRouter.get("/products/search", async (req, res) => {
     try {
       const query = req.query.q as string;
       if (!query) return res.status(400).json({ message: "Search query is required" });
@@ -68,7 +76,8 @@ export async function registerRoutes(app: Application): Promise<Server> {
       res.status(500).json({ message: "Failed to search products" });
     }
   });
-  apiRouter.get("/products/:slug", async function(req: Request, res: Response) {
+
+  apiRouter.get("/products/:slug", async (req, res) => {
     try {
       const product = await storage.getProductBySlug(req.params.slug);
       if (!product) return res.status(404).json({ message: "Product not found" });
@@ -77,8 +86,9 @@ export async function registerRoutes(app: Application): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch product" });
     }
   });
+
   // Cart
-  apiRouter.get("/cart/:cartId", async function(req: Request, res: Response) {
+  apiRouter.get("/cart/:cartId", async (req, res) => {
     try {
       const cartItems = await storage.getCartItems(req.params.cartId);
       res.json(cartItems);
@@ -86,7 +96,8 @@ export async function registerRoutes(app: Application): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch cart items" });
     }
   });
-  apiRouter.post("/cart", async function(req: Request, res: Response) {
+
+  apiRouter.post("/cart", async (req, res) => {
     try {
       const validatedData = insertCartItemSchema.parse(req.body);
       const cartItem = await storage.addCartItem(validatedData);
@@ -98,7 +109,8 @@ export async function registerRoutes(app: Application): Promise<Server> {
       res.status(500).json({ message: "Failed to add cart item" });
     }
   });
-  apiRouter.put("/cart/:id", async function(req: Request, res: Response) {
+
+  apiRouter.put("/cart/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) return res.status(400).json({ message: "Invalid cart item ID" });
@@ -113,7 +125,8 @@ export async function registerRoutes(app: Application): Promise<Server> {
       res.status(500).json({ message: "Failed to update cart item" });
     }
   });
-  apiRouter.delete("/cart/:id", async function(req: Request, res: Response) {
+
+  apiRouter.delete("/cart/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) return res.status(400).json({ message: "Invalid cart item ID" });
@@ -123,7 +136,8 @@ export async function registerRoutes(app: Application): Promise<Server> {
       res.status(500).json({ message: "Failed to remove cart item" });
     }
   });
-  apiRouter.delete("/cart/clear/:cartId", async function(req: Request, res: Response) {
+
+  apiRouter.delete("/cart/clear/:cartId", async (req, res) => {
     try {
       await storage.clearCart(req.params.cartId);
       res.status(204).send();
@@ -131,21 +145,21 @@ export async function registerRoutes(app: Application): Promise<Server> {
       res.status(500).json({ message: "Failed to clear cart" });
     }
   });
+
   // Orders
-  apiRouter.post("/orders", async function(req: Request, res: Response) {
+   apiRouter.post("/orders", async (req, res) => {
     try {
       const orderSchema = z.object({
         order: insertOrderSchema,
         items: z.array(insertOrderItemSchema)
       });
-      // Explicitly type the parsed result
       const parsed = orderSchema.parse(req.body);
       const order = parsed.order;
       const items = parsed.items as z.infer<typeof insertOrderItemSchema>[];
       if (items.length === 0) {
         return res.status(400).json({ message: "Order must contain at least one item" });
       }
-      
+
       const createdOrder = await storage.placeOrder(order, items);
       res.status(201).json(createdOrder);
     } catch (error) {
@@ -155,7 +169,10 @@ export async function registerRoutes(app: Application): Promise<Server> {
       res.status(500).json({ message: "Failed to place order" });
     }
   });
+
+  // Mount API routes
   app.use("/api", apiRouter);
+
+  // Return the created HTTP server
   return createServer(app);
 }
-

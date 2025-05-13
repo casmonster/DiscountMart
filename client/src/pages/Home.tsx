@@ -1,12 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "wouter";
-import ProductCard from "@/components/product/ProductCard";
-import CategoryCard from "@/components/product/CategoryCard";
-import LastViewedProduct from "@/components/product/LastViewedProduct";
-import { useRecentlyViewed } from "@/context/RecentlyViewedContext";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Link } from "react-router-dom";
+import ProductCard from "../components/product/ProductCard";
+import CategoryCard from "../components/product/CategoryCard";
+import LastViewedProduct from "../components/product/LastViewedProduct";
+import { useRecentlyViewed } from "../context/RecentlyViewedContext";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import { Skeleton } from "../components/ui/skeleton";
 
 export default function Home() {
   const { lastViewedProduct } = useRecentlyViewed();
@@ -31,12 +31,12 @@ export default function Home() {
             <h1 className="text-3xl md:text-4xl font-bold mb-4">Quality Products at Amazing Discounts</h1>
             <p className="text-lg mb-6">Shop our wide selection and pick up your order at our local store!</p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Link h>
+              <Link to={""} >
                 <Button variant="secondary" size="lg" className="bg-white text-primary hover:bg-gray-100">
                   Shop Now
                 </Button>
               </Link>
-              <Link h>
+              <Link to={"/storeinfo"} >
                 <Button variant="outline" size="lg" className="bg-white/20 backdrop-blur-sm text-white hover:bg-white/30">
                   Find Our Store
                 </Button>
@@ -61,14 +61,18 @@ export default function Home() {
             </div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-              {categories?.map((category) => (
+              {categories && Array.isArray(categories) ? (
+              categories?.map((category) => (
                 <CategoryCard
                   key={category.id}
                   name={category.name}
                   slug={category.slug}
                   imageUrl={category.imageUrl}
                 />
-              ))}
+              ))
+            ) : (
+              <div>Loading categories...</div>
+            )}
             </div>
           )}
         </div>
@@ -79,7 +83,7 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-2xl font-bold">Hot Deals This Week</h2>
-            <Link h className="text-primary font-medium hover:underline">
+            <Link  className="text-primary font-medium hover:underline" to={""}>
               View All
             </Link>
           </div>
@@ -102,7 +106,8 @@ export default function Home() {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {featuredProducts?.map((product) => (
+              {featuredProducts && Array.isArray(featuredProducts) ? (
+              featuredProducts?.map((product) => (
                 <ProductCard
                   key={product.id}
                   id={product.id}
@@ -113,7 +118,10 @@ export default function Home() {
                   discountPrice={product.discountPrice}
                   stockLevel={product.stockLevel}
                 />
-              ))}
+              ))
+            ) : (
+              <div>featuredProducts...</div>
+            )}
             </div>
           )}
         </div>
@@ -167,7 +175,7 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-2xl font-bold">New Arrivals</h2>
-            <Link h className="text-primary font-medium hover:underline">
+            <Link to="/newarrivals" className="text-primary font-medium hover:underline">
               View All
             </Link>
           </div>
@@ -190,7 +198,7 @@ export default function Home() {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {newProducts?.map((product) => (
+                {newProducts && Array.isArray(newProducts) ? newProducts.map((product) => (
                 <ProductCard
                   key={product.id}
                   id={product.id}
@@ -202,7 +210,9 @@ export default function Home() {
                   stockLevel={product.stockLevel}
                   isNew={true}
                 />
-              ))}
+              ))
+              : <div>No new products available</div>
+            }
             </div>
           )}
         </div>

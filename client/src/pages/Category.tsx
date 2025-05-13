@@ -1,126 +1,141 @@
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { useLocation } from "wouter";
-import ProductCard from "@/components/product/ProductCard";
-import FeaturedProductShowcase from "@/components/product/FeaturedProductShowcase";
-import { Skeleton } from "@/components/ui/skeleton";
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
-} from "@/components/ui/select";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Category as CategoryType } from "../types/category";
+import { ProductPropertyType, ProductProperty } from "../types/product";
 
-// Helper function to get category-specific properties
-function getCategoryProperties(categorySlug: string, product: any) {
-  const properties = [];
-  
+import ProductCard from "../components/product/ProductCard";
+import FeaturedProductShowcase from "../components/product/FeaturedProductShowcase";
+import { Skeleton } from "../components/ui/skeleton";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../components/ui/select";
+
+function getCategoryProperties(categorySlug: string, product: any): ProductProperty[] {
+  const properties: ProductProperty[] = [];
+
   switch (categorySlug) {
-    case 'clothing':
+    case "clothing":
       properties.push(
-        { name: 'Size', value: 'Medium', type: 'size' },
-        { name: 'Color', value: 'Navy Blue', type: 'color' },
-        { name: 'Material', value: 'Cotton Blend', type: 'material' },
-        { name: 'Style', value: 'Casual' }
+        { name: "Size", value: "Medium", type: "size" },
+        { name: "Color", value: "Navy Blue", type: "color" },
+        { name: "Material", value: "Cotton Blend", type: "material" },
+        { name: "Style", value: "Casual", type: "default" }
       );
       break;
-    case 'tableware':
+    case "tableware":
       properties.push(
-        { name: 'Material', value: 'Ceramic', type: 'material' },
-        { name: 'Dimensions', value: '10" x 10"' },
-        { name: 'Dishwasher Safe', value: 'Yes' },
-        { name: 'Set Size', value: '4 pieces' }
+        { name: "Material", value: "Ceramic", type: "material" },
+        { name: "Dimensions", value: '10" x 10"', type: "default" },
+        { name: "Dishwasher Safe", value: "Yes", type: "default" },
+        { name: "Set Size", value: "4 pieces", type: "default" }
       );
       break;
-    case 'kitchen':
+    case "kitchen":
       properties.push(
-        { name: 'Material', value: 'Stainless Steel', type: 'material' },
-        { name: 'Dimensions', value: '12" x 8" x 4"' },
-        { name: 'Dishwasher Safe', value: 'Yes' },
-        { name: 'Heat Resistant', value: 'Up to 450°F' }
+        { name: "Material", value: "Stainless Steel", type: "material" },
+        { name: "Dimensions", value: '12" x 8" x 4"', type: "default" },
+        { name: "Dishwasher Safe", value: "Yes", type: "default" },
+        { name: "Heat Resistant", value: "Up to 450°F", type: "default" }
       );
       break;
-    case 'home-decor':
+    case "home-decor":
       properties.push(
-        { name: 'Material', value: 'Ceramic & Wood', type: 'material' },
-        { name: 'Dimensions', value: '8" x 6" x 10"' },
-        { name: 'Color', value: 'Beige', type: 'color' },
-        { name: 'Style', value: 'Modern Minimalist' }
+        { name: "Material", value: "Ceramic & Wood", type: "material" },
+        { name: "Dimensions", value: '8" x 6" x 10"', type: "default" },
+        { name: "Color", value: "Beige", type: "color" },
+        { name: "Style", value: "Modern Minimalist", type: "default" }
       );
       break;
     default:
-      // For other categories or new arrivals
       properties.push(
-        { name: 'Condition', value: 'New' },
-        { name: 'In Store', value: 'Available' }
+        { name: "Condition", value: "New", type: "default" },
+        { name: "In Store", value: "Available", type: "default" }
       );
   }
-  
+
   return properties;
 }
 
 export default function Category({ params }: { params: { slug: string } }) {
   const { slug } = params;
-  const [, setLocation] = useLocation();
+  const location = useLocation();
+  const navigate = useNavigate();
   const [sortBy, setSortBy] = useState<string>("default");
 
-  const { data: category, isLoading: categoryLoading } = useQuery({
+  const categoryQuery = useQuery<CategoryType, Error>({
     queryKey: [`/api/categories/${slug}`],
-    onSuccess: (data) => {
-      console.log("Category data loaded:", data);
+    queryFn: async () => {
+      const res = await fetch(`/api/categories/${slug}`);
+      if (!res.ok) throw new Error("Failed to fetch category");
+      return res.json();
     },
-    onError: (error) => {
-      console.error("Error loading category:", error);
-    }
-  });
-
-  const { data: products, isLoading: productsLoading } = useQuery({
-    queryKey: [`/api/products/category/${category?.id}`],
-    enabled: !!category?.id,
-    onSuccess: (data) => {
-      console.log("Category products loaded:", {category: category?.slug, id: category?.id, count: data?.length, data});
-    },
-    onError: (error) => {
-      console.error("Error loading category products:", error);
-    }
   });
 
   useEffect(() => {
-    // Log more information about the category and products
-    console.log("Category data:", category);
-    
-    if (category === null) {
-      setLocation("/not-found");
+    if (categoryQuery.isError) {
+      console.error("Error loading category:", categoryQuery.error);
     }
-  }, [category, setLocation]);
+  }, [categoryQuery.isError]);
+
+  const category = categoryQuery.data;
+  const categoryLoading = categoryQuery.isLoading;
+
+  const productsQuery = useQuery({
+    queryKey: [`/api/products/category/${category?.id}`],
+    queryFn: async () => {
+      const res = await fetch(`/api/products/category/${category?.id}`);
+      if (!res.ok) throw new Error("Failed to fetch products");
+      return res.json();
+    },
+    enabled: !!category?.id,
+  });
+
+  const products = productsQuery.data;
+  const productsLoading = productsQuery.isLoading;
+
+  useEffect(() => {
+    if (productsQuery.isError) {
+      console.error("Error loading category products:", productsQuery.error);
+    }
+  }, [productsQuery.isError]);
+
+  useEffect(() => {
+    if (category === null) {
+      navigate("/not-found");
+    }
+  }, [category, navigate]);
 
   const getSortedProducts = () => {
     if (!products) return [];
-    
+
     const productsCopy = [...products];
-    
+
     switch (sortBy) {
       case "price-low-high":
-        return productsCopy.sort((a, b) => {
-          const aPrice = a.discountPrice || a.price;
-          const bPrice = b.discountPrice || b.price;
-          return aPrice - bPrice;
-        });
+        return productsCopy.sort(
+          (a, b) => (a.discountPrice || a.price) - (b.discountPrice || b.price)
+        );
       case "price-high-low":
-        return productsCopy.sort((a, b) => {
-          const aPrice = a.discountPrice || a.price;
-          const bPrice = b.discountPrice || b.price;
-          return bPrice - aPrice;
-        });
+        return productsCopy.sort(
+          (a, b) => (b.discountPrice || b.price) - (a.discountPrice || a.price)
+        );
       case "name-a-z":
         return productsCopy.sort((a, b) => a.name.localeCompare(b.name));
       case "name-z-a":
         return productsCopy.sort((a, b) => b.name.localeCompare(a.name));
       case "discount":
         return productsCopy.sort((a, b) => {
-          const aDiscount = a.discountPrice ? (a.price - a.discountPrice) / a.price : 0;
-          const bDiscount = b.discountPrice ? (b.price - b.discountPrice) / b.price : 0;
+          const aDiscount = a.discountPrice
+            ? (a.price - a.discountPrice) / a.price
+            : 0;
+          const bDiscount = b.discountPrice
+            ? (b.price - b.discountPrice) / b.price
+            : 0;
           return bDiscount - aDiscount;
         });
       default:
@@ -129,7 +144,6 @@ export default function Category({ params }: { params: { slug: string } }) {
   };
 
   const sortedProducts = getSortedProducts();
-  console.log("Sorted products:", sortedProducts);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -141,10 +155,12 @@ export default function Category({ params }: { params: { slug: string } }) {
       ) : (
         <div className="mb-6">
           <h1 className="text-3xl font-bold mb-2">{category?.name}</h1>
-          <p className="text-gray-600">Browse our collection of {category?.name.toLowerCase()}</p>
+          <p className="text-gray-600">
+            Browse our collection of {category?.name?.toLowerCase()}
+          </p>
         </div>
       )}
-      
+
       <div className="flex justify-end mb-6">
         <Select value={sortBy} onValueChange={setSortBy}>
           <SelectTrigger className="w-[180px]">
@@ -160,36 +176,39 @@ export default function Category({ params }: { params: { slug: string } }) {
           </SelectContent>
         </Select>
       </div>
-      
+
       {productsLoading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {Array(8).fill(0).map((_, i) => (
-            <div key={i} className="aspect-[4/3]">
-              <Skeleton className="w-full h-full rounded-lg" />
-              <div className="p-4 space-y-2">
-                <Skeleton className="h-4 w-3/4" />
-                <Skeleton className="h-4 w-1/4" />
-                <div className="flex justify-between">
+          {Array(8)
+            .fill(0)
+            .map((_, i) => (
+              <div key={i} className="aspect-[4/3]">
+                <Skeleton className="w-full h-full rounded-lg" />
+                <div className="p-4 space-y-2">
+                  <Skeleton className="h-4 w-3/4" />
                   <Skeleton className="h-4 w-1/4" />
-                  <Skeleton className="h-8 w-1/4" />
+                  <div className="flex justify-between">
+                    <Skeleton className="h-4 w-1/4" />
+                    <Skeleton className="h-8 w-1/4" />
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
         </div>
       ) : sortedProducts.length > 0 ? (
         <>
-          {/* Featured Product Showcase */}
-          {sortedProducts.length > 0 && slug && (
-            <FeaturedProductShowcase 
+          {slug && sortedProducts.length > 0 && (
+            <FeaturedProductShowcase
               product={{
                 ...sortedProducts[0],
-                description: sortedProducts[0].description || "Experience quality and style with this premium item from our collection."
+                description:
+                  sortedProducts[0].description ||
+                  "Experience quality and style with this premium item from our collection.",
               }}
               properties={getCategoryProperties(slug, sortedProducts[0])}
             />
           )}
-          
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {sortedProducts.map((product) => (
               <ProductCard

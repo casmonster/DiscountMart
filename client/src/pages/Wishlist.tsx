@@ -1,10 +1,10 @@
 /* ⚠️ Consider wrapping this component with React.forwardRef if it needs to accept refs */
-import { Link } from "wouter";
-import { useWishlist } from "@/context/WishlistContext";
-import { Button } from "@/components/ui/button";
-import { useCart } from "@/context/CartContext";
+import { Link } from "react-router-dom";
+import { useWishlist } from "../context/WishlistContext";
+import { Button } from "../components/ui/button";
+import { useCart } from "../context/CartContext";
 import { useState } from "react";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "../hooks/use-toast";
 import { Heart, ShoppingCart, Trash2, ChevronLeft } from "lucide-react";
 
 export default function Wishlist() {
@@ -25,7 +25,6 @@ export default function Wishlist() {
       toast({
         title: "Error",
         description: "Failed to add item to cart. Please try again.",
-        variant: "destructive",
       });
     } finally {
       setAddingToCart(null);
@@ -36,7 +35,7 @@ export default function Wishlist() {
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
         <div className="flex items-center gap-2 mb-2">
-          <Link h>
+          <Link to="/shop">
             <Button variant="ghost" size="sm" className="gap-1">
               <ChevronLeft className="h-4 w-4" />
               Back to Shopping
@@ -61,7 +60,7 @@ export default function Wishlist() {
           <p className="text-gray-500 mb-6 max-w-md mx-auto">
             Save your favorite items to your wishlist so you can easily find them later.
           </p>
-          <Link h>
+          <Link to="/shop"> 
             <Button className="px-6">Start Shopping</Button>
           </Link>
         </div>
@@ -70,7 +69,7 @@ export default function Wishlist() {
           {wishlistItems.map((product) => (
             <div key={product.id} className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100">
               <div className="relative">
-                <Link href={`/product/${product.slug}`}>
+                <Link to={`/product/${product.slug}`}>
                   <div className="aspect-square overflow-hidden">
                     <img 
                       src={product.imageUrl} 
@@ -89,7 +88,7 @@ export default function Wishlist() {
                 </Button>
               </div>
               <div className="p-4">
-                <Link href={`/product/${product.slug}`}>
+                <Link to={`/product/${product.slug}`}>
                   <h3 className="font-medium text-gray-900 hover:text-primary transition-colors line-clamp-2 mb-2">
                     {product.name}
                   </h3>
