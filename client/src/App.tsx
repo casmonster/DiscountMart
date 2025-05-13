@@ -6,7 +6,9 @@ import { CartProvider } from "./context/CartContext";
 import { WishlistProvider } from "./context/WishlistContext";
 import { RecentlyViewedProvider } from "./context/RecentlyViewedContext";
 import { useEffect } from "react";
-
+import { lazy, Suspense } from 'react';
+import RoutesComponent from './LazyRoutes';
+import Spinner from './components/ui/spinner';
 
 function ScrollToTop() {
   const location = useLocation();
@@ -21,10 +23,8 @@ function ScrollToTop() {
 
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
-import Home from "./pages/Home";
 import Category from "./pages/Category";
 import ProductDetail from "./pages/ProductDetail";
- import Checkout from "./pages/Checkout";
  import OrderConfirmation from "./pages/OrderConfirmation";
  import StoreInfo from "./pages/StoreInfo";
 import Wishlist from "./pages/Wishlist";
@@ -32,6 +32,19 @@ import NewArrivals from "./pages/NewArrivals";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import PickupPolicy from "./pages/PickupPolicy";
+
+
+
+const Home = lazy(() => import('./pages/Home'));
+const Checkout = lazy(() => import('./pages/Checkout'));
+
+// Add fallback UI while components load
+<Suspense fallback={<div>Loading...</div>}>
+  <Routes>
+    <Route path="/" element={<Home />} />
+    <Route path="/checkout" element={<Checkout />} />
+  </Routes>
+</Suspense>
 
 // Removed unused imports and components
 
@@ -72,7 +85,7 @@ function App() {
       <CartProvider>
         <WishlistProvider>
           <RecentlyViewedProvider>
-            <Router />
+            <RoutesComponent />
             <Toaster />
           </RecentlyViewedProvider>
         </WishlistProvider>
@@ -80,6 +93,6 @@ function App() {
     </QueryClientProvider>
   );
 }
-
+<Spinner color="border-purple-600" label="Loading content..." responsive />
 export default App;
 

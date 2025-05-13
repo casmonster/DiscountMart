@@ -1,10 +1,12 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import * as path from "path";
+import { visualizer } from 'rollup-plugin-visualizer';
+
 
 export default defineConfig({
   base: "/DiscountMart/",
-  plugins: [react()],
+  plugins: [react(), visualizer({ open: true })],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "client", "src"),
@@ -20,6 +22,14 @@ export default defineConfig({
       onwarn(warning, warn) {
         if (warning.code === "MODULE_LEVEL_DIRECTIVE") return;
         warn(warning);
+      },
+        output: {
+        manualChunks: {
+          // Split React and ReactDOM into a separate chunk
+          react: ['react', 'react-dom'],
+          // Split common vendor libs
+          vendor: ['react-router-dom', 'zod', 'react-hook-form'],
+        },
       },
     },
   },
