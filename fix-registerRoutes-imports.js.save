@@ -1,0 +1,30 @@
+const fs = require("fs");
+const path = require("path");
+
+function fixImportsInFile(filePath) {
+  const code = fs.readFileSync(filePath, "utf8");
+  const incorrectImport = `import registerRoutes from "./routes"`;
+  const correctImport = `import { registerRoutes } from "./routes"`;
+
+  if (code.includes(incorrectImport)) {
+    const fixedCode = code.replace(incorrectImport, correctImport);
+    fs.writeFileSync(filePath, fixedCode, "utf8");
+    console.log(`✔️ Fixed import in ${filePath}`);
+  }
+}
+
+function walkDirectory(dir) {
+  const files = fs.readdirSync(dir);
+  for (const file of files) {
+    const fullPath = path.join(dir, file);
+    const stat = fs.statSync(fullPath);
+    if (stat.isDirectory()) {
+      walkDirectory(fullPath);
+    } else if (file.endsWith(".ts") || file.endsWith(".tsx")) {
+      fixImportsInFile(fullPath);
+    }
+  }
+}
+
+// Run the script
+walkDirectory("./src"); // Adjust this if your source code is elsewhere
