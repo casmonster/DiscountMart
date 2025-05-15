@@ -12,11 +12,11 @@ interface Product {
   // Add other product fields
 }
 
-// Fully typed custom hook with full options and inferred return types
-export function useCategory(
+// 👇 Refactored to arrow function style
+export const useCategory = (
   slug: string,
   options?: UseQueryOptions<Category, Error, Category, [string]>
-): UseQueryResult<Category, Error> {
+): UseQueryResult<Category, Error> => {
   return useQuery<Category, Error, Category, [string]>({
     queryKey: [`/api/categories/${slug}`],
     queryFn: async () => {
@@ -26,12 +26,13 @@ export function useCategory(
     },
     ...options,
   });
-}
+};
 
-export function useCategoryProducts(
+// 👇 Also refactored to arrow function style
+export const useCategoryProducts = (
   categoryId: string | undefined,
   options?: UseQueryOptions<Product[], Error, Product[], [string]>
-): UseQueryResult<Product[], Error> {
+): UseQueryResult<Product[], Error> => {
   return useQuery<Product[], Error, Product[], [string]>({
     queryKey: [`/api/products/category/${categoryId}`],
     queryFn: async () => {
@@ -39,8 +40,8 @@ export function useCategoryProducts(
       if (!res.ok) throw new Error('Failed to fetch products');
       return res.json();
     },
-    enabled: !!categoryId, // useful for conditional fetches
+    enabled: !!categoryId,
     staleTime: 1000 * 60 * 5, // 5 minutes
     ...options,
   });
-}
+};
