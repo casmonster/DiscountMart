@@ -42,7 +42,7 @@ export default defineConfig({
     open: true
   },
   build: {
-    outDir: '../dist',
+    outDir: 'dist',
     emptyOutDir: true,
     chunkSizeWarningLimit: 1000, // Increase limit to 1000kB,
     rollupOptions: {
