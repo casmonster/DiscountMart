@@ -3,8 +3,12 @@
   "version": "1.0.0",
   "private": true,
   "description": "DiscountMart E-commerce Platform",
-  "author": "Trinity",
+  "author": "trinity",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/casmonster/DiscountMart"
+  },
   "homepage": "/",
   "scripts": {
     "dev": "vite",
