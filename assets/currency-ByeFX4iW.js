@@ -1,0 +1,1 @@
+function o(n,t={}){const{showCurrency:a=!0,showDecimals:r=!1}=t;return n==null?"N/A":new Intl.NumberFormat("fr-RW",{style:a?"currency":"decimal",currency:"RWF",minimumFractionDigits:r?2:0,maximumFractionDigits:r?2:0}).format(n)}function c(n){return n==null?null:Math.round(n*1200)}export{c,o as f};
