@@ -18,7 +18,7 @@ export default defineConfig({
       include: '**/*.svg',
      }),
   ],
-  root: path.resolve(__dirname, "client"),
+  root: path.resolve(__dirname, "."),
   resolve: {
     alias: {
       '@': path.resolve(__dirname, "client/src"),
