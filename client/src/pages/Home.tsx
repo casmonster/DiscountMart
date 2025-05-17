@@ -1,24 +1,42 @@
-import { useQuery } from "@tanstack/react-query";
-import { Link } from "react-router-dom";
-import ProductCard from "../components/product/ProductCard";
-import CategoryCard from "../components/product/CategoryCard";
-import LastViewedProduct from "../components/product/LastViewedProduct";
-import { useRecentlyViewed } from "../context/RecentlyViewedContext";
-import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Skeleton } from "../components/ui/skeleton";
+import { useQuery } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
+import LastViewedProduct from "../components/product/LastViewedProduct";
+import ProductCard from "../components/product/ProductCard";
+import { useRecentlyViewed } from "../context/RecentlyViewedContext";
+import { Button } from "../components/ui/button";
+import CategoryCard from "../components/product/CategoryCard";
+
+// Define types for our data
+interface Product {
+  id: string | number;
+  slug: string;
+  name: string;
+  imageUrl: string;
+  price: number;
+  discountPrice?: number;
+  stockLevel: number;
+}
+
+interface Category {
+  id: string | number;
+  name: string;
+  imageUrl?: string;
+  // Add other category properties as needed
+}
 
 export default function Home() {
   const { lastViewedProduct } = useRecentlyViewed();
-  const { data: categories, isLoading: categoriesLoading } = useQuery({
+  const { data: categories, isLoading: categoriesLoading } = useQuery<Category[]>({
     queryKey: ["/api/categories"],
   });
 
-  const { data: featuredProducts, isLoading: featuredLoading } = useQuery({
+  const { data: featuredProducts, isLoading: featuredLoading } = useQuery<Product[]>({
     queryKey: ["/api/products/featured"],
   });
 
-  const { data: newProducts, isLoading: newProductsLoading } = useQuery({
+  const { data: newProducts, isLoading: newProductsLoading } = useQuery<Product[]>({
     queryKey: ["/api/products/new"],
   });
 
@@ -26,17 +44,17 @@ export default function Home() {
     <main>
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-primary/90 to-primary text-white py-12 md:py-16">
-        <div className="container mx-auto px-4">
+       <div className="container mx-auto px-4">
           <div className="max-w-3xl">
             <h1 className="text-3xl md:text-4xl font-bold mb-4">Quality Products at Amazing Discounts</h1>
             <p className="text-lg mb-6">Shop our wide selection and pick up your order at our local store!</p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Link to={""} >
+              <Link to="#featured">
                 <Button variant="secondary" size="lg" className="bg-white text-primary hover:bg-gray-100">
                   Shop Now
                 </Button>
               </Link>
-              <Link to={"/storeinfo"} >
+              <Link to="/store-info">
                 <Button variant="outline" size="lg" className="bg-white/20 backdrop-blur-sm text-white hover:bg-white/30">
                   Find Our Store
                 </Button>
@@ -49,41 +67,9 @@ export default function Home() {
       {/* Featured Categories */}
       <section className="py-12 bg-white">
         <div className="container mx-auto px-4">
-          <h2 className="text-2xl font-bold mb-8 text-center">Shop by Category</h2>
-
-          {categoriesLoading ? (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-              {Array(4).fill(0).map((_, i) => (
-                <div key={i} className="aspect-square">
-                  <Skeleton className="w-full h-full rounded-lg" />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-              {categories && Array.isArray(categories) ? (
-              categories?.map((category) => (
-                <CategoryCard
-                  key={category.id}
-                  name={category.name}
-                  slug={category.slug}
-                  imageUrl={category.imageUrl}
-                />
-              ))
-            ) : (
-              <div>Loading categories...</div>
-            )}
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* Featured Products */}
-      <section id="featured" className="py-12 bg-gray-50">
-        <div className="container mx-auto px-4">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-2xl font-bold">Hot Deals This Week</h2>
-            <Link  className="text-primary font-medium hover:underline" to={""}>
+            <Link to="/clearance" className="text-primary font-medium hover:underline">
               View All
             </Link>
           </div>
@@ -104,13 +90,12 @@ export default function Home() {
                 </div>
               ))}
             </div>
-          ) : (
+             ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {featuredProducts && Array.isArray(featuredProducts) ? (
-              featuredProducts?.map((product) => (
+              {featuredProducts && featuredProducts.map((product: Product) => (
                 <ProductCard
                   key={product.id}
-                  id={product.id}
+                  id={String(product.id)}
                   slug={product.slug}
                   name={product.name}
                   imageUrl={product.imageUrl}
@@ -118,10 +103,7 @@ export default function Home() {
                   discountPrice={product.discountPrice}
                   stockLevel={product.stockLevel}
                 />
-              ))
-            ) : (
-              <div>featuredProducts...</div>
-            )}
+              ))}
             </div>
           )}
         </div>
@@ -155,7 +137,7 @@ export default function Home() {
               />
             </div>
           </div>
-        </div>
+          </div>
       </section>
 
       {/* Last Viewed Product */}
@@ -175,7 +157,7 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-2xl font-bold">New Arrivals</h2>
-            <Link to="/newarrivals" className="text-primary font-medium hover:underline">
+            <Link to="/new-arrivals" className="text-primary font-medium hover:underline">
               View All
             </Link>
           </div>
@@ -198,10 +180,10 @@ export default function Home() {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {newProducts && Array.isArray(newProducts) ? newProducts.map((product) => (
+              {newProducts && newProducts.map((product: Product) => (
                 <ProductCard
                   key={product.id}
-                  id={product.id}
+                  id={String(product.id)}
                   slug={product.slug}
                   name={product.name}
                   imageUrl={product.imageUrl}
@@ -210,9 +192,33 @@ export default function Home() {
                   stockLevel={product.stockLevel}
                   isNew={true}
                 />
-              ))
-              : <div>No new products available</div>
-            }
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Shop by Categories section */}
+      <section className="py-12 bg-white">
+        <div className="container mx-auto px-4">
+          <h2 className="text-2xl font-bold mb-8 text-center">Shop by Category</h2>
+          
+          {categoriesLoading ? (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+              {Array(4).fill(0).map((_, i) => (
+                <Skeleton key={i} className="w-full h-32 rounded-lg" />
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+              {categories && categories.map((category: Category) => (
+                <CategoryCard
+                 key={category.id} 
+                 name={category.name}
+                 slug={category.id.toString()} // Add slug property using id as fallback
+                 imageUrl={category.imageUrl || ""}
+               />
+              ))}
             </div>
           )}
         </div>
@@ -226,8 +232,8 @@ export default function Home() {
           <div className="flex flex-col lg:flex-row gap-8">
             <div className="lg:w-1/2">
               <div className="rounded-lg overflow-hidden shadow-md h-full">
-                <div className="bg-gray-200 w-full aspect-[4/3] flex items-center justify-center">
-                  <div className="text-center p-6">
+                <div className="bg-gray-200 w-full aspect-[4/3] flex items-center justify-center"></div>
+                <div className="text-center p-6">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-primary mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -237,8 +243,7 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-            </div>
-
+            
             <div className="lg:w-1/2">
               <div className="bg-gray-50 rounded-lg p-6 h-full">
                 <h3 className="text-xl font-bold mb-4">Visit Our Store</h3>

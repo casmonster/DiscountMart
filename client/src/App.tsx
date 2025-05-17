@@ -45,6 +45,7 @@ const Checkout = lazy(() => import('./pages/Checkout'));
 function AppRoutes() {
   return (
     <div className="flex flex-col min-h-screen">
+      <h1 className="text-3xl font-bold text-blue-600">Hello Tailwind</h1>
       <ScrollToTop />
       <Header />
       <div className="flex-grow">
