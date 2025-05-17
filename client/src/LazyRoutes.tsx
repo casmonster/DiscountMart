@@ -1,7 +1,7 @@
 // 🚀 Updated: routes.tsx with lazy loading and Suspense wrapper for route-level code-splitting
 
 import { lazy, Suspense } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import {  Route, Routes } from 'react-router-dom';
 
 // ✅ Lazy-loaded pages
 const Home = lazy(() => import('./pages/Home'));
@@ -19,7 +19,6 @@ const Wishlist = lazy(() => import('./pages/Wishlist'));
 const NotFound = lazy(() => import('./pages/not-found'));
 
 const RoutesComponent = () => (
-  <Router>
     <Suspense fallback={<div>Loading...</div>}>
       <Routes>
         <Route path="/" element={<Home />} />
@@ -43,7 +42,6 @@ const RoutesComponent = () => (
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Suspense>
-  </Router>
 );
 
 export default RoutesComponent;

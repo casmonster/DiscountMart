@@ -9,12 +9,13 @@ import MyContextProvider from "./MyContextProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import ReactDOM from "react-dom/client";
 
+const basename = (import.meta as any).env?.MODE === 'production' ? '/DiscountMart' : '';
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ErrorBoundary>
-      <BrowserRouter basename="/DiscountMart">
+      <BrowserRouter basename={basename}>
         <QueryClientProvider client={queryClient}>
           <MyContextProvider>
             <App />

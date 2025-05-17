@@ -38,17 +38,11 @@ import PickupPolicy from "./pages/PickupPolicy";
 const Home = lazy(() => import('./pages/Home'));
 const Checkout = lazy(() => import('./pages/Checkout'));
 
-// Add fallback UI while components load
-<Suspense fallback={<div>Loading...</div>}>
-  <Routes>
-    <Route path="/" element={<Home />} />
-    <Route path="/checkout" element={<Checkout />} />
-  </Routes>
-</Suspense>
+
 
 // Removed unused imports and components
 
-function Router() {
+function AppRoutes() {
   return (
     <div className="flex flex-col min-h-screen">
       <ScrollToTop />

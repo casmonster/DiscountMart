@@ -3,9 +3,8 @@ import react from "@vitejs/plugin-react";
 import * as path from "path";
 import { visualizer } from 'rollup-plugin-visualizer';
 
-
-export default defineConfig({
-  base: "/DiscountMart/",
+export default defineConfig(({ mode }) => ({
+  base: mode === 'production' ? '/DiscountMart/' : '/',
   plugins: [react(), visualizer({ open: true })],
   resolve: {
     alias: {
@@ -36,5 +35,5 @@ export default defineConfig({
   server: {
     port: 5173,
   },
-});
+}));
 // removed import.meta.env.MODE === "development" and import.meta.env.PROD due to vite.config.ts being used in production
