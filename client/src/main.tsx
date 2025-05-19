@@ -1,7 +1,7 @@
 import * as React from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App";
-import "./input.css";
+import "./index.css";
 import { Toaster } from "sonner";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { BrowserRouter } from "react-router-dom";
