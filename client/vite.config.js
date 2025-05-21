@@ -1,14 +1,14 @@
 import { defineConfig } from 'vite';
-import reactRefresh from '@vitejs/plugin-react-refresh';
+import react from '@vitejs/plugin-react';
 import path from 'path';
 import svgr from 'vite-plugin-svgr';
 
 
-export default defineConfig({
-  base: '/DiscountMart/', 
+export default defineConfig(({ mode }) => ({
+  base: mode === 'production' ? '/DiscountMart/' : '/',
   plugins: [
-    reactRefresh(),
-     svgr({
+    react(),
+    svgr({
       svgrOptions: {
         exportType: 'named',
         refresh: true,
@@ -16,36 +16,34 @@ export default defineConfig({
         titleProp: true,
       },
       include: '**/*.svg',
-     }),
+    }),
   ],
-  root: path.resolve(__dirname, "."),
+  root: path.resolve(__dirname, '.'),
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, "client/src"),
+      '@': path.resolve(__dirname, 'client/src'),
       '@shared': path.resolve(__dirname, '../shared'),
     },
   },
   server: {
     port: 5173,
-    host:'0.0.0.0',
+    host: '0.0.0.0',
     strictPort: true,
     open: false,
-    middlewareMode: true,
-    hmr:{
+    hmr: {
       protocol: 'ws',
       host: 'localhost',
-    }
-
+    },
   },
   preview: {
     port: 4173,
-    open: true
+    open: true,
   },
   build: {
     sourcemap: true,
     outDir: 'dist',
     emptyOutDir: true,
-    chunkSizeWarningLimit: 1000, // Increase limit to 1000kB,
+    chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
         manualChunks: {
@@ -54,4 +52,4 @@ export default defineConfig({
       },
     },
   },
-});
+}));

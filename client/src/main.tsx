@@ -2,6 +2,7 @@ import * as React from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
+import '@fontsource/inter'; 
 import { Toaster } from "sonner";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { BrowserRouter } from "react-router-dom";

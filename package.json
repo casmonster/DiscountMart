@@ -4,7 +4,7 @@
   "type": "module",
   "description": "DiscountMart E-commerce Platform",
   "repository": {
-    "type": "git",
+    "type": "module",
     "url": "https://github.com/casmonster/DiscountMart.git"
   },
   "bugs": {
@@ -31,6 +31,7 @@
     "tailwind": "npx @tailwindcss/cli -i ./src/input.css -o ./dist/output.css --watch"
   },
   "dependencies": {
+    "@fontsource/inter": "^5.2.5",
     "@hookform/resolvers": "^5.0.1",
     "@neondatabase/serverless": "^1.0.0",
     "@radix-ui/react-accordion": "^1.2.8",
@@ -82,6 +83,7 @@
   "devDependencies": {
     "@tailwindcss/cli": "^4.1.7",
     "@tailwindcss/postcss": "^4.1.5",
+    "@tailwindcss/typography": "^0.5.16",
     "@tanstack/react-query": "^5.76.1",
     "@testing-library/react": "^16.3.0",
     "@types/express": "^5.0.1",
@@ -95,7 +97,9 @@
     "postcss": "^8.5.3",
     "rollup-plugin-visualizer": "^5.14.0",
     "tailwindcss": "^4.1.7",
-    "typescript": "^5.4.2",
+    "tailwindcss-animate": "^1.0.7",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3",
     "vite": "^6.3.5",
     "vite-plugin-gh-pages": "^1.0.1",
     "vite-plugin-svgr": "^4.3.0",
