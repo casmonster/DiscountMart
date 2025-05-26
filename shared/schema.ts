@@ -54,6 +54,7 @@ export const orders = pgTable("orders", {
   totalAmount: doublePrecision("total_amount").notNull(),
   status: text("status").notNull().default("pending"),
   createdAt: timestamp("created_at").defaultNow(),
+  cartId: text("cart_id").notNull(), 
 });
 
 export const insertOrderSchema = createInsertSchema(orders).omit({
@@ -70,22 +71,35 @@ export const orderItems = pgTable("order_items", {
   price: doublePrecision("price").notNull(),
 });
 
-export const insertOrderItemSchema = createInsertSchema(orderItems).omit({
+// Fix: Create the base schema first, then derive the insert schema
+const baseOrderItemSchema = createInsertSchema(orderItems);
+export const insertOrderItemSchema = baseOrderItemSchema.omit({
   id: true,
 });
 
-// Export types
+// Alternative fix: Create a pure Zod schema for order items
+export const orderItemValidationSchema = z.object({
+  orderId: z.number().int(),
+  productId: z.number().int(),
+  quantity: z.number().int().positive(),
+  price: z.number().positive(),
+});
+
+// For the array validation in routes.ts, use this:
+export const orderItemsArraySchema = z.array(orderItemValidationSchema);
+
+// Export types using Drizzle's built-in type inference
 export type Category = typeof categories.$inferSelect;
-export type InsertCategory = z.infer<typeof insertCategorySchema>;
+export type InsertCategory = typeof categories.$inferInsert;
 
 export type Product = typeof products.$inferSelect;
-export type InsertProduct = z.infer<typeof insertProductSchema>;
+export type InsertProduct = typeof products.$inferInsert;
 
 export type CartItem = typeof cartItems.$inferSelect;
-export type InsertCartItem = z.infer<typeof insertCartItemSchema>;
+export type InsertCartItem = typeof cartItems.$inferInsert;
 
 export type Order = typeof orders.$inferSelect;
-export type InsertOrder = z.infer<typeof insertOrderSchema>;
+export type InsertOrder = typeof orders.$inferInsert;
 
 export type OrderItem = typeof orderItems.$inferSelect;
-export type InsertOrderItem = z.infer<typeof insertOrderItemSchema>;
+export type InsertOrderItem = typeof orderItems.$inferInsert;

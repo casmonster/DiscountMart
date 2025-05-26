@@ -104,13 +104,13 @@ export class MemStorage implements IStorage {
     );
 
     if (existing) {
-      existing.quantity += item.quantity;
+      existing.quantity += item.quantity ?? 0;
       this.cartItems.set(existing.id, existing);
       return existing;
     }
 
     const id = this.currentCartItemId++;
-    const newItem: CartItem = { ...item, id };
+    const newItem: CartItem = { ...item, id, quantity: item.quantity ?? 1};
     this.cartItems.set(id, newItem);
     return newItem;
   }
@@ -136,7 +136,7 @@ export class MemStorage implements IStorage {
   // ----------- Orders -----------
   async createOrder(order: InsertOrder, items: InsertOrderItem[]): Promise<Order> {
     const id = this.currentOrderId++;
-    const newOrder: Order = { ...order, id, createdAt: new Date() };
+    const newOrder: Order = { ...order, id, createdAt: new Date(), status: order.status ?? "pending" };
     this.orders.set(id, newOrder);
 
     for (const item of items) {

@@ -2,13 +2,17 @@ import express, { Application, Request, Response, Router } from "express";
 import { createServer, Server } from "http";
 import { storage } from "./storage";
 import { z } from "zod";
-import { insertCartItemSchema, insertOrderSchema, insertOrderItemSchema } from "../shared/schema";
+import {
+  insertCartItemSchema,
+  insertOrderSchema,
+  orderItemsArraySchema,
+} from "../shared/schema";
 
 export function registerRoutes(app: Application): Server {
   const apiRouter: Router = express.Router();
 
   // Categories
-  apiRouter.get("/categories", async (_req, res) => {
+  apiRouter.get("/categories", async (_req: Request, res: Response) => {
     try {
       const categories = await storage.getCategories();
       res.json(categories);
@@ -17,10 +21,12 @@ export function registerRoutes(app: Application): Server {
     }
   });
 
-  apiRouter.get("/categories/:slug", async (req, res) => {
+  apiRouter.get("/categories/:slug", async (req: Request, res: Response) => {
     try {
       const category = await storage.getCategoryBySlug(req.params.slug);
-      if (!category) return res.status(404).json({ message: "Category not found" });
+      if (!category) {
+        return res.status(404).json({ message: "Category not found" });
+      }
       res.json(category);
     } catch {
       res.status(500).json({ message: "Failed to fetch category" });
@@ -28,7 +34,7 @@ export function registerRoutes(app: Application): Server {
   });
 
   // Products
-  apiRouter.get("/products", async (_req, res) => {
+  apiRouter.get("/products", async (_req: Request, res: Response) => {
     try {
       const products = await storage.getProducts();
       res.json(products);
@@ -37,7 +43,7 @@ export function registerRoutes(app: Application): Server {
     }
   });
 
-  apiRouter.get("/products/featured", async (_req, res) => {
+  apiRouter.get("/products/featured", async (_req: Request, res: Response) => {
     try {
       const products = await storage.getFeaturedProducts();
       res.json(products);
@@ -46,7 +52,7 @@ export function registerRoutes(app: Application): Server {
     }
   });
 
-  apiRouter.get("/products/new", async (_req, res) => {
+  apiRouter.get("/products/new", async (_req: Request, res: Response) => {
     try {
       const products = await storage.getNewProducts();
       res.json(products);
@@ -55,10 +61,12 @@ export function registerRoutes(app: Application): Server {
     }
   });
 
-  apiRouter.get("/products/category/:categoryId", async (req, res) => {
+  apiRouter.get("/products/category/:categoryId", async (req: Request, res: Response) => {
     try {
       const categoryId = parseInt(req.params.categoryId);
-      if (isNaN(categoryId)) return res.status(400).json({ message: "Invalid category ID" });
+      if (isNaN(categoryId)) {
+        return res.status(400).json({ message: "Invalid category ID" });
+      }
       const products = await storage.getProductsByCategory(categoryId);
       res.json(products);
     } catch {
@@ -66,10 +74,12 @@ export function registerRoutes(app: Application): Server {
     }
   });
 
-  apiRouter.get("/products/search", async (req, res) => {
+  apiRouter.get("/products/search", async (req: Request, res: Response) => {
     try {
       const query = req.query.q as string;
-      if (!query) return res.status(400).json({ message: "Search query is required" });
+      if (!query) {
+        return res.status(400).json({ message: "Search query is required" });
+      }
       const products = await storage.searchProducts(query);
       res.json(products);
     } catch {
@@ -77,10 +87,12 @@ export function registerRoutes(app: Application): Server {
     }
   });
 
-  apiRouter.get("/products/:slug", async (req, res) => {
+  apiRouter.get("/products/:slug", async (req: Request, res: Response) => {
     try {
       const product = await storage.getProductBySlug(req.params.slug);
-      if (!product) return res.status(404).json({ message: "Product not found" });
+      if (!product) {
+        return res.status(404).json({ message: "Product not found" });
+      }
       res.json(product);
     } catch {
       res.status(500).json({ message: "Failed to fetch product" });
@@ -88,7 +100,7 @@ export function registerRoutes(app: Application): Server {
   });
 
   // Cart
-  apiRouter.get("/cart/:cartId", async (req, res) => {
+  apiRouter.get("/cart/:cartId", async (req: Request, res: Response) => {
     try {
       const cartItems = await storage.getCartItems(req.params.cartId);
       res.json(cartItems);
@@ -97,7 +109,7 @@ export function registerRoutes(app: Application): Server {
     }
   });
 
-  apiRouter.post("/cart", async (req, res) => {
+  apiRouter.post("/cart", async (req: Request, res: Response) => {
     try {
       const validatedData = insertCartItemSchema.parse(req.body);
       const cartItem = await storage.addCartItem(validatedData);
@@ -110,13 +122,17 @@ export function registerRoutes(app: Application): Server {
     }
   });
 
-  apiRouter.put("/cart/:id", async (req, res) => {
+  apiRouter.put("/cart/:id", async (req: Request, res: Response) => {
     try {
       const id = parseInt(req.params.id);
-      if (isNaN(id)) return res.status(400).json({ message: "Invalid cart item ID" });
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid cart item ID" });
+      }
       const { quantity } = z.object({ quantity: z.number().int().positive() }).parse(req.body);
       const cartItem = await storage.updateCartItemQuantity(id, quantity);
-      if (!cartItem) return res.status(404).json({ message: "Cart item not found" });
+      if (!cartItem) {
+        return res.status(404).json({ message: "Cart item not found" });
+      }
       res.json(cartItem);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -126,10 +142,12 @@ export function registerRoutes(app: Application): Server {
     }
   });
 
-  apiRouter.delete("/cart/:id", async (req, res) => {
+  apiRouter.delete("/cart/:id", async (req: Request, res: Response) => {
     try {
       const id = parseInt(req.params.id);
-      if (isNaN(id)) return res.status(400).json({ message: "Invalid cart item ID" });
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid cart item ID" });
+      }
       await storage.removeCartItem(id);
       res.status(204).send();
     } catch {
@@ -137,7 +155,7 @@ export function registerRoutes(app: Application): Server {
     }
   });
 
-  apiRouter.delete("/cart/clear/:cartId", async (req, res) => {
+  apiRouter.delete("/cart/clear/:cartId", async (req: Request, res: Response) => {
     try {
       await storage.clearCart(req.params.cartId);
       res.status(204).send();
@@ -147,20 +165,16 @@ export function registerRoutes(app: Application): Server {
   });
 
   // Orders
-   apiRouter.post("/orders", async (req, res) => {
+  apiRouter.post("/orders", async (req: Request, res: Response) => {
     try {
-      const orderSchema = z.object({
-        order: insertOrderSchema,
-        items: z.array(insertOrderItemSchema)
-      });
-      const parsed = orderSchema.parse(req.body);
-      const order = parsed.order;
-      const items = parsed.items as z.infer<typeof insertOrderItemSchema>[];
-      if (items.length === 0) {
+      const orderData = insertOrderSchema.parse(req.body.order);
+      const itemsData = orderItemsArraySchema.parse(req.body.items);
+
+      if (itemsData.length === 0) {
         return res.status(400).json({ message: "Order must contain at least one item" });
       }
 
-      const createdOrder = await storage.placeOrder(order, items);
+      const createdOrder = await storage.placeOrder(orderData, itemsData);
       res.status(201).json(createdOrder);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -173,6 +187,5 @@ export function registerRoutes(app: Application): Server {
   // Mount API routes
   app.use("/api", apiRouter);
 
-  // Return the created HTTP server
   return createServer(app);
 }
