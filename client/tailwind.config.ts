@@ -1,18 +1,10 @@
-import type { Config } from 'tailwindcss';
-import animate from 'tailwindcss-animate';
-import typography from '@tailwindcss/typography';
+import type { Config } from "tailwindcss";
 
-const config: Config = {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
-  darkMode: "class",
+export default {
+  darkMode: ["class"],
+  content: ["./index.html", "./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
-      fontFamily: {
-        sans: ['Inter', 'ui-sans-serif', 'system-ui'],
-      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
@@ -94,7 +86,5 @@ const config: Config = {
       },
     },
   },
-  plugins: [animate, typography],
-};
-
-export default config;
+  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
+} satisfies Config;

@@ -1,8 +1,9 @@
+import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
-import { 
+import {
   Card,
   CardContent,
   CardDescription,
@@ -14,20 +15,19 @@ import { Separator } from "../components/ui/separator";
 import { Skeleton } from "../components/ui/skeleton";
 import { CheckCircle, MapPin, Phone, Mail } from "lucide-react";
 import { formatRwandanFrancs, convertToRwandanFrancs } from "../lib/currency";
-import { Order } from '../types/order';
+import { Order } from "../types/order";
 
-export default function OrderConfirmation({ params }: { params: { id: string } }) {
-  const { id } = params;
-  const location = useLocation();
+export default function OrderConfirmation() {
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
   const { data: order, isLoading, error } = useQuery<Order>({
-    queryKey: [`/api/orders/${id}`],
+    queryKey: ["order", id],
     queryFn: async () => {
       const res = await fetch(`/api/orders/${id}`);
-      if (!res.ok) throw new Error('Order not found');
+      if (!res.ok) throw new Error("Order not found");
       return res.json();
-    },
+    }
   });
 
   useEffect(() => {
@@ -90,7 +90,9 @@ export default function OrderConfirmation({ params }: { params: { id: string } }
               </div>
               <div>
                 <p className="text-gray-500">Total Amount:</p>
-                <p className="font-medium text-blue-800">{formatRwandanFrancs(convertToRwandanFrancs(order.totalAmount))}</p>
+                <p className="font-medium text-blue-800">
+                  {formatRwandanFrancs(convertToRwandanFrancs(order.totalAmount))}
+                </p>
               </div>
               <div>
                 <p className="text-gray-500">Status:</p>
@@ -145,7 +147,9 @@ export default function OrderConfirmation({ params }: { params: { id: string } }
 
               <div className="flex justify-between font-bold">
                 <span>Total:</span>
-                <span className="text-blue-800">{formatRwandanFrancs(convertToRwandanFrancs(order.totalAmount))}</span>
+                <span className="text-blue-800">
+                  {formatRwandanFrancs(convertToRwandanFrancs(order.totalAmount))}
+                </span>
               </div>
             </div>
           </div>

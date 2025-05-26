@@ -42,7 +42,7 @@ export default function StoreInfo() {
                   </div>
                   <div>
                     <p className="font-medium">Phone:</p>
-                    <p>+250 788 123 456</p>
+                    <p>+250 780 152 723</p>
                   </div>
                 </div>
 

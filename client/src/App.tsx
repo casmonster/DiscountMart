@@ -1,14 +1,30 @@
-import { Routes, Route, useLocation } from "react-router-dom";
-import { queryClient } from "./lib/queryClient";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "./lib/queryClient";
 import { Toaster } from "./components/ui/toaster";
 import { CartProvider } from "./context/CartContext";
 import { WishlistProvider } from "./context/WishlistContext";
 import { RecentlyViewedProvider } from "./context/RecentlyViewedContext";
-import { useEffect } from "react";
-import { lazy, Suspense } from 'react';
-import RoutesComponent from './LazyRoutes';
-import Spinner from './components/ui/spinner';
+import { useEffect, lazy, Suspense } from "react";
+
+import Header from "./components/layout/Header";
+import Footer from "./components/layout/Footer";
+import Spinner from "./components/ui/spinner";
+
+// Static pages
+import Category from "./pages/Category";
+import NotFound from "./pages/not-found";
+import ProductDetail from "./pages/ProductDetail";
+import OrderConfirmation from "./pages/OrderConfirmation";
+import StoreInfo from "./pages/StoreInfo";
+import Wishlist from "./pages/Wishlist";
+import NewArrivals from "./pages/NewArrivals";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import PickupPolicy from "./pages/PickupPolicy";
+import Testimonials from "./pages/Testimonials";// Lazy-loaded pages
+const Home = lazy(() => import("./pages/Home"));
+const Checkout = lazy(() => import("./pages/Checkout"));
 
 function ScrollToTop() {
   const location = useLocation();
@@ -19,54 +35,29 @@ function ScrollToTop() {
 
   return null;
 }
- // Added ScrollRestoration
-
-import Header from "./components/layout/Header";
-import Footer from "./components/layout/Footer";
-import Category from "./pages/Category";
-import ProductDetail from "./pages/ProductDetail";
- import OrderConfirmation from "./pages/OrderConfirmation";
- import StoreInfo from "./pages/StoreInfo";
-import Wishlist from "./pages/Wishlist";
-import NewArrivals from "./pages/NewArrivals";
-import About from "./pages/About";
-import Contact from "./pages/Contact";
-import PickupPolicy from "./pages/PickupPolicy";
-
-
-
-const Home = lazy(() => import('./pages/Home'));
-const Checkout = lazy(() => import('./pages/Checkout'));
-
-
-
-// Removed unused imports and components
 
 function AppRoutes() {
   return (
     <div className="flex flex-col min-h-screen">
-      <h1 className="text-3xl font-bold text-blue-600">Hello Tailwind</h1>
       <ScrollToTop />
       <Header />
       <div className="flex-grow">
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/category/:slug" element={<Category params={{
-            slug: ""
-          }} />} />
-          <Route path="/product/:slug" element={<ProductDetail params={{
-            slug: ""
-          }} />} />
+          <Route path="/" element={<Navigate to="/home" replace />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/category/:slug" element={<Category />} />
+          <Route path="/product/:slug" element={<ProductDetail />} />
           <Route path="/checkout" element={<Checkout />} />
-          <Route path="/order-confirmation/:id" element={<OrderConfirmation params={{
-            id: ""
-          }} />} />
+          <Route path="/order-confirmation/:id" element={<OrderConfirmation />} />
           <Route path="/store-info" element={<StoreInfo />} />
           <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/new-arrivals" element={<NewArrivals />} />
+          <Route path="/clearance/:slug" element={<Category />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/pickup-policy" element={<PickupPolicy />} />
+          <Route path="*" element={<NotFound />} />
+          <Route path="/testimonials" element={<Testimonials/>} />
         </Routes>
       </div>
       <Footer />
@@ -80,7 +71,9 @@ function App() {
       <CartProvider>
         <WishlistProvider>
           <RecentlyViewedProvider>
-            <RoutesComponent />
+            <Suspense fallback={<Spinner color="border-purple-600" label="Loading content..." responsive />}>
+              <AppRoutes />
+            </Suspense>
             <Toaster />
           </RecentlyViewedProvider>
         </WishlistProvider>
@@ -88,6 +81,5 @@ function App() {
     </QueryClientProvider>
   );
 }
-<Spinner color="border-purple-600" label="Loading content..." responsive />
-export default App;
 
+export default App;

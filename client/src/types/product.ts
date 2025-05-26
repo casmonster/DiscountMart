@@ -11,6 +11,7 @@ export type ProductProperty = {
 export type StockStatus = "In Stock" | "Low Stock" | "Out of Stock";
 
 export type Product = {
+  imageUrl: string | undefined;
   id: string;
   name: string;
   slug: string;

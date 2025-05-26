@@ -1,8 +1,9 @@
+import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Category as CategoryType } from "../types/category";
-import { ProductPropertyType, ProductProperty } from "../types/product";
+import { ProductProperty, ProductPropertyType } from "../types/product";
 
 import ProductCard from "../components/product/ProductCard";
 import FeaturedProductShowcase from "../components/product/FeaturedProductShowcase";
@@ -61,8 +62,9 @@ function getCategoryProperties(categorySlug: string, product: any): ProductPrope
   return properties;
 }
 
-export default function Category({ params }: { params: { slug: string } }) {
-  const { slug } = params;
+export default function Category() {
+  const { slug } = useParams<{ slug: string }>();
+
   const location = useLocation();
   const navigate = useNavigate();
   const [sortBy, setSortBy] = useState<string>("default");
@@ -85,7 +87,7 @@ export default function Category({ params }: { params: { slug: string } }) {
   const category = categoryQuery.data;
   const categoryLoading = categoryQuery.isLoading;
 
-  const productsQuery = useQuery({
+  const productsQuery = useQuery<any[], Error>({
     queryKey: [`/api/products/category/${category?.id}`],
     queryFn: async () => {
       const res = await fetch(`/api/products/category/${category?.id}`);

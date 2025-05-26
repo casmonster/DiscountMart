@@ -10,6 +10,8 @@ export interface Category {
     id: string;
     name: string;
     categoryId: string;
+    price: number;
+    imageUrl: string;
     // other product fields...
   }
   export interface CategoryResponse {
