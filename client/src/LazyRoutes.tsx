@@ -1,7 +1,7 @@
 // 🚀 Updated: routes.tsx with lazy loading and Suspense wrapper for route-level code-splitting
 
 import { lazy, Suspense } from 'react';
-import {  Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 
 // ✅ Lazy-loaded pages
 const Home = lazy(() => import('./pages/Home'));
@@ -23,19 +23,13 @@ const RoutesComponent = () => (
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
-        <Route path="/category/:slug" element={<Category params={{
-                    slug: ''
-                }} />} />
+        <Route path="/category/:slug" element={<Category />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/new-arrivals" element={<NewArrivals />} />
-        <Route path="/order-confirmation" element={<OrderConfirmation params={{
-                    id: ''
-                }} />} />
+        <Route path="/order-confirmation/:id" element={<OrderConfirmation />} />
         <Route path="/pickup-policy" element={<PickupPolicy />} />
-        <Route path="/product/:slug" element={<ProductDetail params={{
-                    slug: ''
-                }} />} />
+        <Route path="/product/:slug" element={<ProductDetail />} />
         <Route path="/store-info" element={<StoreInfo />} />
         <Route path="/testimonials" element={<Testimonials />} />
         <Route path="/wishlist" element={<Wishlist />} />

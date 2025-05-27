@@ -6,11 +6,9 @@ import { CartProvider } from "./context/CartContext";
 import { WishlistProvider } from "./context/WishlistContext";
 import { RecentlyViewedProvider } from "./context/RecentlyViewedContext";
 import { useEffect, lazy, Suspense } from "react";
-
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
 import Spinner from "./components/ui/spinner";
-
 // Static pages
 import Category from "./pages/Category";
 import NotFound from "./pages/not-found";
@@ -25,17 +23,13 @@ import PickupPolicy from "./pages/PickupPolicy";
 import Testimonials from "./pages/Testimonials";// Lazy-loaded pages
 const Home = lazy(() => import("./pages/Home"));
 const Checkout = lazy(() => import("./pages/Checkout"));
-
 function ScrollToTop() {
   const location = useLocation();
-
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [location]);
-
   return null;
 }
-
 function AppRoutes() {
   return (
     <div className="flex flex-col min-h-screen">
@@ -64,7 +58,6 @@ function AppRoutes() {
     </div>
   );
 }
-
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
@@ -81,5 +74,4 @@ function App() {
     </QueryClientProvider>
   );
 }
-
 export default App;
