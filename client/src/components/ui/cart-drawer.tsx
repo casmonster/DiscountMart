@@ -1,86 +1,5 @@
 import * as React from "react";
-import { createContext, useContext, useEffect, useState } from 'react';
-
-export type CartItemWithProduct = {
-  id: number;
-  quantity: number;
-  product: {
-    id: number;
-    name: string;
-    price: number;
-    discountPrice: number | null;
-    imageUrl: string;
-    stockLevel: "In Stock" | "Low Stock" | "Out of Stock";
-  };
-};
-
-type CartContextType = {
-  cartItems: CartItemWithProduct[];
-  isLoading: boolean;
-  removeItem: (id: number) => Promise<void>;
-  updateQuantity: (id: number, quantity: number) => Promise<void>;
-  getCartTotal: () => number;
-  getTaxAmount: () => number;
-  getFinalTotal: () => number;
-  itemCount: number;
-};
-
-const CartContext = createContext<CartContextType | undefined>(undefined);
-
-export function CartProvider({ children }: { children: React.ReactNode }) {
-  const [cartItems, setCartItems] = useState<CartItemWithProduct[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const removeItem = async (id: number) => {
-    setIsLoading(true);
-    setCartItems(items => items.filter(item => item.id !== id));
-    setIsLoading(false);
-  };
-
-  const updateQuantity = async (id: number, quantity: number) => {
-    setIsLoading(true);
-    setCartItems(items => 
-      items.map(item => 
-        item.id === id ? { ...item, quantity } : item
-      )
-    );
-    setIsLoading(false);
-  };
-
-  const getCartTotal = () => {
-    return cartItems.reduce((total, item) => {
-      const price = item.product.discountPrice || item.product.price;
-      return total + (price * item.quantity);
-    }, 0);
-  };
-
-  const getTaxAmount = () => getCartTotal() * 0.08;
-  const getFinalTotal = () => getCartTotal() + getTaxAmount();
-  const itemCount = cartItems.reduce((count, item) => count + item.quantity, 0);
-
-  return (
-    <CartContext.Provider value={{
-      cartItems,
-      isLoading,
-      removeItem,
-      updateQuantity,
-      getCartTotal,
-      getTaxAmount,
-      getFinalTotal,
-      itemCount
-    }}>
-      {children}
-    </CartContext.Provider>
-  );
-}
-
-export function useCart() {
-  const context = useContext(CartContext);
-  if (context === undefined) {
-    throw new Error('useCart must be used within a CartProvider');
-  }
-  return context;
-}
+import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { Button } from "./button";
@@ -93,10 +12,10 @@ import {
 import { ShoppingCart, X, AlertCircle, Minus, Plus, Trash2 } from "lucide-react";
 import { Separator } from "./separator";
 
-
+// IMPORT FROM THE MAIN CONTEXT FILE - DON'T REDEFINE HERE
+import { useCart, CartItemWithProduct } from "../../context/CartContext";
 
 // /lib/currency.tsx
-
 // Function to convert USD to Rwandan Francs (RWF)
 export const convertToRwandanFrancs = (amountInUSD: number): number => {
   // Using an approximate exchange rate (1 USD = 1200 RWF)
@@ -122,6 +41,8 @@ type CartDrawerProps = {
 export default function CartDrawer({ open, onClose }: CartDrawerProps) {
   const location = useLocation();
   const navigate = useNavigate();
+  
+  // USE THE IMPORTED useCart HOOK - THIS WILL NOW WORK
   const { 
     cartItems, 
     isLoading, 

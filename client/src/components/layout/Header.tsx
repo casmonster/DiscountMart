@@ -5,7 +5,7 @@ import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
 import { Search, ShoppingCart, MapPin, Heart } from "lucide-react";
 import { useCart } from "../../context/CartContext";
-import { navLinks } from "../../data/navLinks"; // <-- Dynamic nav links source
+import logoUrl from "@assets/logo.svg?url";
 
 export default function Header() {
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -16,11 +16,9 @@ export default function Header() {
   const { itemCount } = useCart();
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    const handleScroll = () => setIsScrolled(window.scrollY > 10);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
@@ -30,14 +28,31 @@ export default function Header() {
     }
   };
 
+  const navItems = [
+    { label: "All Products", path: "/" },
+    { label: "Clothing", path: "/category/clothing" },
+    { label: "Tableware", path: "/category/tableware" },
+    { label: "Kitchen", path: "/category/kitchen" },
+    { label: "Home Decor", path: "/category/home-decor" },
+    { label: "New Arrivals", path: "/new-arrivals" },
+    { label: "Clearance", path: "/clearance", special: true },
+  ];
+
   return (
-    <header className={`bg-white sticky top-0 z-30 transition-all duration-300 ${isScrolled ? 'shadow-md' : ''}`}>
+    <header className={`bg-white sticky top-0 z-30 transition-all duration-300 ${isScrolled ? "shadow-md" : ""}`}>
       {/* Top Bar */}
       <div className="bg-gradient-to-r from-primary to-primary/90 text-white py-2">
         <div className="container mx-auto px-4 flex justify-between items-center">
           <div className="flex items-center">
             <span className="flex items-center text-white/90 mr-2">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4 mr-1"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </span>
@@ -45,13 +60,27 @@ export default function Header() {
           </div>
           <div className="flex items-center gap-4">
             <p className="text-sm hidden sm:flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4 mr-1"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               Store Hours: Mon-Sat 9AM-8PM
             </p>
-            <a className="text-sm hidden md:flex items-center hover:text-white/80 transition-colors">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <a href="tel:+250780152723" className="text-sm hidden md:flex items-center hover:text-white/80 transition-colors">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4 mr-1"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
               </svg>
               +(250)780152723
@@ -62,46 +91,44 @@ export default function Header() {
 
       {/* Main Header */}
       <div className="container mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
-        <div className="flex items-center">
-          <Link to="/" className="text-2xl font-bold text-primary flex items-center group">
-            <img src="/logo.svg" alt="Logo" className="h-12 mr-2" />
-          </Link>
-        </div>
+        <Link to="/" className="text-2xl font-bold text-primary flex items-center group">
+          <img src={logoUrl} alt="RwandaShop Logo" className="h-12 mr-2" />
+        </Link>
 
         {/* Search Bar */}
-        <div className="w-full md:w-1/2 relative">
-          <form onSubmit={handleSearchSubmit}>
-            <div className="relative">
-              <Input
-                type="text"
-                placeholder="Search for products..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full py-2 px-4 pr-10 border border-gray-200 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50"
-              />
-              <Button
-                type="submit"
-                variant="ghost"
-                size="icon"
-                className="absolute right-1 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-primary transition-colors"
-              >
-                <Search className="h-5 w-5" />
-              </Button>
-            </div>
-          </form>
-        </div>
+        <form onSubmit={handleSearchSubmit} className="w-full md:w-1/2 relative">
+          <Input
+            type="text"
+            placeholder="Search for products..."
+            autoComplete="off"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full py-2 px-4 pr-10 border border-gray-200 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50"
+          />
+          <Button
+            type="submit"
+            variant="ghost"
+            size="icon"
+            className="absolute right-1 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-primary"
+            aria-label="Search"
+          >
+            <Search className="h-5 w-5" />
+          </Button>
+        </form>
 
-        {/* Actions */}
+        {/* Navigation Actions */}
         <div className="flex items-center gap-4">
-          <Link to="/">
-            <Button size="icon" className="text-gray-700 hover:text-secondary relative p-2 hover:bg-secondary/5 rounded-full transition-colors">
+          <Link to="/wishlist" aria-label="Wishlist">
+            <Button type="button" size="icon" className="text-gray-700 hover:text-secondary relative p-2 hover:bg-secondary/5 rounded-full">
               <Heart className="h-5 w-5" />
             </Button>
           </Link>
           <Button
+            type="button"
             variant="ghost"
             size="icon"
-            className="text-gray-700 hover:text-primary relative p-2 hover:bg-primary/5 rounded-full transition-colors"
+            aria-label="Open cart"
+            className="text-gray-700 hover:text-primary relative p-2 hover:bg-primary/5 rounded-full"
             onClick={() => setIsCartOpen(true)}
           >
             <ShoppingCart className="h-6 w-6" />
@@ -111,32 +138,28 @@ export default function Header() {
               </span>
             )}
           </Button>
-          <Link to="/">
-            <Button variant="ghost" size="icon" className="text-gray-700 hover:text-primary p-2 hover:bg-primary/5 rounded-full transition-colors">
+          <Link to="/locations" aria-label="Store locations">
+            <Button type="button" variant="ghost" size="icon" className="text-gray-700 hover:text-primary p-2 hover:bg-primary/5 rounded-full">
               <MapPin className="h-6 w-6" />
             </Button>
           </Link>
         </div>
       </div>
 
-      {/* Dynamic Category Navigation */}
-      <nav className={`bg-white border-t border-gray-100 py-3 overflow-x-auto whitespace-nowrap transition-shadow duration-300 ${isScrolled ? 'shadow-sm' : ''}`}>
+      {/* Category Navigation */}
+      <nav className={`bg-white border-t border-gray-100 py-3 overflow-x-auto whitespace-nowrap transition-shadow duration-300 ${isScrolled ? "shadow-sm" : ""}`}>
         <div className="container mx-auto px-4 flex space-x-8">
-          {navLinks.map((link) => (
+          {navItems.map(({ label, path, special }) => (
             <Link
-              key={link.path}
-              to={link.path}
+              key={path}
+              to={path}
               className={`font-medium relative px-1 transition-colors ${
-                location.pathname === link.path
-                  ? link.special ? 'text-secondary' : 'text-primary'
-                  : 'text-gray-600 hover:text-primary'
+                location.pathname === path ? (special ? "text-secondary" : "text-primary") : "text-gray-600 hover:text-primary"
               }`}
             >
-              <span>{link.label}</span>
-              {location.pathname === link.path && (
-                <span className={`absolute bottom-[-12px] left-0 w-full h-0.5 rounded-full ${
-                  link.special ? 'bg-secondary' : 'bg-primary'
-                }`}></span>
+              <span className={special ? "text-secondary" : ""}>{label}</span>
+              {location.pathname === path && (
+                <span className={`absolute bottom-[-12px] left-0 w-full h-0.5 rounded-full ${special ? "bg-secondary" : "bg-primary"}`} />
               )}
             </Link>
           ))}

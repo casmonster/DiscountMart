@@ -1,11 +1,6 @@
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
-import { QueryClientProvider } from "@tanstack/react-query";
-import { queryClient } from "./lib/queryClient";
-import { Toaster } from "./components/ui/toaster";
-import { CartProvider } from "./context/CartContext";
-import { WishlistProvider } from "./context/WishlistContext";
-import { RecentlyViewedProvider } from "./context/RecentlyViewedContext";
 import { useEffect, lazy, Suspense } from "react";
+import { Toaster } from "./components/ui/toaster";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
 import Spinner from "./components/ui/spinner";
@@ -20,7 +15,8 @@ import NewArrivals from "./pages/NewArrivals";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import PickupPolicy from "./pages/PickupPolicy";
-import Testimonials from "./pages/Testimonials";// Lazy-loaded pages
+import Testimonials from "./pages/Testimonials";
+// Lazy-loaded pages
 const Home = lazy(() => import("./pages/Home"));
 const Checkout = lazy(() => import("./pages/Checkout"));
 function ScrollToTop() {
@@ -60,18 +56,9 @@ function AppRoutes() {
 }
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <CartProvider>
-        <WishlistProvider>
-          <RecentlyViewedProvider>
-            <Suspense fallback={<Spinner color="border-purple-600" label="Loading content..." responsive />}>
-              <AppRoutes />
-            </Suspense>
-            <Toaster />
-          </RecentlyViewedProvider>
-        </WishlistProvider>
-      </CartProvider>
-    </QueryClientProvider>
+    <Suspense fallback={<Spinner color="border-purple-600" label="Loading content..." responsive />}>
+      <AppRoutes />
+    </Suspense>
   );
 }
 export default App;
