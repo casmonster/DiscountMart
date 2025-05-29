@@ -98,6 +98,8 @@ export default function Header() {
         {/* Search Bar */}
         <form onSubmit={handleSearchSubmit} className="w-full md:w-1/2 relative">
           <Input
+            id="product-search"
+            name="search"
             type="text"
             placeholder="Search for products..."
             autoComplete="off"
@@ -119,7 +121,7 @@ export default function Header() {
         {/* Navigation Actions */}
         <div className="flex items-center gap-4">
           <Link to="/wishlist" aria-label="Wishlist">
-            <Button type="button" size="icon" className="text-gray-700 hover:text-secondary relative p-2 hover:bg-secondary/5 rounded-full">
+            <Button type="button" size="icon" className="text-white hover:text-primary relative p-2 hover:bg-primary/5 rounded-full">
               <Heart className="h-5 w-5" />
             </Button>
           </Link>

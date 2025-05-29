@@ -22,6 +22,7 @@ interface Product {
 interface Category {
   id: string | number;
   name: string;
+  slug: string;
   imageUrl?: string;
   // Add other category properties as needed
 }
@@ -30,21 +31,24 @@ export default function Home() {
   const { lastViewedProduct } = useRecentlyViewed();
   const { data: categories, isLoading: categoriesLoading } = useQuery<Category[]>({
     queryKey: ["/api/categories"],
+    queryFn: () => fetch("/api/categories").then(res => res.json()),
   });
 
   const { data: featuredProducts, isLoading: featuredLoading } = useQuery<Product[]>({
     queryKey: ["/api/products/featured"],
+    queryFn: () => fetch("/api/products/featured").then(res => res.json()),
   });
 
   const { data: newProducts, isLoading: newProductsLoading } = useQuery<Product[]>({
     queryKey: ["/api/products/new"],
+    queryFn: () => fetch("/api/products/new").then(res => res.json()),
   });
 
-  return (
+ return (
     <main>
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-primary/90 to-primary text-white py-12 md:py-16">
-       <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4">
           <div className="max-w-3xl">
             <h1 className="text-3xl md:text-4xl font-bold mb-4">Quality Products at Amazing Discounts</h1>
             <p className="text-lg mb-6">Shop our wide selection and pick up your order at our local store!</p>
@@ -66,6 +70,34 @@ export default function Home() {
 
       {/* Featured Categories */}
       <section className="py-12 bg-white">
+        <div className="container mx-auto px-4">
+          <h2 className="text-2xl font-bold mb-8 text-center">Shop by Category</h2>
+
+          {categoriesLoading ? (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+              {Array(4).fill(0).map((_, i) => (
+                <div key={i} className="aspect-square">
+                  <Skeleton className="w-full h-full rounded-lg" />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+              {categories?.map((category) => (
+                <CategoryCard
+                  key={category.id}
+                  name={category.name}
+                  slug={category.slug}
+                  imageUrl={category.imageUrl ?? ""}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Featured Products */}
+      <section id="featured" className="py-12 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-2xl font-bold">Hot Deals This Week</h2>
@@ -90,9 +122,9 @@ export default function Home() {
                 </div>
               ))}
             </div>
-             ) : (
+          ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {featuredProducts && featuredProducts.map((product: Product) => (
+              {featuredProducts?.map((product) => (
                 <ProductCard
                   key={product.id}
                   id={String(product.id)}
@@ -120,6 +152,8 @@ export default function Home() {
               </p>
               <form className="flex flex-col sm:flex-row gap-2">
                 <Input
+                  id="contact-name"
+                  name="name"
                   type="email"
                   placeholder="Your email address"
                   className="flex-grow px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
@@ -137,7 +171,7 @@ export default function Home() {
               />
             </div>
           </div>
-          </div>
+        </div>
       </section>
 
       {/* Last Viewed Product */}
@@ -180,7 +214,7 @@ export default function Home() {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {newProducts && newProducts.map((product: Product) => (
+               {newProducts?.map((product) => (
                 <ProductCard
                   key={product.id}
                   id={String(product.id)}
@@ -198,32 +232,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Shop by Categories section */}
-      <section className="py-12 bg-white">
-        <div className="container mx-auto px-4">
-          <h2 className="text-2xl font-bold mb-8 text-center">Shop by Category</h2>
-          
-          {categoriesLoading ? (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-              {Array(4).fill(0).map((_, i) => (
-                <Skeleton key={i} className="w-full h-32 rounded-lg" />
-              ))}
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-              {categories && categories.map((category: Category) => (
-                <CategoryCard
-                 key={category.id} 
-                 name={category.name}
-                 slug={category.id.toString()} // Add slug property using id as fallback
-                 imageUrl={category.imageUrl || ""}
-               />
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
-
       {/* Store Info */}
       <section id="store-info" className="py-12 bg-white">
         <div className="container mx-auto px-4">
@@ -232,8 +240,8 @@ export default function Home() {
           <div className="flex flex-col lg:flex-row gap-8">
             <div className="lg:w-1/2">
               <div className="rounded-lg overflow-hidden shadow-md h-full">
-                <div className="bg-gray-200 w-full aspect-[4/3] flex items-center justify-center"></div>
-                <div className="text-center p-6">
+                <div className="bg-gray-200 w-full aspect-[4/3] flex items-center justify-center">
+                  <div className="text-center p-6">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-primary mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -243,7 +251,8 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-            
+            </div>
+
             <div className="lg:w-1/2">
               <div className="bg-gray-50 rounded-lg p-6 h-full">
                 <h3 className="text-xl font-bold mb-4">Visit Our Store</h3>

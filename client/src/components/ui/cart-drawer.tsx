@@ -4,11 +4,14 @@ import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { Button } from "./button";
 import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "./sheet";
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerOverlay,
+  DrawerClose,
+} from "./drawer";
+
 import { ShoppingCart, X, AlertCircle, Minus, Plus, Trash2 } from "lucide-react";
 import { Separator } from "./separator";
 
@@ -68,11 +71,12 @@ export default function CartDrawer({ open, onClose }: CartDrawerProps) {
   };
 
   return (
-    <Sheet open={open} onOpenChange={onClose}>
-      <SheetContent className="w-full sm:max-w-md flex flex-col h-full p-0 border-l shadow-xl">
-        <SheetHeader className="p-5 border-b border-gray-100">
+    <Drawer open={open} onOpenChange={onClose}>
+      <DrawerOverlay className="z-[90] bg-black/50" />
+      <DrawerContent className="z-[100] w-full sm:max-w-md flex flex-col h-full p-0 border-l shadow-xl">
+        <DrawerHeader className="p-5 border-b border-gray-100">
           <div className="flex justify-between items-center">
-            <SheetTitle className="flex items-center text-xl">
+            <DrawerTitle className="flex items-center text-xl">
               <ShoppingCart className="h-5 w-5 mr-2 text-primary" />
               Your Cart 
               {itemCount > 0 && (
@@ -80,7 +84,7 @@ export default function CartDrawer({ open, onClose }: CartDrawerProps) {
                   {itemCount} {itemCount === 1 ? 'item' : 'items'}
                 </span>
               )}
-            </SheetTitle>
+            </DrawerTitle>
             <Button
               variant="ghost"
               size="icon"
@@ -90,7 +94,7 @@ export default function CartDrawer({ open, onClose }: CartDrawerProps) {
               <X className="h-5 w-5" />
             </Button>
           </div>
-        </SheetHeader>
+        </DrawerHeader>
 
         {cartItems.length === 0 ? (
           <div className="flex-grow flex flex-col items-center justify-center p-6">
@@ -181,8 +185,8 @@ export default function CartDrawer({ open, onClose }: CartDrawerProps) {
             </div>
           </>
         )}
-      </SheetContent>
-    </Sheet>
+      </DrawerContent>
+    </Drawer>
   );
 };
 

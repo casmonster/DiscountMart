@@ -1,6 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+:root {
+  --background: % 100% 100%;
+  --foreground: 240 10% 10%;
+  --border: 240 5% 91%;
+  --input: 240 5% 95%;
+  --ring: 240 5% 85%;
+  --primary: 0 0% 0%;
+  --primary-foreground: 0 0% 100%;
+}
 
 
 @layer base {
@@ -12,3 +21,4 @@
     @apply font-sans antialiased bg-background text-foreground;
   }
 }
+

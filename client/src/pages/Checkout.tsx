@@ -163,7 +163,11 @@ const navigate = useNavigate();
                       <FormItem>
                         <FormLabel>Full Name</FormLabel>
                         <FormControl>
-                          <Input placeholder="John Doe" {...field} />
+                          <Input 
+                          id="contact-name"
+                          placeholder="John Doe"
+                           {...field} 
+                        />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -177,7 +181,12 @@ const navigate = useNavigate();
                       <FormItem>
                         <FormLabel>Email Address</FormLabel>
                         <FormControl>
-                          <Input placeholder="john.doe@example.com" type="email" {...field} />
+                          <Input 
+                          id="contact-email"
+                          placeholder="john.doe@example.com" 
+                          type="email"
+                           {...field} 
+                           />
                         </FormControl>
                         <FormDescription>
                           We'll send your order confirmation to this email
@@ -194,7 +203,11 @@ const navigate = useNavigate();
                       <FormItem>
                         <FormLabel>Phone Number</FormLabel>
                         <FormControl>
-                          <Input placeholder="(555) 123-4567" {...field} />
+                          <Input 
+                          id="contact-tel"                         
+                          placeholder="(555) 123-4567"
+                           {...field} 
+                           />
                         </FormControl>
                         <FormDescription>
                           We'll contact you when your order is ready for pickup

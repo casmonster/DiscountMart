@@ -363,6 +363,8 @@ const SidebarInput = React.forwardRef<
 >(({ className, ...props }, ref) => {
   return (
     <Input
+      id="input-sidebar"
+      name="input"
      /* ref={ref} */ /* ⚠️ Check: convert to useRef + forwardRef if needed */
       data-sidebar="input"
       className={cn(

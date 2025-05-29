@@ -15,10 +15,17 @@ export default function Contact() {
             <h2 className="text-xl font-semibold mb-4">Send us a Message</h2>
             <form className="space-y-4">
               <div>
-                <Input placeholder="Your Name" />
+                <Input 
+                id="contact-name"
+                name="name"
+                placeholder="Your Name" />
               </div>
               <div>
-                <Input type="email" placeholder="Your Email" />
+                <Input
+                id="contact-email"
+                name="email" 
+                type="email" 
+                placeholder="Your Email" />
               </div>
               <div>
                 <Textarea placeholder="Your Message" className="h-32" />

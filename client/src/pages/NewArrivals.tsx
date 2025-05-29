@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
+import { useMemo, useState, startTransition } from "react";
 import ProductCard from "../components/product/ProductCard";
 import FeaturedProductShowcase from "../components/product/FeaturedProductShowcase";
 import { Skeleton } from "../components/ui/skeleton";
@@ -12,16 +12,24 @@ import {
 } from "../components/ui/select";
 import type { Product } from "../types/product";
 import { mapStockLevelToStatus } from "../types/product";
+import React from "react";
 
+const PAGE_SIZE = 8;
 
 export default function NewArrivals() {
   const [sortBy, setSortBy] = useState<string>("default");
+  const [currentPage, setCurrentPage] = useState(1);
 
   const {
     data: products = [],
     isLoading: productsLoading,
   } = useQuery<Product[]>({
     queryKey: ["/api/products/new"],
+    queryFn: async () => {
+      const res = await fetch("/api/products/new");
+      if (!res.ok) throw new Error("Failed to fetch new products");
+      return res.json();
+    },
   });
 
   const sortedProducts = useMemo(() => {
@@ -31,35 +39,28 @@ export default function NewArrivals() {
 
     switch (sortBy) {
       case "price-low-high":
-        return productsCopy.sort((a, b) => {
-          const aPrice = a.discountPrice ?? a.price;
-          const bPrice = b.discountPrice ?? b.price;
-          return aPrice - bPrice;
-        });
+        return productsCopy.sort((a, b) => (a.discountPrice ?? a.price) - (b.discountPrice ?? b.price));
       case "price-high-low":
-        return productsCopy.sort((a, b) => {
-          const aPrice = a.discountPrice ?? a.price;
-          const bPrice = b.discountPrice ?? b.price;
-          return bPrice - aPrice;
-        });
+        return productsCopy.sort((a, b) => (b.discountPrice ?? b.price) - (a.discountPrice ?? a.price));
       case "name-a-z":
         return productsCopy.sort((a, b) => a.name.localeCompare(b.name));
       case "name-z-a":
         return productsCopy.sort((a, b) => b.name.localeCompare(a.name));
       case "discount":
         return productsCopy.sort((a, b) => {
-          const aDiscount = a.discountPrice
-            ? (a.price - a.discountPrice) / a.price
-            : 0;
-          const bDiscount = b.discountPrice
-            ? (b.price - b.discountPrice) / b.price
-            : 0;
+          const aDiscount = a.discountPrice ? (a.price - a.discountPrice) / a.price : 0;
+          const bDiscount = b.discountPrice ? (b.price - b.discountPrice) / b.price : 0;
           return bDiscount - aDiscount;
         });
       default:
         return productsCopy;
     }
   }, [products, sortBy]);
+
+  const paginatedProducts = useMemo(() => {
+    const start = (currentPage - 1) * PAGE_SIZE;
+    return sortedProducts.slice(start, start + PAGE_SIZE);
+  }, [sortedProducts, currentPage]);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -70,8 +71,16 @@ export default function NewArrivals() {
         </p>
       </div>
 
-      <div className="flex justify-end mb-6">
-        <Select value={sortBy} onValueChange={setSortBy}>
+      <div className="flex justify-between items-center mb-6">
+        <Select
+          value={sortBy}
+          onValueChange={(value) => {
+            startTransition(() => {
+              setSortBy(value);
+              setCurrentPage(1);
+            });
+          }}
+        >
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
@@ -88,21 +97,19 @@ export default function NewArrivals() {
 
       {productsLoading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {Array(8)
-            .fill(0)
-            .map((_, i) => (
-              <div key={i} className="aspect-[4/3]">
-                <Skeleton className="w-full h-full rounded-lg" />
-                <div className="p-4 space-y-2">
-                  <Skeleton className="h-4 w-3/4" />
+          {Array(8).fill(0).map((_, i) => (
+            <div key={i} className="aspect-[4/3]">
+              <Skeleton className="w-full h-full rounded-lg" />
+              <div className="p-4 space-y-2">
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-4 w-1/4" />
+                <div className="flex justify-between">
                   <Skeleton className="h-4 w-1/4" />
-                  <div className="flex justify-between">
-                    <Skeleton className="h-4 w-1/4" />
-                    <Skeleton className="h-8 w-1/4" />
-                  </div>
+                  <Skeleton className="h-8 w-1/4" />
                 </div>
               </div>
-            ))}
+            </div>
+          ))}
         </div>
       ) : sortedProducts.length > 0 ? (
         <>
@@ -126,7 +133,7 @@ export default function NewArrivals() {
           />
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {sortedProducts.map((product) => (
+            {paginatedProducts.map((product) => (
               <ProductCard
                 key={product.id}
                 id={String(product.id)}
@@ -135,9 +142,23 @@ export default function NewArrivals() {
                 imageUrl={product.image}
                 price={product.price}
                 discountPrice={product.discountPrice ?? undefined}
-                stockLevel={product.stockLevel} // now passed as number
+                stockLevel={product.stockLevel}
                 isNew={product.isNew ?? true}
               />
+            ))}
+          </div>
+
+          <div className="mt-6 flex justify-center space-x-2">
+            {Array.from({ length: Math.ceil(sortedProducts.length / PAGE_SIZE) }, (_, i) => i + 1).map((page) => (
+              <button
+                key={page}
+                onClick={() => setCurrentPage(page)}
+                className={`px-4 py-2 rounded ${
+                  page === currentPage ? "bg-black text-white" : "bg-gray-200"
+                }`}
+              >
+                {page}
+              </button>
             ))}
           </div>
         </>
