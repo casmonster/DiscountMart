@@ -1,13 +1,12 @@
-import express, { type Application } from "express";
+import * as express from "express";
+import { type Application } from "express";
 import fs from "fs";
 import path from "path";
-import { createServer as createViteServer, createLogger } from "vite";
 import { type Server } from "http";
-import viteConfig from "../vite.config";
-import { nanoid } from "nanoid";
 
-const viteLogger = createLogger();
-
+/**
+ * Log messages with timestamp and source label
+ */
 export function log(message: string, source = "express") {
   const formattedTime = new Date().toLocaleTimeString("en-US", {
     hour: "numeric",
@@ -19,56 +18,18 @@ export function log(message: string, source = "express") {
   console.log(`${formattedTime} [${source}] ${message}`);
 }
 
+/**
+ * Dummy setupVite function (no-op since Vite dev middleware is not used)
+ */
 export async function setupVite(app: Application, server: Server): Promise<void> {
-  const serverOptions = {
-    middlewareMode: true,
-    hmr: { server },
-    allowedHosts: ['localhost'],
-  };
-
-  const vite = await createViteServer({
-    ...viteConfig,
-    configFile: false,
-    customLogger: {
-      ...viteLogger,
-      error: (msg, options) => {
-        viteLogger.error(msg, options);
-        process.exit(1);
-      },
-    },
-    server: serverOptions,
-    appType: "custom",
-  });
-
-  app.use(vite.middlewares);
-  app.use("*", async (req, res, next) => {
-    const url = req.originalUrl;
-
-    try {
-      const clientTemplate = path.resolve(
-        import.meta.dirname,
-        "..",
-        "client",
-        "index.html"
-      );
-
-      let template = await fs.promises.readFile(clientTemplate, "utf-8");
-      template = template.replace(
-        `src="/src/main.tsx"`,
-        `src="/src/main.tsx?v=${nanoid()}"`
-      );
-
-      const page = await vite.transformIndexHtml(url, template);
-      res.status(200).set({ "Content-Type": "text/html" }).end(page);
-    } catch (e) {
-      vite.ssrFixStacktrace(e as Error);
-      next(e);
-    }
-  });
+  log("Vite middleware is disabled in this environment.", "vite");
 }
 
+/**
+ * Serve built static files from /client/dist (or wherever your frontend build output lives)
+ */
 export function serveStatic(app: Application): void {
-  const distPath = path.resolve(import.meta.dirname, "public");
+  const distPath = path.resolve(path.dirname(new URL(import.meta.url).pathname), "../client/dist");
 
   if (!fs.existsSync(distPath)) {
     throw new Error(
@@ -78,7 +39,7 @@ export function serveStatic(app: Application): void {
 
   app.use(express.static(distPath));
 
-  // Fall through to index.html for any unknown routes
+  // For all other routes, serve index.html (SPA fallback)
   app.use("*", (_req, res) => {
     res.sendFile(path.resolve(distPath, "index.html"));
   });

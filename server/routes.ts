@@ -1,12 +1,12 @@
 import express, { Application, Request, Response, Router } from "express";
 import { createServer, Server } from "http";
-import { storage } from "./storage";
+import { storage } from "./storage.js";
 import { z } from "zod";
 import {
   insertCartItemSchema,
   insertOrderSchema,
   orderItemsArraySchema,
-} from "../shared/schema";
+} from "../shared/schema.js";
 
 export function registerRoutes(app: Application): Server {
   const apiRouter: Router = express.Router();

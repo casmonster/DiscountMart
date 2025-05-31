@@ -1,8 +1,15 @@
-import * as React from "react";
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  ReactNode,
+  useCallback,
+} from "react";
 import { useToast } from "../hooks/use-toast";
 import { apiRequest } from "../lib/queryClient";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 export type CartItemWithProduct = {
   id: number;
@@ -18,27 +25,25 @@ export type CartItemWithProduct = {
     stockLevel: string;
   };
 };
-type CartError = {
-  message: string;
-  code?: string;
-};
 
-type CartContextType = {
+type CartError = { message: string; code?: string };
+
+interface CartContextType {
   cartItems: CartItemWithProduct[];
   cartId: string;
   isLoading: boolean;
+  isInitialized: boolean;
+  error: CartError | null;
+  itemCount: number;
+  getCartTotal: () => number;
+  getTaxAmount: () => number;
+  getFinalTotal: () => number;
   addToCart: (productId: number, quantity?: number) => Promise<void>;
   updateQuantity: (itemId: number, quantity: number) => Promise<void>;
   removeItem: (itemId: number) => Promise<void>;
   clearCart: () => Promise<void>;
-  getCartTotal: () => number;
-  getTaxAmount: () => number;
-  getFinalTotal: () => number;
-  itemCount: number;
-  error: CartError | null;
-  isInitialized: boolean;  // Add initialization state
   resetError: () => void;
-};
+}
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
@@ -47,204 +52,139 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cartItems, setCartItems] = useState<CartItemWithProduct[]>([]);
   const [cartId, setCartId] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
-const [error, setError] = useState<CartError | null>(null);
-const [isInitialized, setIsInitialized] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [error, setError] = useState<CartError | null>(null);
 
-const resetError = () => setError(null);
+  const resetError = useCallback(() => setError(null), []);
 
-
-
-  // Initialize cart ID from localStorage or create a new one
+  // Cart ID initialization
   useEffect(() => {
     const storedCartId = localStorage.getItem("cartId");
     if (storedCartId) {
       setCartId(storedCartId);
     } else {
-      const newCartId = uuidv4();
-      localStorage.setItem("cartId", newCartId);
-      setCartId(newCartId);
+      const newId = uuidv4();
+      localStorage.setItem("cartId", newId);
+      setCartId(newId);
     }
   }, []);
 
-  // Fetch cart items when cartId is available
+  // Fetch cart items when cartId is ready
   useEffect(() => {
-    if (cartId) {
-      fetchCartItems();
-    }
+    if (cartId) fetchCartItems();
   }, [cartId]);
 
   const fetchCartItems = async () => {
     setIsLoading(true);
     try {
       const response = await fetch(`/api/cart/${cartId}`);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+      if (!response.ok) throw new Error(`Error ${response.status}`);
       const data = await response.json();
       setCartItems(data);
       setIsInitialized(true);
-    } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Failed to fetch cart items';
-    setError({ message: errorMessage });
-      toast({
-        title: "Error",
-        description: errorMessage,
-        type: "background",
-      });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Failed to fetch cart";
+      setError({ message });
+      toast({ title: "Error", description: message, type: "background" });
     } finally {
       setIsLoading(false);
     }
   };
-  const validateQuantity = (quantity: number) => {
-    if (quantity < 0) throw new Error("Quantity cannot be negative");
-    if (quantity > 99) throw new Error("Quantity cannot exceed 99");
-  };
-  const addToCart = async (productId: number, quantity = 1) => {
-    setIsLoading(true);
-   
 
+  const validateQuantity = (qty: number) => {
+    if (qty < 0) throw new Error("Quantity cannot be negative");
+    if (qty > 99) throw new Error("Quantity cannot exceed 99");
+  };
+
+  const addToCart = useCallback(async (productId: number, quantity = 1) => {
     try {
+      setIsLoading(true);
       validateQuantity(quantity);
-      await apiRequest("POST", "/api/cart", { 
-        cartId, 
-        productId, 
-        quantity 
-      });
-      
+      await apiRequest("POST", "/api/cart", { cartId, productId, quantity });
       await fetchCartItems();
-      
-      toast({
-        title: "Added to cart",
-        description: "Item successfully added to your cart",
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to add item to cart",
-        type: "background",
-      });
+      toast({ title: "Added to cart", description: "Item added successfully" });
+    } catch {
+      toast({ title: "Error", description: "Failed to add item", type: "background" });
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [cartId]);
 
-  const updateQuantity = async (itemId: number, quantity: number) => {
-    if (quantity <= 0) {
-      return removeItem(itemId);
-    }
-    
-    setIsLoading(true);
-   
-
+  const updateQuantity = useCallback(async (itemId: number, quantity: number) => {
+    if (quantity <= 0) return removeItem(itemId);
     try {
+      setIsLoading(true);
       await apiRequest("PUT", `/api/cart/${itemId}`, { quantity });
       await fetchCartItems();
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to update item quantity",
-        type: "background",
-      });
+    } catch {
+      toast({ title: "Error", description: "Failed to update quantity", type: "background" });
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [cartId]);
 
-  const removeItem = async (itemId: number) => {
-    setIsLoading(true);
-   
-
+  const removeItem = useCallback(async (itemId: number) => {
     try {
+      setIsLoading(true);
       await apiRequest("DELETE", `/api/cart/${itemId}`);
       await fetchCartItems();
-      
-      toast({
-        title: "Removed from cart",
-        description: "Item successfully removed from your cart",
-      });
-    } catch (error) {
-      toast({
-        title: "Success",
-        description: "Item added to cart",
-        type: "foreground",
-      });
+      toast({ title: "Removed from cart", description: "Item removed successfully" });
+    } catch {
+      toast({ title: "Error", description: "Failed to remove item", type: "background" });
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [cartId]);
 
-  const clearCart = async () => {
-    setIsLoading(true);
-   
-
+  const clearCart = useCallback(async () => {
     try {
+      setIsLoading(true);
       await apiRequest("DELETE", `/api/cart/clear/${cartId}`);
       setCartItems([]);
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to clear cart",
-        type: "background",
-      });
+    } catch {
+      toast({ title: "Error", description: "Failed to clear cart", type: "background" });
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [cartId]);
 
-  const getCartTotal = () => {
-    return cartItems.reduce((total, item) => {
-      const price = item.product.discountPrice || item.product.price;
-      return total + price * item.quantity;
+  const itemCount = useMemo(() => cartItems.reduce((sum, item) => sum + item.quantity, 0), [cartItems]);
+
+  const getCartTotal = useCallback(() => {
+    return cartItems.reduce((sum, item) => {
+      const price = item.product.discountPrice ?? item.product.price;
+      return sum + price * item.quantity;
     }, 0);
-  };
+  }, [cartItems]);
 
-  const getTaxAmount = () => {
-    return getCartTotal() * 0.10; // 10% tax
-  };
+  const getTaxAmount = useCallback(() => getCartTotal() * 0.1, [getCartTotal]);
+  const getFinalTotal = useCallback(() => getCartTotal() + getTaxAmount(), [getCartTotal, getTaxAmount]);
 
-  const getFinalTotal = () => {
-    return getCartTotal() + getTaxAmount();
-  };
-
-  const itemCount = cartItems.reduce(
-    (count, item) => count + item.quantity,
-    0
+  const value = useMemo(
+    () => ({
+      cartItems,
+      cartId,
+      isLoading,
+      isInitialized,
+      error,
+      itemCount,
+      getCartTotal,
+      getTaxAmount,
+      getFinalTotal,
+      addToCart,
+      updateQuantity,
+      removeItem,
+      clearCart,
+      resetError,
+    }),
+    [cartItems, cartId, isLoading, isInitialized, error, itemCount, getCartTotal, getTaxAmount, getFinalTotal, addToCart, updateQuantity, removeItem, clearCart, resetError]
   );
 
-  return (
-    <CartContext.Provider
-      value={{
-        cartItems,
-        cartId,
-        isLoading,
-        addToCart,
-        updateQuantity,
-        removeItem,
-        clearCart,
-        getCartTotal,
-        getTaxAmount,
-        getFinalTotal,
-        itemCount,
-        error,
-        isInitialized,
-        resetError,
-      }}
-    >
-      {children}
-    </CartContext.Provider>
-  );
+  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 };
-
-export type { CartContextType };  // Add this line to export the type
-export { CartContext };  // Add this line to export the context
-
-
-// Removed duplicate declaration of CartContext and CartProvider
 
 export const useCart = () => {
   const context = useContext(CartContext);
-  if (context === undefined) {
-    throw new Error("useCart must be used within a CartProvider");
-  }
+  if (!context) throw new Error("useCart must be used within a CartProvider");
   return context;
 };

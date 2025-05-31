@@ -1,11 +1,16 @@
-import express, { type Request, type Response, type NextFunction, type Application } from "express";
+import express from "express";
+import { type Request, type Response, type NextFunction, type Application } from "express";
 import { createServer } from "http";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import path from "path";
+import { fileURLToPath } from "url";
 
 const app: Application = express();
 const server = createServer(app);
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 // Middleware to parse request bodies
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -39,7 +44,14 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
+
+
 (async () => {
+   app.get("/", (req: Request, res: Response) => {
+    res.send("API is running!");
+  });
+
+  app.use(express.static(path.join(__dirname, "public")));
   // Register API routes under /api
   registerRoutes(app);
 

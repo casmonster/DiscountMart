@@ -14,6 +14,7 @@ const OrderConfirmation = lazy(() => import('./pages/OrderConfirmation'));
 const PickupPolicy = lazy(() => import('./pages/PickupPolicy'));
 const ProductDetail = lazy(() => import('./pages/ProductDetail'));
 const StoreInfo = lazy(() => import('./pages/StoreInfo'));
+const SearchPage = lazy(() => import('./pages/SearchPage'));
 const Testimonials = lazy(() => import('./pages/Testimonials'));
 const Wishlist = lazy(() => import('./pages/Wishlist'));
 const NotFound = lazy(() => import('./pages/not-found'));

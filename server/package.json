@@ -1,0 +1,33 @@
+{
+  "name": "discountmart-server",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.ts",
+  "scripts": {
+    "dev": "tsx index.ts",
+    "start": "tsx server.ts",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.0",
+    "@types/ws": "^8.18.1",
+    "@vitejs/plugin-react": "^4.5.0",
+    "drizzle-orm": "^0.44.0",
+    "drizzle-zod": "^0.8.2",
+    "express": "^5.1.0",
+    "lodash.debounce": "^4.0.8",
+    "next": "^15.3.3",
+    "ws": "^8.18.2",
+    "zod": "^3.25.42"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.1",
+    "@types/lodash.debounce": "^4.0.9",
+    "@types/react": "^19.1.6",
+    "rollup-plugin-visualizer": "^6.0.1",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.19.4",
+    "typescript": "^5.0.0",
+    "vite": "^6.3.5"
+  }
+}

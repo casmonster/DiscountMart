@@ -1,7 +1,5 @@
-/* ⚠️ Consider wrapping this component with React.forwardRef if it needs to accept refs */
-import { useState, useMemo } from "react";
+import { useState, useMemo, memo } from "react";
 import { Link } from "react-router-dom";
-
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import { useCart } from "../../context/CartContext";
@@ -35,6 +33,34 @@ type FeaturedProductShowcaseProps = {
   properties?: ProductProperty[];
 };
 
+const RenderPropertyValue = memo(({ property }: { property: ProductProperty }) => {
+  if (property.type === "color") {
+    return (
+      <div className="flex items-center">
+        <div
+          className="w-6 h-6 rounded-full mr-2 border border-gray-300"
+          style={{ backgroundColor: property.value }}
+        />
+        <span>{property.value}</span>
+      </div>
+    );
+  }
+
+  if (property.type === "texture") {
+    return (
+      <div className="flex items-center">
+        <div
+          className="w-10 h-10 rounded-md mr-2 border border-gray-300 bg-cover bg-center"
+          style={{ backgroundImage: `url(${property.value})` }}
+        />
+        <span>{property.value.split("/").pop()?.split(".")[0]}</span>
+      </div>
+    );
+  }
+
+  return <span>{property.value}</span>;
+});
+
 export default function FeaturedProductShowcase({
   product,
   properties = [],
@@ -44,7 +70,6 @@ export default function FeaturedProductShowcase({
   const { isInWishlist, toggleWishlist } = useWishlist();
 
   const inWishlist = isInWishlist(product.id);
-
   const isInStock = product.stockLevel === "In Stock";
   const isLowStock = product.stockLevel === "Low Stock";
 
@@ -62,38 +87,7 @@ export default function FeaturedProductShowcase({
 
   const incrementQuantity = () => setQuantity((q) => q + 1);
   const decrementQuantity = () => setQuantity((q) => Math.max(1, q - 1));
-
-  const handleToggleWishlist = () => {
-    toggleWishlist(product);
-  };
-
-  const renderPropertyValue = (property: ProductProperty) => {
-    if (property.type === "color") {
-      return (
-        <div className="flex items-center">
-          <div
-            className="w-6 h-6 rounded-full mr-2 border border-gray-300"
-            style={{ backgroundColor: property.value }}
-          />
-          <span>{property.value}</span>
-        </div>
-      );
-    }
-
-    if (property.type === "texture") {
-      return (
-        <div className="flex items-center">
-          <div
-            className="w-10 h-10 rounded-md mr-2 border border-gray-300 bg-cover bg-center"
-            style={{ backgroundImage: `url(${property.value})` }}
-          />
-          <span>{property.value.split("/").pop()?.split(".")[0]}</span>
-        </div>
-      );
-    }
-
-    return <span>{property.value}</span>;
-  };
+  const handleToggleWishlist = () => toggleWishlist(product);
 
   return (
     <div className="bg-white rounded-xl shadow-md overflow-hidden mb-12">
@@ -113,6 +107,8 @@ export default function FeaturedProductShowcase({
             <img
               src={product.imageUrl}
               alt={product.name || "Product image"}
+              role="img"
+              loading="lazy"
               className="w-full h-full object-cover object-center transform hover:scale-105 transition-transform duration-500"
             />
           </div>
@@ -154,6 +150,7 @@ export default function FeaturedProductShowcase({
               size="icon"
               className={inWishlist ? "text-white" : "text-gray-500"}
               onClick={handleToggleWishlist}
+              aria-label="Toggle wishlist"
             >
               <Heart className={`h-5 w-5 ${inWishlist ? "fill-current" : ""}`} />
             </Button>
@@ -172,7 +169,7 @@ export default function FeaturedProductShowcase({
                     <span className="text-gray-500 font-medium">
                       {prop.name}:
                     </span>{" "}
-                    {renderPropertyValue(prop)}
+                    <RenderPropertyValue property={prop} />
                   </div>
                 ))}
               </div>

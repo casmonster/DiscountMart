@@ -9,11 +9,12 @@ interface Props {
 interface State {
   hasError: boolean;
   error?: Error;
+  errorInfo?: ErrorInfo;
 }
 
 export class ErrorBoundary extends Component<Props, State> {
   public state: State = {
-    hasError: false
+    hasError: false,
   };
 
   public static getDerivedStateFromError(error: Error): State {
@@ -21,12 +22,14 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('ErrorBoundary caught an error:', error, errorInfo);
+    console.error('❌ ErrorBoundary caught an error:', error);
+    console.error('📄 Component Stack:', errorInfo.componentStack);
+    this.setState({ errorInfo });
   }
 
   private resetError = () => {
-    this.setState({ hasError: false, error: undefined });
-    // Optionally trigger a page reload:
+    this.setState({ hasError: false, error: undefined, errorInfo: undefined });
+    // Optional full reset:
     // window.location.reload();
   };
 
@@ -35,8 +38,11 @@ export class ErrorBoundary extends Component<Props, State> {
       return this.props.fallback || (
         <div className="error-boundary p-8 border-2 border-red-600 bg-red-100 text-red-800 rounded-lg shadow-sm max-w-xl mx-auto my-10">
           <h2 className="text-2xl font-semibold mb-4">Something went wrong.</h2>
-          <details className="whitespace-pre-wrap mb-6">
+          <details className="whitespace-pre-wrap mb-6 text-sm">
+            <summary className="cursor-pointer underline">Click to view error</summary>
             {this.state.error?.toString()}
+            <br />
+            {this.state.errorInfo?.componentStack}
           </details>
           <button
             onClick={this.resetError}

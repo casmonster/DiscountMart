@@ -1,7 +1,6 @@
 import { pgTable, text, serial, integer, boolean, doublePrecision, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
-
 // Category schema
 export const categories = pgTable("categories", {
   id: serial("id").primaryKey(),
@@ -9,11 +8,9 @@ export const categories = pgTable("categories", {
   slug: text("slug").notNull().unique(),
   imageUrl: text("image_url").notNull(),
 });
-
 export const insertCategorySchema = createInsertSchema(categories).omit({
   id: true,
 });
-
 // Product schema
 export const products = pgTable("products", {
   id: serial("id").primaryKey(),
@@ -25,14 +22,12 @@ export const products = pgTable("products", {
   discountPrice: doublePrecision("discount_price"),
   categoryId: integer("category_id").notNull(),
   inStock: boolean("in_stock").notNull().default(true),
-  stockLevel: text("stock_level").notNull().default("In Stock"),
+  stockLevel: integer("stock_level").notNull().default(0),
   isNew: boolean("is_new").notNull().default(false),
 });
-
 export const insertProductSchema = createInsertSchema(products).omit({
   id: true,
 });
-
 // Cart Item schema
 export const cartItems = pgTable("cart_items", {
   id: serial("id").primaryKey(),
@@ -40,11 +35,9 @@ export const cartItems = pgTable("cart_items", {
   productId: integer("product_id").notNull(),
   quantity: integer("quantity").notNull().default(1),
 });
-
 export const insertCartItemSchema = createInsertSchema(cartItems).omit({
   id: true,
 });
-
 // Order schema
 export const orders = pgTable("orders", {
   id: serial("id").primaryKey(),
@@ -56,12 +49,10 @@ export const orders = pgTable("orders", {
   createdAt: timestamp("created_at").defaultNow(),
   cartId: text("cart_id").notNull(), 
 });
-
 export const insertOrderSchema = createInsertSchema(orders).omit({
   id: true,
   createdAt: true,
 });
-
 // Order Item schema
 export const orderItems = pgTable("order_items", {
   id: serial("id").primaryKey(),
@@ -70,13 +61,11 @@ export const orderItems = pgTable("order_items", {
   quantity: integer("quantity").notNull(),
   price: doublePrecision("price").notNull(),
 });
-
 // Fix: Create the base schema first, then derive the insert schema
 const baseOrderItemSchema = createInsertSchema(orderItems);
 export const insertOrderItemSchema = baseOrderItemSchema.omit({
   id: true,
 });
-
 // Alternative fix: Create a pure Zod schema for order items
 export const orderItemValidationSchema = z.object({
   orderId: z.number().int(),
@@ -84,22 +73,16 @@ export const orderItemValidationSchema = z.object({
   quantity: z.number().int().positive(),
   price: z.number().positive(),
 });
-
 // For the array validation in routes.ts, use this:
 export const orderItemsArraySchema = z.array(orderItemValidationSchema);
-
 // Export types using Drizzle's built-in type inference
 export type Category = typeof categories.$inferSelect;
 export type InsertCategory = typeof categories.$inferInsert;
-
 export type Product = typeof products.$inferSelect;
 export type InsertProduct = typeof products.$inferInsert;
-
 export type CartItem = typeof cartItems.$inferSelect;
 export type InsertCartItem = typeof cartItems.$inferInsert;
-
 export type Order = typeof orders.$inferSelect;
 export type InsertOrder = typeof orders.$inferInsert;
-
 export type OrderItem = typeof orderItems.$inferSelect;
 export type InsertOrderItem = typeof orderItems.$inferInsert;

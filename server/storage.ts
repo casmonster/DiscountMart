@@ -1,3 +1,121 @@
+
+const rawProducts: Omit<Product, "id">[] = [
+  {
+    name: "Handwoven Basket",
+    slug: "handwoven-basket",
+    description: "Beautifully crafted Rwandan basket made from natural sisal and sweetgrass.",
+    price: 15000,
+    discountPrice: null,
+    imageUrl: "https://images.pexels.com/photos/1409937/pexels-photo-1409937.jpeg",
+    categoryId: 4,
+    isNew: true,
+    stockLevel: 50,
+    inStock: true
+  },
+  {
+    name: "Ceramic Dinner Plate",
+    slug: "ceramic-dinner-plate",
+    description: "Locally made ceramic plate, ideal for modern table settings.",
+    price: 12000,
+    discountPrice: 10000,
+    imageUrl: "https://images.pexels.com/photos/1126728/pexels-photo-1126728.jpeg",
+    categoryId: 2,
+    isNew: false,
+    stockLevel: 100,
+    inStock: true
+  },
+  {
+    name: "Woven Wall Art",
+    slug: "woven-wall-art",
+    description: "Traditional wall decor made from banana leaves and raffia.",
+    price: 20000,
+    discountPrice: 18000,
+    imageUrl: "https://images.pexels.com/photos/1166642/pexels-photo-1166642.jpeg",
+    categoryId: 4,
+    isNew: true,
+    stockLevel: 100,
+    inStock: true
+  },
+  {
+  name: "Cooking Spoon Set",
+   slug: "cooking-spoon-set",
+   description: "Hand-carved spoon set made from sustainable hardwood.",
+   price: 8000,
+   discountPrice: null,
+   imageUrl: "https://images.pexels.com/photos/3952040/pexels-photo-3952040.jpeg",
+   categoryId: 3,
+   isNew: false,
+   stockLevel: 60,
+   inStock: true
+  },
+  {
+  name: "Cotton Wrap Skirt",
+  slug: "cotton-wrap-skirt",
+  description: "Colorful African print skirt made from 100% cotton fabric.",
+  price: 22000,
+  discountPrice: 20000,
+  imageUrl: "https://images.pexels.com/photos/977659/pexels-photo-977659.jpeg",
+  categoryId: 1,
+  isNew: true,
+  stockLevel: 30,
+  inStock: true
+  },
+      // --- Premium & Discounted Products Below ---
+  {
+  name: "Luxury Woven Blanket",
+  slug: "luxury-woven-blanket",
+  description: "Soft handwoven blanket crafted from local cotton, perfect for cozy evenings.",
+  price: 40000,
+  discountPrice: 35000,
+  imageUrl: "https://images.pexels.com/photos/1866149/pexels-photo-1866149.jpeg",
+  categoryId: 1,
+  isNew: false,
+  stockLevel: 50,
+  inStock: true
+  },
+  {
+  name: "Handcrafted Teak Tray",
+  slug: "handcrafted-teak-tray",
+  description: "Elegant serving tray made from polished teak wood.",
+  price: 25000,
+  discountPrice: null,
+  imageUrl: "https://images.pexels.com/photos/5946733/pexels-photo-5946733.jpeg",
+  categoryId: 3,
+  isNew: true,
+  stockLevel: 100,
+  inStock: true
+  },
+  {
+  name: "Gold-Trimmed Ceramic Bowl",
+  slug: "gold-ceramic-bowl",
+  description: "Luxury bowl with 24k gold trim, fired in small artisan batches.",
+  price: 30000,
+  discountPrice: 28000,
+  imageUrl: "https://images.pexels.com/photos/5638742/pexels-photo-5638742.jpeg",
+  categoryId: 2,
+  isNew: false,
+  stockLevel: 100,
+  inStock: true
+  },
+  {
+  name: "Rwandan Coffee Gift Box",
+  slug: "coffee-gift-box",
+  description: "Premium Arabica coffee with handmade cup set — perfect for gifting.",
+  price: 35000,
+  discountPrice: 30000,
+  imageUrl: "https://images.pexels.com/photos/3394654/pexels-photo-3394654.jpeg",
+  categoryId: 4,
+  isNew: true,
+  stockLevel: 60,
+  inStock: true
+  }             
+];
+export const demoProducts: Product[] = rawProducts.map((p, index) => ({
+  ...p,
+  id: index + 1,
+}));
+export type { Product };
+
 import {
   categories, Category, InsertCategory,
   products, Product, InsertProduct,
@@ -226,108 +344,16 @@ export class MemStorage implements IStorage {
       this.categories.set(id, { ...category, id });
     });
   
-    const demoProducts: InsertProduct[] = [
-      {
-        name: "Handwoven Basket",
-        slug: "handwoven-basket",
-        description: "Beautifully crafted Rwandan basket made from natural sisal and sweetgrass.",
-        price: 15000,
-        discountPrice: null,
-        imageUrl: "https://images.pexels.com/photos/1409937/pexels-photo-1409937.jpeg",
-        categoryId: 4,
-        isNew: true
-      },
-      {
-        name: "Ceramic Dinner Plate",
-        slug: "ceramic-dinner-plate",
-        description: "Locally made ceramic plate, ideal for modern table settings.",
-        price: 12000,
-        discountPrice: 10000,
-        imageUrl: "https://images.pexels.com/photos/1126728/pexels-photo-1126728.jpeg",
-        categoryId: 2,
-        isNew: false
-      },
-      {
-        name: "Woven Wall Art",
-        slug: "woven-wall-art",
-        description: "Traditional wall decor made from banana leaves and raffia.",
-        price: 20000,
-        discountPrice: 18000,
-        imageUrl: "https://images.pexels.com/photos/1166642/pexels-photo-1166642.jpeg",
-        categoryId: 4,
-        isNew: true
-      },
-      {
-        name: "Cooking Spoon Set",
-        slug: "cooking-spoon-set",
-        description: "Hand-carved spoon set made from sustainable hardwood.",
-        price: 8000,
-        discountPrice: null,
-        imageUrl: "https://images.pexels.com/photos/3952040/pexels-photo-3952040.jpeg",
-        categoryId: 3,
-        isNew: false
-      },
-      {
-        name: "Cotton Wrap Skirt",
-        slug: "cotton-wrap-skirt",
-        description: "Colorful African print skirt made from 100% cotton fabric.",
-        price: 22000,
-        discountPrice: 20000,
-        imageUrl: "https://images.pexels.com/photos/977659/pexels-photo-977659.jpeg",
-        categoryId: 1,
-        isNew: true
-      },
-      // --- Premium & Discounted Products Below ---
-      {
-        name: "Luxury Woven Blanket",
-        slug: "luxury-woven-blanket",
-        description: "Soft handwoven blanket crafted from local cotton, perfect for cozy evenings.",
-        price: 40000,
-        discountPrice: 35000,
-        imageUrl: "https://images.pexels.com/photos/1866149/pexels-photo-1866149.jpeg",
-        categoryId: 1,
-        isNew: false
-      },
-      {
-        name: "Handcrafted Teak Tray",
-        slug: "handcrafted-teak-tray",
-        description: "Elegant serving tray made from polished teak wood.",
-        price: 25000,
-        discountPrice: null,
-        imageUrl: "https://images.pexels.com/photos/5946733/pexels-photo-5946733.jpeg",
-        categoryId: 3,
-        isNew: true
-      },
-      {
-        name: "Gold-Trimmed Ceramic Bowl",
-        slug: "gold-ceramic-bowl",
-        description: "Luxury bowl with 24k gold trim, fired in small artisan batches.",
-        price: 30000,
-        discountPrice: 28000,
-        imageUrl: "https://images.pexels.com/photos/5638742/pexels-photo-5638742.jpeg",
-        categoryId: 2,
-        isNew: false
-      },
-      {
-        name: "Rwandan Coffee Gift Box",
-        slug: "coffee-gift-box",
-        description: "Premium Arabica coffee with handmade cup set — perfect for gifting.",
-        price: 35000,
-        discountPrice: 30000,
-        imageUrl: "https://images.pexels.com/photos/3394654/pexels-photo-3394654.jpeg",
-        categoryId: 4,
-        isNew: true
-      }
-    ];
-    demoCategories.forEach(category => {
-      const id = this.currentCategoryId++;
-      this.categories.set(id, { ...category, id });
-    });
+    demoProducts.forEach(product => {
+     const id = this.currentProductId++;
+     this.products.set(id, { ...product, id });
+   });
   }
 }
 
 // ----------- Singleton Instance -----------
 export const storage = new MemStorage();
+
 
 // ----------- Global Async API Exports -----------
 
@@ -355,3 +381,5 @@ export const clearCart = async (cartId: string) => storage.clearCart(cartId);
 export const createOrder = async (order: InsertOrder, items: InsertOrderItem[]) => storage.createOrder(order, items);
 export const placeOrder = async (order: InsertOrder, items: InsertOrderItem[]) => storage.placeOrder(order, items); // ✅ Added missing export
 export const getOrder = async (id: number) => storage.getOrder(id);
+
+
