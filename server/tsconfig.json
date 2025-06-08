@@ -2,27 +2,28 @@
   "compilerOptions": {
     "target": "ES2020",
     "module": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "rootDir": "../",
-    "baseUrl": "..",
+    "baseUrl": ".",
     "outDir": "./dist",
     "preserveSymlinks": true,
     "allowImportingTsExtensions": true,
     "noEmit": true,
     "resolveJsonModule": true,
+     "types": ["vite/client"],
     "paths": {
-      "@shared/*": ["../shared/*"],
+      "@shared/*": ["server/*"],
       "@/*": ["./*"]
     }
   },
   "include": [
     "./**/*",
-    "../shared/**/*"
+    "../shared/**/*",
+    "vite.config.ts"
   ],
   "exclude": [
     "node_modules",

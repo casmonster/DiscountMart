@@ -6,10 +6,10 @@ import { Link } from "react-router-dom";
 type ProductCardProps = {
   id: string;
   slug: string;
-  name: string | ReactNode; // 🔄 Allow string or ReactNode
+  name: string | ReactNode;
   imageUrl: string;
-  price: number;
-  discountPrice?: number;
+  price: number | null; // allow null from backend
+  discountPrice?: number | null;
   stockLevel: number;
   isNew?: boolean;
 };
@@ -24,10 +24,22 @@ function ProductCardComponent({
   stockLevel,
   isNew = false,
 }: ProductCardProps) {
-  const displayPrice = useMemo(() => discountPrice ?? price, [discountPrice, price]);
-  const isInStock = stockLevel > 0;
+  const displayPrice = useMemo(
+    () => (typeof discountPrice === "number" ? discountPrice : price),
+    [discountPrice, price]
+  );
 
+  const isInStock = stockLevel > 0;
   const nameTextOnly = typeof name === "string" ? name : "Product";
+
+  const formattedPrice = (value: number | null | undefined) =>
+    typeof value === "number"
+      ? value.toLocaleString("en-RW", {
+          style: "currency",
+          currency: "RWF",
+          minimumFractionDigits: 0,
+        })
+      : "Price unavailable";
 
   return (
     <Link
@@ -43,7 +55,7 @@ function ProductCardComponent({
           width={400}
           height={300}
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-          fetchPriority="low"
+          fetchPriority="high" 
           onError={(e) => {
             e.currentTarget.src = "/fallback.jpg";
           }}
@@ -51,23 +63,21 @@ function ProductCardComponent({
       </div>
 
       <div className="p-4">
-        <h3 className="font-semibold text-lg mb-1 line-clamp-1">
-          {name} {/* 🔄 Supports highlighted search matches */}
-        </h3>
+        <h3 className="font-semibold text-lg mb-1 line-clamp-1">{name}</h3>
 
         <div className="flex items-center space-x-2">
-          {discountPrice !== undefined ? (
+          {discountPrice !== undefined && discountPrice !== null ? (
             <>
               <span className="text-sm text-gray-500 line-through">
-                ${price.toFixed(2)}
+                {formattedPrice(price)}
               </span>
               <span className="text-base text-red-500 font-semibold">
-                ${discountPrice.toFixed(2)}
+                {formattedPrice(discountPrice)}
               </span>
             </>
           ) : (
             <span className="text-base text-gray-900 font-semibold">
-              ${price.toFixed(2)}
+              {formattedPrice(price)}
             </span>
           )}
         </div>

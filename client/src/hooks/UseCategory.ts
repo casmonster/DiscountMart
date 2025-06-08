@@ -1,5 +1,6 @@
 import { useQuery, UseQueryOptions, UseQueryResult } from '@tanstack/react-query';
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 interface Category {
   id: string;
   slug: string;
@@ -18,9 +19,9 @@ export const useCategory = (
   options?: UseQueryOptions<Category, Error, Category, [string]>
 ): UseQueryResult<Category, Error> => {
   return useQuery<Category, Error, Category, [string]>({
-    queryKey: [`/api/categories/${slug}`],
+    queryKey: [`category-${slug}`],
     queryFn: async () => {
-      const res = await fetch(`/api/categories/${slug}`);
+      const res = await fetch(`${BASE_URL}/categories/${slug}`);
       if (!res.ok) throw new Error('Failed to fetch category');
       return res.json();
     },
@@ -34,9 +35,9 @@ export const useCategoryProducts = (
   options?: UseQueryOptions<Product[], Error, Product[], [string]>
 ): UseQueryResult<Product[], Error> => {
   return useQuery<Product[], Error, Product[], [string]>({
-    queryKey: [`/api/products/category/${categoryId}`],
+    queryKey: [`category-products-${categoryId}`],
     queryFn: async () => {
-      const res = await fetch(`/api/products/category/${categoryId}`);
+      const res = await fetch(`${BASE_URL}/products/category/${categoryId}`);
       if (!res.ok) throw new Error('Failed to fetch products');
       return res.json();
     },

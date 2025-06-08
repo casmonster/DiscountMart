@@ -3,8 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState, useMemo, useRef } from "react";
 import ProductCard from "../../components/product/ProductCard";
-import { demoProducts } from "../../../../server/storage";
-import type { Product } from "../../../../server/storage";
+import type { Product } from "../../types/product"; 
 import debounce from "lodash.debounce";
 
 export default function ProductsPage() {
@@ -13,6 +12,8 @@ export default function ProductsPage() {
   const queryParam = searchParams.get("q") || "";
 
   const [search, setSearch] = useState(queryParam);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -20,7 +21,25 @@ export default function ProductsPage() {
     inputRef.current?.focus(); // Autofocus input
   }, [queryParam]);
 
-  // Debounced URL update
+  // Fetch products once on mount
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/products`);
+        if (!res.ok) throw new Error("Failed to fetch products");
+        const data: Product[] = await res.json();
+        setProducts(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProducts();
+  }, []);
+
+  // Debounced URL update for search query
   const updateQuery = useMemo(
     () =>
       debounce((query: string) => {
@@ -36,14 +55,16 @@ export default function ProductsPage() {
     updateQuery(val);
   };
 
-  // Highlight matching text
+  // Highlight matching text in product name
   const highlightMatch = (text: string, query: string) => {
     if (!query) return text;
 
     const regex = new RegExp(`(${query})`, "gi");
     return text.split(regex).map((part, i) =>
       part.toLowerCase() === query.toLowerCase() ? (
-        <mark key={i} className="bg-yellow-200 px-1 rounded">{part}</mark>
+        <mark key={i} className="bg-yellow-200 px-1 rounded">
+          {part}
+        </mark>
       ) : (
         <span key={i}>{part}</span>
       )
@@ -51,10 +72,10 @@ export default function ProductsPage() {
   };
 
   const filteredProducts = search
-    ? demoProducts.filter((product: Product) =>
+    ? products.filter((product: Product) =>
         product.name.toLowerCase().includes(search.toLowerCase())
       )
-    : demoProducts;
+    : products;
 
   return (
     <div className="px-4 py-8">
@@ -70,8 +91,10 @@ export default function ProductsPage() {
         />
       </div>
 
-      {/* Product Grid */}
-      {filteredProducts.length === 0 ? (
+      {/* Loading state */}
+      {loading ? (
+        <p className="text-center text-gray-500">Loading products...</p>
+      ) : filteredProducts.length === 0 ? (
         <p className="text-center text-gray-500">No products found.</p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
@@ -80,7 +103,7 @@ export default function ProductsPage() {
               key={product.id}
               id={String(product.id)}
               slug={product.slug}
-              imageUrl={product.imageUrl}
+               imageUrl={product.imageUrl as string}
               price={product.price}
               discountPrice={product.discountPrice ?? undefined}
               stockLevel={product.stockLevel}

@@ -1,3 +1,5 @@
+// server/schema.ts
+
 import { pgTable, text, serial, integer, boolean, doublePrecision, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
@@ -23,6 +25,8 @@ export const products = pgTable("products", {
   categoryId: integer("category_id").notNull(),
   inStock: boolean("in_stock").notNull().default(true),
   stockLevel: integer("stock_level").notNull().default(0),
+  isFeatured: boolean('is_featured').default(false),
+  createdAt: timestamp('created_at').defaultNow(),
   isNew: boolean("is_new").notNull().default(false),
 });
 export const insertProductSchema = createInsertSchema(products).omit({
@@ -86,3 +90,4 @@ export type Order = typeof orders.$inferSelect;
 export type InsertOrder = typeof orders.$inferInsert;
 export type OrderItem = typeof orderItems.$inferSelect;
 export type InsertOrderItem = typeof orderItems.$inferInsert;
+

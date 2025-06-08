@@ -1,0 +1,7 @@
+{
+  "watch": ["index.ts", "routes"],
+  "ext": "ts",
+  "ignore": ["dist"],
+  "exec": "tsx index.ts"
+}
+

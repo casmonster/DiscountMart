@@ -11,6 +11,8 @@ import { useToast } from "../hooks/use-toast";
 import { apiRequest } from "../lib/queryClient";
 import { v4 as uuidv4 } from "uuid";
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 export type CartItemWithProduct = {
   id: number;
   cartId: string;
@@ -77,7 +79,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const fetchCartItems = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/cart/${cartId}`);
+      const response = await fetch(`${BASE_URL}/cart/${cartId}`);
       if (!response.ok) throw new Error(`Error ${response.status}`);
       const data = await response.json();
       setCartItems(data);
@@ -100,7 +102,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     try {
       setIsLoading(true);
       validateQuantity(quantity);
-      await apiRequest("POST", "/api/cart", { cartId, productId, quantity });
+      await apiRequest("POST", `${BASE_URL}/cart`, { cartId, productId, quantity });
       await fetchCartItems();
       toast({ title: "Added to cart", description: "Item added successfully" });
     } catch {
@@ -114,7 +116,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     if (quantity <= 0) return removeItem(itemId);
     try {
       setIsLoading(true);
-      await apiRequest("PUT", `/api/cart/${itemId}`, { quantity });
+      await apiRequest("PUT", `${BASE_URL}/cart/${itemId}`, { quantity });
       await fetchCartItems();
     } catch {
       toast({ title: "Error", description: "Failed to update quantity", type: "background" });
@@ -126,7 +128,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const removeItem = useCallback(async (itemId: number) => {
     try {
       setIsLoading(true);
-      await apiRequest("DELETE", `/api/cart/${itemId}`);
+      await apiRequest("DELETE", `${BASE_URL}/cart/${itemId}`);
       await fetchCartItems();
       toast({ title: "Removed from cart", description: "Item removed successfully" });
     } catch {
@@ -139,7 +141,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const clearCart = useCallback(async () => {
     try {
       setIsLoading(true);
-      await apiRequest("DELETE", `/api/cart/clear/${cartId}`);
+      await apiRequest("DELETE", `${BASE_URL}/cart/clear/${cartId}`);
       setCartItems([]);
     } catch {
       toast({ title: "Error", description: "Failed to clear cart", type: "background" });
@@ -177,7 +179,22 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       clearCart,
       resetError,
     }),
-    [cartItems, cartId, isLoading, isInitialized, error, itemCount, getCartTotal, getTaxAmount, getFinalTotal, addToCart, updateQuantity, removeItem, clearCart, resetError]
+    [
+      cartItems,
+      cartId,
+      isLoading,
+      isInitialized,
+      error,
+      itemCount,
+      getCartTotal,
+      getTaxAmount,
+      getFinalTotal,
+      addToCart,
+      updateQuantity,
+      removeItem,
+      clearCart,
+      resetError,
+    ]
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

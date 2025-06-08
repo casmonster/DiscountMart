@@ -4,9 +4,9 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import LastViewedProduct from "../components/product/LastViewedProduct";
 import ProductCard from "../components/product/ProductCard";
-import { useRecentlyViewed } from "../context/RecentlyViewedContext";
 import { Button } from "../components/ui/button";
 import CategoryCard from "../components/product/CategoryCard";
+import { useEffect, useState } from "react";
 
 // Define types for our data
 interface Product {
@@ -26,23 +26,53 @@ interface Category {
   imageUrl?: string;
   // Add other category properties as needed
 }
+const BASE_URL = import.meta.env.VITE_API_BASE_URL
 
 export default function Home() {
-  const { lastViewedProduct } = useRecentlyViewed();
-  const { data: categories, isLoading: categoriesLoading } = useQuery<Category[]>({
-    queryKey: ["/api/categories"],
-    queryFn: () => fetch("/api/categories").then(res => res.json()),
-  });
+  const [categories, setCategories] = useState<Category[]>([])
+  const [categoriesLoading, setCategoriesLoading] = useState(true)
 
-  const { data: featuredProducts, isLoading: featuredLoading } = useQuery<Product[]>({
-    queryKey: ["/api/products/featured"],
-    queryFn: () => fetch("/api/products/featured").then(res => res.json()),
-  });
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch(`${BASE_URL}/categories`)
+        const data = await res.json()
+        setCategories(data)
+      } catch (error) {
+        console.error('Error fetching categories:', error)
+      } finally {
+        setCategoriesLoading(false)
+      }
+    }
 
-  const { data: newProducts, isLoading: newProductsLoading } = useQuery<Product[]>({
-    queryKey: ["/api/products/new"],
-    queryFn: () => fetch("/api/products/new").then(res => res.json()),
-  });
+    fetchCategories()
+  }, [])
+
+  const {
+    data: featuredProducts,
+    isLoading: featuredLoading,
+    isError: featuredError,
+  } = useQuery<Product[]>({
+    queryKey: ['featuredProducts'],
+    queryFn: async () => {
+      const res = await fetch(`${BASE_URL}/products?featured=true`)
+      return res.json()
+    },
+  })
+
+  const {
+    data: newProducts,
+    isLoading: newProductsLoading,
+    isError: newProductsError,
+  } = useQuery<Product[]>({
+    queryKey: ['newArrivals'],
+    queryFn: async () => {
+      const res = await fetch(`${BASE_URL}/products?new=true`)
+      return res.json()
+    },
+  })
+
+  const lastViewedProduct = null // TODO: Implement if needed
 
  return (
     <main>

@@ -1,11 +1,12 @@
-import * as express from "express";
-import { type Application } from "express";
+// server/vite.ts
+import express, { type Application } from "express";
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
 import { type Server } from "http";
 
 /**
- * Log messages with timestamp and source label
+ * Simple logger
  */
 export function log(message: string, source = "express") {
   const formattedTime = new Date().toLocaleTimeString("en-US", {
@@ -14,22 +15,22 @@ export function log(message: string, source = "express") {
     second: "2-digit",
     hour12: true,
   });
-
   console.log(`${formattedTime} [${source}] ${message}`);
 }
 
 /**
- * Dummy setupVite function (no-op since Vite dev middleware is not used)
+ * Dummy Vite setup to avoid crashes in production
  */
 export async function setupVite(app: Application, server: Server): Promise<void> {
   log("Vite middleware is disabled in this environment.", "vite");
 }
 
 /**
- * Serve built static files from /client/dist (or wherever your frontend build output lives)
+ * Serve built client static files
  */
 export function serveStatic(app: Application): void {
-  const distPath = path.resolve(path.dirname(new URL(import.meta.url).pathname), "../client/dist");
+  const __dirname = path.dirname(fileURLToPath(import.meta.url));
+  const distPath = path.resolve(__dirname, "../client/dist");
 
   if (!fs.existsSync(distPath)) {
     throw new Error(
@@ -38,8 +39,6 @@ export function serveStatic(app: Application): void {
   }
 
   app.use(express.static(distPath));
-
-  // For all other routes, serve index.html (SPA fallback)
   app.use("*", (_req, res) => {
     res.sendFile(path.resolve(distPath, "index.html"));
   });

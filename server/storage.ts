@@ -1,120 +1,4 @@
 
-const rawProducts: Omit<Product, "id">[] = [
-  {
-    name: "Handwoven Basket",
-    slug: "handwoven-basket",
-    description: "Beautifully crafted Rwandan basket made from natural sisal and sweetgrass.",
-    price: 15000,
-    discountPrice: null,
-    imageUrl: "https://images.pexels.com/photos/1409937/pexels-photo-1409937.jpeg",
-    categoryId: 4,
-    isNew: true,
-    stockLevel: 50,
-    inStock: true
-  },
-  {
-    name: "Ceramic Dinner Plate",
-    slug: "ceramic-dinner-plate",
-    description: "Locally made ceramic plate, ideal for modern table settings.",
-    price: 12000,
-    discountPrice: 10000,
-    imageUrl: "https://images.pexels.com/photos/1126728/pexels-photo-1126728.jpeg",
-    categoryId: 2,
-    isNew: false,
-    stockLevel: 100,
-    inStock: true
-  },
-  {
-    name: "Woven Wall Art",
-    slug: "woven-wall-art",
-    description: "Traditional wall decor made from banana leaves and raffia.",
-    price: 20000,
-    discountPrice: 18000,
-    imageUrl: "https://images.pexels.com/photos/1166642/pexels-photo-1166642.jpeg",
-    categoryId: 4,
-    isNew: true,
-    stockLevel: 100,
-    inStock: true
-  },
-  {
-  name: "Cooking Spoon Set",
-   slug: "cooking-spoon-set",
-   description: "Hand-carved spoon set made from sustainable hardwood.",
-   price: 8000,
-   discountPrice: null,
-   imageUrl: "https://images.pexels.com/photos/3952040/pexels-photo-3952040.jpeg",
-   categoryId: 3,
-   isNew: false,
-   stockLevel: 60,
-   inStock: true
-  },
-  {
-  name: "Cotton Wrap Skirt",
-  slug: "cotton-wrap-skirt",
-  description: "Colorful African print skirt made from 100% cotton fabric.",
-  price: 22000,
-  discountPrice: 20000,
-  imageUrl: "https://images.pexels.com/photos/977659/pexels-photo-977659.jpeg",
-  categoryId: 1,
-  isNew: true,
-  stockLevel: 30,
-  inStock: true
-  },
-      // --- Premium & Discounted Products Below ---
-  {
-  name: "Luxury Woven Blanket",
-  slug: "luxury-woven-blanket",
-  description: "Soft handwoven blanket crafted from local cotton, perfect for cozy evenings.",
-  price: 40000,
-  discountPrice: 35000,
-  imageUrl: "https://images.pexels.com/photos/1866149/pexels-photo-1866149.jpeg",
-  categoryId: 1,
-  isNew: false,
-  stockLevel: 50,
-  inStock: true
-  },
-  {
-  name: "Handcrafted Teak Tray",
-  slug: "handcrafted-teak-tray",
-  description: "Elegant serving tray made from polished teak wood.",
-  price: 25000,
-  discountPrice: null,
-  imageUrl: "https://images.pexels.com/photos/5946733/pexels-photo-5946733.jpeg",
-  categoryId: 3,
-  isNew: true,
-  stockLevel: 100,
-  inStock: true
-  },
-  {
-  name: "Gold-Trimmed Ceramic Bowl",
-  slug: "gold-ceramic-bowl",
-  description: "Luxury bowl with 24k gold trim, fired in small artisan batches.",
-  price: 30000,
-  discountPrice: 28000,
-  imageUrl: "https://images.pexels.com/photos/5638742/pexels-photo-5638742.jpeg",
-  categoryId: 2,
-  isNew: false,
-  stockLevel: 100,
-  inStock: true
-  },
-  {
-  name: "Rwandan Coffee Gift Box",
-  slug: "coffee-gift-box",
-  description: "Premium Arabica coffee with handmade cup set — perfect for gifting.",
-  price: 35000,
-  discountPrice: 30000,
-  imageUrl: "https://images.pexels.com/photos/3394654/pexels-photo-3394654.jpeg",
-  categoryId: 4,
-  isNew: true,
-  stockLevel: 60,
-  inStock: true
-  }             
-];
-export const demoProducts: Product[] = rawProducts.map((p, index) => ({
-  ...p,
-  id: index + 1,
-}));
-export type { Product };
 
 import {
   categories, Category, InsertCategory,
@@ -122,7 +6,7 @@ import {
   cartItems, CartItem, InsertCartItem,
   orders, Order, InsertOrder,
   orderItems, OrderItem, InsertOrderItem,
-} from "../shared/schema";
+} from "./schema";
 
 export interface IStorage {
   getCategories(): Promise<Category[]>;
@@ -131,7 +15,7 @@ export interface IStorage {
   getProducts(): Promise<Product[]>;
   getProductsByCategory(categoryId: number): Promise<Product[]>;
   getProductBySlug(slug: string): Promise<Product | undefined>;
-  getProductById(id: number): Promise<Product | undefined>; // ✅ Added
+  getProductById(id: number): Promise<Product | undefined>;
   searchProducts(query: string): Promise<Product[]>;
   getFeaturedProducts(): Promise<Product[]>;
   getNewProducts(): Promise<Product[]>;
@@ -142,8 +26,7 @@ export interface IStorage {
   removeCartItem(id: number): Promise<void>;
   clearCart(cartId: string): Promise<void>;
 
-  createOrder(order: InsertOrder, items: InsertOrderItem[]): Promise<Order>;
-  placeOrder(order: InsertOrder, items: InsertOrderItem[]): Promise<Order>; // ✅ Added missing method
+  placeOrder(order: InsertOrder, items: InsertOrderItem[]): Promise<Order>;
   getOrder(id: number): Promise<(Order & { items: (OrderItem & { product: Product })[] }) | undefined>;
 }
 
@@ -252,35 +135,17 @@ export class MemStorage implements IStorage {
   }
 
   // ----------- Orders -----------
-  async createOrder(order: InsertOrder, items: InsertOrderItem[]): Promise<Order> {
-    const id = this.currentOrderId++;
-    const newOrder: Order = { ...order, id, createdAt: new Date(), status: order.status ?? "pending" };
-    this.orders.set(id, newOrder);
-
-    for (const item of items) {
-      const itemId = this.currentOrderItemId++;
-      const newItem: OrderItem = { ...item, id: itemId, orderId: id };
-      this.orderItems.set(itemId, newItem);
-    }
-
-    return newOrder;
-  }
-
-  // ✅ Added placeOrder method that was missing
   async placeOrder(order: InsertOrder, items: InsertOrderItem[]): Promise<Order> {
-    // This is similar to createOrder but can include additional business logic
-    // like validating inventory, calculating totals, etc.
     const id = this.currentOrderId++;
     const newOrder: Order = { 
       ...order, 
       id, 
       createdAt: new Date(),
-      status: "pending" // Assuming Order has a status field
+      status: "pending"
     };
-    
+
     this.orders.set(id, newOrder);
 
-    // Create and store order items
     for (const item of items) {
       const itemId = this.currentOrderItemId++;
       const newItem: OrderItem = { 
@@ -291,7 +156,6 @@ export class MemStorage implements IStorage {
       this.orderItems.set(itemId, newItem);
     }
 
-    // We could also clear the customer's cart here
     if (order.cartId) {
       this.clearCart(order.cartId);
     }
@@ -338,22 +202,18 @@ export class MemStorage implements IStorage {
         imageUrl: "https://images.pexels.com/photos/2986011/pexels-photo-2986011.jpeg"
       }
     ];
-  
+
     demoCategories.forEach(category => {
       const id = this.currentCategoryId++;
       this.categories.set(id, { ...category, id });
     });
-  
-    demoProducts.forEach(product => {
-     const id = this.currentProductId++;
-     this.products.set(id, { ...product, id });
-   });
+    
+    
   }
 }
 
 // ----------- Singleton Instance -----------
 export const storage = new MemStorage();
-
 
 // ----------- Global Async API Exports -----------
 
@@ -378,8 +238,5 @@ export const removeCartItem = async (id: number) => storage.removeCartItem(id);
 export const clearCart = async (cartId: string) => storage.clearCart(cartId);
 
 // Orders
-export const createOrder = async (order: InsertOrder, items: InsertOrderItem[]) => storage.createOrder(order, items);
-export const placeOrder = async (order: InsertOrder, items: InsertOrderItem[]) => storage.placeOrder(order, items); // ✅ Added missing export
+export const placeOrder = async (order: InsertOrder, items: InsertOrderItem[]) => storage.placeOrder(order, items);
 export const getOrder = async (id: number) => storage.getOrder(id);
-
-

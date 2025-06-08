@@ -1,21 +1,32 @@
-import express from "express";
-import { type Request, type Response, type NextFunction, type Application } from "express";
-import { createServer } from "http";
-import { registerRoutes } from "./routes";
-import { setupVite, serveStatic, log } from "./vite";
-import path from "path";
-import { fileURLToPath } from "url";
+import express, { type Request, type Response, type NextFunction, type Application } from 'express';
+import { createServer } from 'http';
+import cors from 'cors'; // ✅ Import CORS
+import { setupVite, serveStatic, log } from './vite';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import 'dotenv/config';
+
+// Import route modules
+import { dbProductsRouter } from './routes/products';
+import { dbCategoriesRouter } from './routes/categories';
+import cartRouter from './routes/cart.route';
+import { ordersRouter } from './routes/orders';
 
 const app: Application = express();
-const server = createServer(app);
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-// Middleware to parse request bodies
+
+// ✅ Enable CORS
+app.use(cors({
+  origin:  process.env.FRONTEND_URL, // or use process.env.FRONTEND_URL if stored in .env
+  credentials: true,
+}));
+
+// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Logging middleware
+// Request logger
 app.use((req: Request, res: Response, next: NextFunction) => {
   const start = Date.now();
   const path = req.path;
@@ -27,16 +38,14 @@ app.use((req: Request, res: Response, next: NextFunction) => {
     return originalJson(body);
   };
 
-  res.on("finish", () => {
+  res.on('finish', () => {
     const duration = Date.now() - start;
-    if (path.startsWith("/api")) {
+    if (path.startsWith('/api')) {
       let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
       if (capturedJsonResponse) {
         logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
       }
-      if (logLine.length > 80) {
-        logLine = logLine.slice(0, 79) + "…";
-      }
+      logLine = logLine.length > 80 ? logLine.slice(0, 77) + '…' : logLine;
       log(logLine);
     }
   });
@@ -44,34 +53,40 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
+// Health check
+app.get('/', (_req: Request, res: Response) => {
+  res.send('API is running!');
+});
 
+// Static files
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Routes
+app.use('/api/products', dbProductsRouter);
+app.use('/api/categories', dbCategoriesRouter);
+app.use('/api/cart', cartRouter);
+app.use('/api/orders', ordersRouter);
+
+// Error handler
+app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+  const status = err.status || err.statusCode || 500;
+  const message = err.message || 'Internal Server Error';
+  res.status(status).json({ message });
+  throw err;
+});
+
+// Server
+const server = createServer(app);
 
 (async () => {
-   app.get("/", (req: Request, res: Response) => {
-    res.send("API is running!");
-  });
-
-  app.use(express.static(path.join(__dirname, "public")));
-  // Register API routes under /api
-  registerRoutes(app);
-
-  // Global error handler
-  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-    const status = err.status || err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
-    res.status(status).json({ message });
-    throw err;
-  });
-
-  // Setup dev server or serve static files
-  if (app.get("env") === "development") {
+  if (app.get('env') === 'development') {
     await setupVite(app, server);
   } else {
     serveStatic(app);
   }
 
   const port = 5000;
-  server.listen(port, "0.0.0.0", () => {
+  server.listen(port, '0.0.0.0', () => {
     log(`serving on port ${port}`);
   });
 })();
