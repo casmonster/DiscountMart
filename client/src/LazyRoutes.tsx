@@ -18,7 +18,7 @@ const SearchPage = lazy(() => import('./pages/SearchPage'));
 const Testimonials = lazy(() => import('./pages/Testimonials'));
 const Wishlist = lazy(() => import('./pages/Wishlist'));
 const NotFound = lazy(() => import('./pages/not-found'));
-
+const ProductsPage = lazy(() => import('./pages/ProductsPage'));
 const RoutesComponent = () => (
     <Suspense fallback={<div>Loading...</div>}>
       <Routes>
@@ -30,7 +30,9 @@ const RoutesComponent = () => (
         <Route path="/new-arrivals" element={<NewArrivals />} />
         <Route path="/order-confirmation/:id" element={<OrderConfirmation />} />
         <Route path="/pickup-policy" element={<PickupPolicy />} />
+        <Route path="/Search-Page" element={<SearchPage />} />
         <Route path="/product/:slug" element={<ProductDetail />} />
+        <Route path="/products/:slug" element={<ProductsPage />} />
         <Route path="/store-info" element={<StoreInfo />} />
         <Route path="/testimonials" element={<Testimonials />} />
         <Route path="/wishlist" element={<Wishlist />} />

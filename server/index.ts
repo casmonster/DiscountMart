@@ -1,3 +1,4 @@
+//server/index.ts
 import express, { type Request, type Response, type NextFunction, type Application } from 'express';
 import { createServer } from 'http';
 import cors from 'cors'; // ✅ Import CORS
@@ -7,10 +8,9 @@ import { fileURLToPath } from 'url';
 import 'dotenv/config';
 
 // Import route modules
-import { dbProductsRouter } from './routes/products';
+import  {dbProductsRouter}  from './routes/products';
 import { dbCategoriesRouter } from './routes/categories';
-import cartRouter from './routes/cart.route';
-import { ordersRouter } from './routes/orders';
+import  {ordersRouter}  from './routes/orders';
 
 const app: Application = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -64,7 +64,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Routes
 app.use('/api/products', dbProductsRouter);
 app.use('/api/categories', dbCategoriesRouter);
-app.use('/api/cart', cartRouter);
 app.use('/api/orders', ordersRouter);
 
 // Error handler

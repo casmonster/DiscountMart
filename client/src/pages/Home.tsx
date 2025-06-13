@@ -3,12 +3,12 @@ import { Skeleton } from "../components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import LastViewedProduct from "../components/product/LastViewedProduct";
+import { useRecentlyViewed } from "../context/RecentlyViewedContext";
 import ProductCard from "../components/product/ProductCard";
 import { Button } from "../components/ui/button";
 import CategoryCard from "../components/product/CategoryCard";
 import { useEffect, useState } from "react";
 
-// Define types for our data
 interface Product {
   id: string | number;
   slug: string;
@@ -17,6 +17,9 @@ interface Product {
   price: number;
   discountPrice?: number;
   stockLevel: number;
+  description: string;
+  image: string;
+  categoryId: string | number;
 }
 
 interface Category {
@@ -24,57 +27,81 @@ interface Category {
   name: string;
   slug: string;
   imageUrl?: string;
-  // Add other category properties as needed
 }
-const BASE_URL = import.meta.env.VITE_API_BASE_URL
+
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export default function Home() {
-  const [categories, setCategories] = useState<Category[]>([])
-  const [categoriesLoading, setCategoriesLoading] = useState(true)
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await fetch(`${BASE_URL}/categories`)
-        const data = await res.json()
-        setCategories(data)
+        const res = await fetch(`${BASE_URL}/categories`);
+        const data = await res.json();
+        setCategories(data);
       } catch (error) {
-        console.error('Error fetching categories:', error)
+        console.error("Error fetching categories:", error);
       } finally {
-        setCategoriesLoading(false)
+        setCategoriesLoading(false);
       }
-    }
-
-    fetchCategories()
-  }, [])
+    };
+    fetchCategories();
+  }, []);
 
   const {
     data: featuredProducts,
     isLoading: featuredLoading,
-    isError: featuredError,
   } = useQuery<Product[]>({
-    queryKey: ['featuredProducts'],
+    queryKey: ["featuredProducts"],
     queryFn: async () => {
-      const res = await fetch(`${BASE_URL}/products?featured=true`)
-      return res.json()
+      const res = await fetch(`${BASE_URL}/products?featured=true`);
+      return res.json();
     },
-  })
+  });
 
   const {
     data: newProducts,
     isLoading: newProductsLoading,
-    isError: newProductsError,
   } = useQuery<Product[]>({
-    queryKey: ['newArrivals'],
+    queryKey: ["newArrivals"],
     queryFn: async () => {
-      const res = await fetch(`${BASE_URL}/products?new=true`)
-      return res.json()
+      const res = await fetch(`${BASE_URL}/products?new=true`);
+      return res.json();
     },
-  })
+  });
+    const lastViewedProduct = useRecentlyViewed()?.lastViewedProduct ?? null;
 
-  const lastViewedProduct = null // TODO: Implement if needed
+  
 
- return (
+  const renderProductSkeletons = () =>
+    Array(4)
+      .fill(null)
+      .map((_, i) => (
+        <div key={i} className="aspect-[4/3]">
+          <Skeleton className="w-full h-full rounded-lg" />
+          <div className="p-4 space-y-2">
+            <Skeleton className="h-4 w-3/4" />
+            <Skeleton className="h-4 w-1/4" />
+            <div className="flex justify-between">
+              <Skeleton className="h-4 w-1/4" />
+              <Skeleton className="h-8 w-1/4" />
+            </div>
+          </div>
+        </div>
+      ));
+
+  const renderCategorySkeletons = () =>
+    Array(4)
+      .fill(null)
+      .map((_, i) => (
+        <div key={i} className="aspect-square">
+          <Skeleton className="w-full h-full rounded-lg" />
+        </div>
+      ));
+
+  return (
     <main>
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-primary/90 to-primary text-white py-12 md:py-16">
@@ -98,31 +125,22 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Featured Categories */}
+      {/* Categories */}
       <section className="py-12 bg-white">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl font-bold mb-8 text-center">Shop by Category</h2>
-
-          {categoriesLoading ? (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-              {Array(4).fill(0).map((_, i) => (
-                <div key={i} className="aspect-square">
-                  <Skeleton className="w-full h-full rounded-lg" />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-              {categories?.map((category) => (
-                <CategoryCard
-                  key={category.id}
-                  name={category.name}
-                  slug={category.slug}
-                  imageUrl={category.imageUrl ?? ""}
-                />
-              ))}
-            </div>
-          )}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            {categoriesLoading
+              ? renderCategorySkeletons()
+              : categories?.map((category) => (
+                  <CategoryCard
+                    key={category.id}
+                    name={category.name}
+                    slug={category.slug}
+                    imageUrl={category.imageUrl ?? ""}
+                  />
+                ))}
+          </div>
         </div>
       </section>
 
@@ -135,39 +153,25 @@ export default function Home() {
               View All
             </Link>
           </div>
-
-          {featuredLoading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {Array(4).fill(0).map((_, i) => (
-                <div key={i} className="aspect-[4/3]">
-                  <Skeleton className="w-full h-full rounded-lg" />
-                  <div className="p-4 space-y-2">
-                    <Skeleton className="h-4 w-3/4" />
-                    <Skeleton className="h-4 w-1/4" />
-                    <div className="flex justify-between">
-                      <Skeleton className="h-4 w-1/4" />
-                      <Skeleton className="h-8 w-1/4" />
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {featuredProducts?.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  id={String(product.id)}
-                  slug={product.slug}
-                  name={product.name}
-                  imageUrl={product.imageUrl}
-                  price={product.price}
-                  discountPrice={product.discountPrice}
-                  stockLevel={product.stockLevel}
-                />
-              ))}
-            </div>
-          )}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {featuredLoading
+              ? renderProductSkeletons()
+              : featuredProducts?.map((product) => (
+                  <ProductCard
+                    key={product.id}
+                    id={Number(product.id)}
+                    slug={product.slug}
+                    name={product.name}
+                    imageUrl={product.imageUrl}
+                    price={product.price}
+                    discountPrice={product.discountPrice ?? null}
+                    stockLevel={product.stockLevel.toString()}
+                    description={ ""}
+                    
+                    categoryId={product.categoryId}
+                  />
+                ))}
+          </div>
         </div>
       </section>
 
@@ -181,13 +185,7 @@ export default function Home() {
                 Sign up for our newsletter to get exclusive deals, early access to sales, and special member-only discounts.
               </p>
               <form className="flex flex-col sm:flex-row gap-2">
-                <Input
-                  id="contact-name"
-                  name="name"
-                  type="email"
-                  placeholder="Your email address"
-                  className="flex-grow px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                />
+                <Input type="email" placeholder="Your email address" className="flex-grow px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
                 <Button type="submit" className="bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-primary/90">
                   Subscribe
                 </Button>
@@ -204,13 +202,11 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Last Viewed Product */}
+      {/* Recently Viewed */}
       {lastViewedProduct && (
         <section className="py-12 bg-white">
           <div className="container mx-auto px-4">
-            <div className="flex justify-between items-center mb-8">
-              <h2 className="text-2xl font-bold">Recently Viewed</h2>
-            </div>
+            <h2 className="text-2xl font-bold mb-8">Recently Viewed</h2>
             <LastViewedProduct />
           </div>
         </section>
@@ -225,42 +221,29 @@ export default function Home() {
               View All
             </Link>
           </div>
-
-          {newProductsLoading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {Array(4).fill(0).map((_, i) => (
-                <div key={i} className="aspect-[4/3]">
-                  <Skeleton className="w-full h-full rounded-lg" />
-                  <div className="p-4 space-y-2">
-                    <Skeleton className="h-4 w-3/4" />
-                    <Skeleton className="h-4 w-1/4" />
-                    <div className="flex justify-between">
-                      <Skeleton className="h-4 w-1/4" />
-                      <Skeleton className="h-8 w-1/4" />
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-               {newProducts?.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  id={String(product.id)}
-                  slug={product.slug}
-                  name={product.name}
-                  imageUrl={product.imageUrl}
-                  price={product.price}
-                  discountPrice={product.discountPrice}
-                  stockLevel={product.stockLevel}
-                  isNew={true}
-                />
-              ))}
-            </div>
-          )}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {newProductsLoading
+              ? renderProductSkeletons()
+              : newProducts?.map((product) => (
+                  <ProductCard
+                    key={product.id}
+                    id={Number(product.id)}
+                    slug={product.slug}
+                    name={product.name}
+                    imageUrl={product.imageUrl}
+                    price={product.price}
+                    discountPrice={product.discountPrice ?? null}
+                    stockLevel={product.stockLevel.toString()}
+                    isNew
+                    description={ ""}
+                    
+                    categoryId={product.categoryId}
+                  />
+                ))}
+          </div>
         </div>
       </section>
+
 
       {/* Store Info */}
       <section id="store-info" className="py-12 bg-white">

@@ -115,7 +115,7 @@ export default function ProductQuickView({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[850px] p-0 gap-0 max-h-[90vh] overflow-auto">
+      <DialogContent aria-describedby="dialog-description" className="sm:max-w-[850px] p-0 gap-0 max-h-[90vh] overflow-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
           {/* Product Image */}
           <div className="relative bg-gray-50">

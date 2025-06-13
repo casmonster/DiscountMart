@@ -29,6 +29,7 @@ import { Separator } from "../components/ui/separator";
 import { Trash2, Minus, Plus } from "lucide-react";
 import { convertToRwandanFrancs, formatRwandanFrancs } from "../lib/currency";
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const checkoutFormSchema = z.object({
   customerName: z.string().min(2, { message: "Name must be at least 2 characters" }),
   customerEmail: z.string().email({ message: "Please enter a valid email address" }),
@@ -90,7 +91,7 @@ const navigate = useNavigate();
       };
 
       // Create order
-      const response = await apiRequest("POST", "/api/orders", orderData);
+      const response = await apiRequest("POST", `${BASE_URL}/orders`, orderData);
       const order = await response.json();
 
       // Clear the cart

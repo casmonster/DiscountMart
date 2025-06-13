@@ -17,6 +17,7 @@ import Contact from "./pages/Contact";
 import PickupPolicy from "./pages/PickupPolicy";
 import Testimonials from "./pages/Testimonials";
 import SearchPage from "./pages/SearchPage";
+import ProductsPage from "./pages/ProductsPage";
 // Lazy-loaded pages
 const Home = lazy(() => import("./pages/Home"));
 const Checkout = lazy(() => import("./pages/Checkout"));
@@ -50,6 +51,7 @@ function AppRoutes() {
           <Route path="*" element={<NotFound />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/testimonials" element={<Testimonials/>} />
+          <Route path="/Products/:slug" element={<ProductsPage/>} />
         </Routes>
       </div>
       <Footer />

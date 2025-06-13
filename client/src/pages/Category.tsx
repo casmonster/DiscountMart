@@ -1,10 +1,7 @@
-import { useParams } from "react-router-dom";
+// src/pages/Category.tsx
+import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { Category as CategoryType } from "../types/category";
-import { ProductProperty, ProductPropertyType } from "../types/product";
-
+import { useEffect, useMemo, useState } from "react";
 import ProductCard from "../components/product/ProductCard";
 import FeaturedProductShowcase from "../components/product/FeaturedProductShowcase";
 import { Skeleton } from "../components/ui/skeleton";
@@ -16,12 +13,17 @@ import {
   SelectValue,
 } from "../components/ui/select";
 
-function getCategoryProperties(categorySlug: string, product: any): ProductProperty[] {
-  const properties: ProductProperty[] = [];
+import { Category as CategoryType } from "../types/category";
+import type { Product, ProductProperty } from "../types/product";
 
-  switch (categorySlug) {
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+function getCategoryProperties(slug: string, product: Product): ProductProperty[] {
+  const props: ProductProperty[] = [];
+
+  switch (slug) {
     case "clothing":
-      properties.push(
+      props.push(
         { name: "Size", value: "Medium", type: "size" },
         { name: "Color", value: "Navy Blue", type: "color" },
         { name: "Material", value: "Cotton Blend", type: "material" },
@@ -29,7 +31,7 @@ function getCategoryProperties(categorySlug: string, product: any): ProductPrope
       );
       break;
     case "tableware":
-      properties.push(
+      props.push(
         { name: "Material", value: "Ceramic", type: "material" },
         { name: "Dimensions", value: '10" x 10"', type: "default" },
         { name: "Dishwasher Safe", value: "Yes", type: "default" },
@@ -37,7 +39,7 @@ function getCategoryProperties(categorySlug: string, product: any): ProductPrope
       );
       break;
     case "kitchen":
-      properties.push(
+      props.push(
         { name: "Material", value: "Stainless Steel", type: "material" },
         { name: "Dimensions", value: '12" x 8" x 4"', type: "default" },
         { name: "Dishwasher Safe", value: "Yes", type: "default" },
@@ -45,7 +47,7 @@ function getCategoryProperties(categorySlug: string, product: any): ProductPrope
       );
       break;
     case "home-decor":
-      properties.push(
+      props.push(
         { name: "Material", value: "Ceramic & Wood", type: "material" },
         { name: "Dimensions", value: '8" x 6" x 10"', type: "default" },
         { name: "Color", value: "Beige", type: "color" },
@@ -53,112 +55,81 @@ function getCategoryProperties(categorySlug: string, product: any): ProductPrope
       );
       break;
     default:
-      properties.push(
+      props.push(
         { name: "Condition", value: "New", type: "default" },
         { name: "In Store", value: "Available", type: "default" }
       );
   }
 
-  return properties;
+  return props;
 }
 
 export default function Category() {
-  const { slug } = useParams<{ slug: string }>();
-
-  const location = useLocation();
+  const { slug = "" } = useParams() as { slug: string };
   const navigate = useNavigate();
   const [sortBy, setSortBy] = useState<string>("default");
 
-  const categoryQuery = useQuery<CategoryType, Error>({
-    queryKey: [`/api/categories/${slug}`],
+  const {
+    data: categoryData,
+    isLoading: loading,
+    error,
+  } = useQuery<{
+    id: number;
+    name: string;
+    slug: string;
+    products: Product[];
+  }, Error>({
+    queryKey: ["category", slug],
     queryFn: async () => {
-      const res = await fetch(`/api/categories/${slug}`);
+      const res = await fetch(`${BASE_URL}/categories/${slug}`);
       if (!res.ok) throw new Error("Failed to fetch category");
       return res.json();
     },
+    enabled: !!slug,
   });
 
   useEffect(() => {
-    if (categoryQuery.isError) {
-      console.error("Error loading category:", categoryQuery.error);
-    }
-  }, [categoryQuery.isError]);
-
-  const category = categoryQuery.data;
-  const categoryLoading = categoryQuery.isLoading;
-
-  const productsQuery = useQuery<any[], Error>({
-    queryKey: [`/api/products/category/${category?.id}`],
-    queryFn: async () => {
-      const res = await fetch(`/api/products/category/${category?.id}`);
-      if (!res.ok) throw new Error("Failed to fetch products");
-      return res.json();
-    },
-    enabled: !!category?.id,
-  });
-
-  const products = productsQuery.data;
-  const productsLoading = productsQuery.isLoading;
-
-  useEffect(() => {
-    if (productsQuery.isError) {
-      console.error("Error loading category products:", productsQuery.error);
-    }
-  }, [productsQuery.isError]);
-
-  useEffect(() => {
-    if (category === null) {
+    if (!categoryData && error) {
       navigate("/not-found");
     }
-  }, [category, navigate]);
+  }, [categoryData, error, navigate]);
 
-  const getSortedProducts = () => {
-    if (!products) return [];
+  const sortedProducts = useMemo(() => {
+    if (!categoryData?.products) return [];
 
-    const productsCopy = [...products];
-
+    const sorted = [...categoryData.products];
     switch (sortBy) {
       case "price-low-high":
-        return productsCopy.sort(
-          (a, b) => (a.discountPrice || a.price) - (b.discountPrice || b.price)
-        );
+        return sorted.sort((a, b) => (a.discountPrice ?? a.price) - (b.discountPrice ?? b.price));
       case "price-high-low":
-        return productsCopy.sort(
-          (a, b) => (b.discountPrice || b.price) - (a.discountPrice || a.price)
-        );
+        return sorted.sort((a, b) => (b.discountPrice ?? b.price) - (a.discountPrice ?? a.price));
       case "name-a-z":
-        return productsCopy.sort((a, b) => a.name.localeCompare(b.name));
+        return sorted.sort((a, b) => a.name.localeCompare(b.name));
       case "name-z-a":
-        return productsCopy.sort((a, b) => b.name.localeCompare(a.name));
+        return sorted.sort((a, b) => b.name.localeCompare(a.name));
       case "discount":
-        return productsCopy.sort((a, b) => {
-          const aDiscount = a.discountPrice
-            ? (a.price - a.discountPrice) / a.price
-            : 0;
-          const bDiscount = b.discountPrice
-            ? (b.price - b.discountPrice) / b.price
-            : 0;
-          return bDiscount - aDiscount;
+        return sorted.sort((a, b) => {
+          const discountA = a.discountPrice ? (a.price - a.discountPrice) / a.price : 0;
+          const discountB = b.discountPrice ? (b.price - b.discountPrice) / b.price : 0;
+          return discountB - discountA;
         });
       default:
-        return productsCopy;
+        return sorted;
     }
-  };
-
-  const sortedProducts = getSortedProducts();
+  }, [categoryData?.products, sortBy]);
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {categoryLoading ? (
+      {loading ? (
         <div className="mb-6">
           <Skeleton className="h-10 w-1/4 mb-2" />
           <Skeleton className="h-4 w-2/3" />
         </div>
       ) : (
         <div className="mb-6">
-          <h1 className="text-3xl font-bold mb-2">{category?.name}</h1>
+          <h1 className="text-3xl font-bold mb-2">{categoryData?.name}</h1>
           <p className="text-gray-600">
-            Browse our collection of {category?.name?.toLowerCase()}
+            Browse our collection of {categoryData?.name?.toLowerCase()}
           </p>
         </div>
       )}
@@ -179,32 +150,35 @@ export default function Category() {
         </Select>
       </div>
 
-      {productsLoading ? (
+      {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {Array(8)
-            .fill(0)
-            .map((_, i) => (
-              <div key={i} className="aspect-[4/3]">
-                <Skeleton className="w-full h-full rounded-lg" />
-                <div className="p-4 space-y-2">
-                  <Skeleton className="h-4 w-3/4" />
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div key={i} className="aspect-[4/3]">
+              <Skeleton className="w-full h-full rounded-lg" />
+              <div className="p-4 space-y-2">
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-4 w-1/4" />
+                <div className="flex justify-between">
                   <Skeleton className="h-4 w-1/4" />
-                  <div className="flex justify-between">
-                    <Skeleton className="h-4 w-1/4" />
-                    <Skeleton className="h-8 w-1/4" />
-                  </div>
+                  <Skeleton className="h-8 w-1/4" />
                 </div>
               </div>
-            ))}
+            </div>
+          ))}
         </div>
       ) : sortedProducts.length > 0 ? (
         <>
-          {slug && sortedProducts.length > 0 && (
+          {slug && sortedProducts[0] && (
             <FeaturedProductShowcase
               product={{
                 ...sortedProducts[0],
+                id: Number(sortedProducts[0].id),
+                imageUrl: sortedProducts[0].imageUrl || "",
+                discountPrice: sortedProducts[0].discountPrice ?? null,
+                stockLevel:
+                  Number(sortedProducts[0].stockLevel) > 0 ? "In Stock" : "Out of Stock",
                 description:
-                  sortedProducts[0].description ||
+                  sortedProducts[0].description ??
                   "Experience quality and style with this premium item from our collection.",
               }}
               properties={getCategoryProperties(slug, sortedProducts[0])}
@@ -214,15 +188,17 @@ export default function Category() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {sortedProducts.map((product) => (
               <ProductCard
-                key={product.id}
-                id={product.id}
+                key={String(product.id)}
+                id={Number(product.id)}
                 slug={product.slug}
                 name={product.name}
-                imageUrl={product.imageUrl}
+                imageUrl={product.imageUrl?.toLowerCase() || ""}
                 price={product.price}
-                discountPrice={product.discountPrice}
-                stockLevel={product.stockLevel}
+                discountPrice={product.discountPrice ?? null}
+                stockLevel={product.stockLevel.toString()}
                 isNew={product.isNew}
+                description={product.description || ""}
+                categoryId={product.categoryId}
               />
             ))}
           </div>

@@ -1,12 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { formatRwandanFrancs, convertToRwandanFrancs } from "../lib/currency";
 import { Product } from "../types/product";
 import { Skeleton } from "../components/ui/skeleton";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../components/ui/card";
 import { Button } from "../components/ui/button";
+
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export default function ProductDetail() {
   const { id } = useParams<{ id: string }>();
@@ -15,7 +16,7 @@ export default function ProductDetail() {
   const { data: product, isLoading, error } = useQuery<Product>({
     queryKey: ["product", id],
     queryFn: async () => {
-      const res = await fetch(`/api/products/${id}`);
+      const res = await fetch(`${BASE_URL}/products/${id}`);
       if (!res.ok) throw new Error("Product not found");
       return res.json();
     },

@@ -100,8 +100,8 @@ export default function ProductsPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {filteredProducts.map((product: Product) => (
             <ProductCard
-              key={product.id}
-              id={String(product.id)}
+              key={Number(product.id)}
+              id={product.id}
               slug={product.slug}
                imageUrl={product.imageUrl as string}
               price={product.price}
@@ -109,11 +109,10 @@ export default function ProductsPage() {
               stockLevel={product.stockLevel}
               isNew={product.isNew}
               // Name with highlight applied
-              name={
-                typeof product.name === "string"
-                  ? highlightMatch(product.name, search)
-                  : product.name
-              }
+               name= {product.name as string}
+              description={product.description || ""}
+              
+              categoryId={product.categoryId}
             />
           ))}
         </div>

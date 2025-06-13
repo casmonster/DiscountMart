@@ -1,37 +1,36 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import ProductGrid from "../components/product/ProductGrid";
+import type { Product } from "../types/product";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-type Product = {
-  id: string;
-  name: string;
-  price: number;
-  slug: string;
-  imageUrl: string;
-  stockLevel: number;
-  // Add other fields as needed
-};
+
 
 const ProductsPage = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-
   const observerRef = useRef<IntersectionObserver | null>(null);
 
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
+    if (!hasMore || loading) return;
     setLoading(true);
-    const res = await fetch(`/api/products?page=${page}&limit=12`);
-    const data = await res.json();
-
-    setProducts((prev) => [...prev, ...data.products]);
-    setHasMore(data.products.length > 0);
-    setLoading(false);
-  };
+    try {
+      const res = await fetch(`${BASE_URL}/products?page=${page}&limit=12`);
+      if (!res.ok) throw new Error("Failed to load products.");
+      const data = await res.json();
+      setProducts((prev) => [...prev, ...data.products]);
+      setHasMore(data.products.length > 0);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  }, [page, hasMore, loading]);
 
   useEffect(() => {
     fetchProducts();
-  }, [page]);
+  }, [fetchProducts]);
 
   const lastProductRef = useCallback(
     (node: HTMLDivElement | null) => {

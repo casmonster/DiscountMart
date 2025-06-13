@@ -16,21 +16,20 @@ import React from "react";
 // ... imports unchanged
 import debounce from "lodash.debounce";
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const PAGE_SIZE = 8;
-
 export default function NewArrivals() {
   const [sortBy, setSortBy] = useState<string>("default");
   const [currentPage, setCurrentPage] = useState(1);
 
   const { data: products = [], isLoading } = useQuery<Product[]>({
-    queryKey: ["/api/products/new"],
+    queryKey: ["new-products"],
     queryFn: async () => {
-      const res = await fetch("/api/products/new");
+      const res = await fetch(`${BASE_URL}/products/new`);
       if (!res.ok) throw new Error("Failed to fetch new products");
       return res.json();
     },
   });
-
   const sortedProducts = useMemo(() => {
     if (!products.length) return [];
 
@@ -102,15 +101,18 @@ export default function NewArrivals() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {paginatedProducts.map((product) => (
               <ProductCard
-                key={product.id}
-                id={String(product.id)}
+                key={String(product.id)}
+                id={Number(product.id)}
                 slug={product.slug}
                 name={product.name}
-                imageUrl={product.image}
+                imageUrl={product.imageUrl ?? ''}
                 price={product.price}
-                discountPrice={product.discountPrice ?? undefined}
-                stockLevel={product.stockLevel}
+                discountPrice={product.discountPrice ?? null}
+                stockLevel={product.stockLevel.toString()}
                 isNew={product.isNew ?? true}
+                description={ ""}
+                image={String(product.imageUrl)}
+                categoryId={product.categoryId}
               />
             ))}
           </div>

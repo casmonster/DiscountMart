@@ -26,7 +26,7 @@ type FeaturedProductShowcaseProps = {
     imageUrl: string;
     price: number;
     discountPrice: number | null;
-    stockLevel: StockStatus;
+    stockLevel:  StockStatus; 
     description: string;
     isNew?: boolean;
   };
@@ -69,7 +69,7 @@ export default function FeaturedProductShowcase({
   const { addToCart, isLoading: isCartLoading } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
 
-  const inWishlist = isInWishlist(product.id);
+  const inWishlist = isInWishlist(Number(product.id));
   const isInStock = product.stockLevel === "In Stock";
   const isLowStock = product.stockLevel === "Low Stock";
 
@@ -82,12 +82,15 @@ export default function FeaturedProductShowcase({
   }, [product.price, product.discountPrice]);
 
   const handleAddToCart = () => {
-    addToCart(product.id, quantity);
+    addToCart(Number(product.id), quantity);
   };
 
   const incrementQuantity = () => setQuantity((q) => q + 1);
   const decrementQuantity = () => setQuantity((q) => Math.max(1, q - 1));
-  const handleToggleWishlist = () => toggleWishlist(product);
+  const handleToggleWishlist = () => toggleWishlist({
+    ...product,
+    id: Number(product.id),
+});
 
   return (
     <div className="bg-white rounded-xl shadow-md overflow-hidden mb-12">

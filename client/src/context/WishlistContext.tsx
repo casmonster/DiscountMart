@@ -12,9 +12,9 @@ type WishlistItem = {
   id: number;
   slug: string;
   name: string;
-  imageUrl: string;
+  imageUrl?: string;
   price: number;
-  discountPrice: number | null;
+  discountPrice?: number | null ;
 };
 
 type WishlistContextType = {
