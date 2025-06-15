@@ -10,14 +10,19 @@ import NotFound from "./pages/not-found";
 import ProductDetail from "./pages/ProductDetail";
 import OrderConfirmation from "./pages/OrderConfirmation";
 import StoreInfo from "./pages/StoreInfo";
+import ShippingInfo from "./pages/ShippingInfo";
 import Wishlist from "./pages/Wishlist";
 import NewArrivals from "./pages/NewArrivals";
+import Clearance from "./pages/Clearance";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import PickupPolicy from "./pages/PickupPolicy";
+import ReturnPolicy from "./pages/ReturnPolicy";
 import Testimonials from "./pages/Testimonials";
 import SearchPage from "./pages/SearchPage";
 import ProductsPage from "./pages/ProductsPage";
+import SizeGuide from "./pages/SizeGuide";
+import MyAccount from "./pages/MyAccount";
 // Lazy-loaded pages
 const Home = lazy(() => import("./pages/Home"));
 const Checkout = lazy(() => import("./pages/Checkout"));
@@ -42,12 +47,15 @@ function AppRoutes() {
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/order-confirmation/:id" element={<OrderConfirmation />} />
           <Route path="/store-info" element={<StoreInfo />} />
+          <Route path="/shipping" element={<ShippingInfo />} />
           <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/new-arrivals" element={<NewArrivals />} />
-          <Route path="/clearance/:slug" element={<Category />} />
+          <Route path="/clearance" element={<Clearance />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/pickup-policy" element={<PickupPolicy />} />
+          <Route path="/return-policy" element={<ReturnPolicy />} />
+          <Route path="/size-guide" element={<SizeGuide />} />
           <Route path="*" element={<NotFound />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/testimonials" element={<Testimonials/>} />

@@ -53,17 +53,15 @@ export default function CategoryPage() {
           {products.map((product) => (
             <ProductCard
               key={Number(product.id)}
-              id={product.id}
+              id={Number(product.id)}
               slug={product.slug}
               name={product.name}
-              imageUrl={product.imageUrl}
-              
+              imageUrl={String(product.imageUrl)}
               price={product.price}
-              discountPrice={product.discountPrice ?? undefined}
-              stockLevel={product.stockLevel}
+              discountPrice={product.discountPrice || null}
+              stockLevel={String(product.stockLevel)}
               isNew={product.isNew}
-              description={product.description ?? ''}
-              categoryId={product.categoryId}
+              
             />
           ))}
         </div>

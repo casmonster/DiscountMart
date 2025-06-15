@@ -166,9 +166,6 @@ export default function Home() {
                     price={product.price}
                     discountPrice={product.discountPrice ?? null}
                     stockLevel={product.stockLevel.toString()}
-                    description={ ""}
-                    
-                    categoryId={product.categoryId}
                   />
                 ))}
           </div>
@@ -235,9 +232,6 @@ export default function Home() {
                     discountPrice={product.discountPrice ?? null}
                     stockLevel={product.stockLevel.toString()}
                     isNew
-                    description={ ""}
-                    
-                    categoryId={product.categoryId}
                   />
                 ))}
           </div>

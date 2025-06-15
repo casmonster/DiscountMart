@@ -101,18 +101,16 @@ export default function ProductsPage() {
           {filteredProducts.map((product: Product) => (
             <ProductCard
               key={Number(product.id)}
-              id={product.id}
+              id={Number(product.id)}
               slug={product.slug}
                imageUrl={product.imageUrl as string}
               price={product.price}
-              discountPrice={product.discountPrice ?? undefined}
-              stockLevel={product.stockLevel}
+              discountPrice={product.discountPrice || null}
+              stockLevel={String(product.stockLevel)}
               isNew={product.isNew}
               // Name with highlight applied
                name= {product.name as string}
-              description={product.description || ""}
-              
-              categoryId={product.categoryId}
+
             />
           ))}
         </div>

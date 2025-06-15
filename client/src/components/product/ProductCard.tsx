@@ -12,6 +12,17 @@ import type { Product } from "../../types/product";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
+type ProductCardProps = {
+  id: number;
+  slug: string;
+  name: string;
+  imageUrl: string;
+  price: number;
+  discountPrice: number | null;
+  stockLevel: string;
+  isNew?: boolean;
+};
+
 export default function ProductCard({
   id,
   slug,
@@ -20,129 +31,110 @@ export default function ProductCard({
   price,
   discountPrice,
   stockLevel,
-  description,
-  
-  categoryId,
   isNew = false,
-}: Product) {
+}: ProductCardProps) {
   const { addToCart } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
   const [isAdding, setIsAdding] = useState(false);
   const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
   const { toast } = useToast();
 
-  const inWishlist = isInWishlist(Number(id));
+  const inWishlist = isInWishlist(id);
 
-  // Normalize stockLevel to string labels
-  const normalizedStockLevel =
-    typeof stockLevel === "number"
-      ? stockLevel === 0
-        ? "Out of Stock"
-        : stockLevel < 5
-        ? "Low Stock"
-        : "In Stock"
-      : stockLevel;
-
-  const isInStock = normalizedStockLevel === "In Stock";
-  const isLowStock = normalizedStockLevel === "Low Stock";
-
-  
-
+  // Fetch product details when quick view is opened
   const { data: productDetail } = useQuery({
-    queryKey: ["product", slug],
+    queryKey: [`/api/products/${slug}`],
     queryFn: async () => {
-      const response = await fetch(`${BASE_URL}/products/${slug}`);
-      if (!response.ok) throw new Error("Failed to fetch product details");
-
-      const data = await response.json();
-
-      // Normalize stockLevel if it's numeric
-      return {
-        ...data,
-        stockLevel:
-          typeof data.stockLevel === "number"
-            ? data.stockLevel === 0
-              ? "Out of Stock"
-              : data.stockLevel < 5
-              ? "Low Stock"
-              : "In Stock"
-            : data.stockLevel,
-      };
+      const response = await fetch(`/api/products/${slug}`);
+      if (!response.ok) throw new Error('Failed to fetch product details');
+      return response.json();
     },
-    enabled: isQuickViewOpen,
-    staleTime: 5 * 60 * 1000,
+    enabled: isQuickViewOpen, // Only fetch when the modal is open
   });
 
-  const handleAddToCart = useCallback(
-    async (e: React.MouseEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-      setIsAdding(true);
-      try {
-        await addToCart(Number(id), 1);
-        toast({
-          title: "Added to cart",
-          description: `${name} has been added to your cart.`,
-        });
-      } catch {
-        toast({
-          title: "Error",
-          description: "Failed to add item to cart. Please try again.",
-        });
-      } finally {
-        setIsAdding(false);
-      }
-    },
-    [addToCart, id, name, toast]
-  );
-
-  const handleToggleWishlist = useCallback(
-    (e: React.MouseEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-      toggleWishlist({ 
-        id:+id,
-        slug,
-        name,
-        imageUrl,
-        price,
-        discountPrice });
+  const handleAddToCart = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    setIsAdding(true);
+    try {
+      await addToCart(id, 1);
       toast({
-        title: inWishlist ? "Removed from wishlist" : "Added to wishlist",
-        description: `${name} has been ${inWishlist ? "removed from" : "added to"} your wishlist.`,
+        title: "Added to cart",
+        description: `${name} has been added to your cart.`,
       });
-    },
-    [inWishlist, toggleWishlist, id, slug, name, imageUrl, price, discountPrice, toast]
-  );
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to add item to cart. Please try again.",
+        
+      });
+    } finally {
+      setIsAdding(false);
+    }
+  };
 
-  const handleQuickView = useCallback((e: React.MouseEvent) => {
+  const handleToggleWishlist = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    toggleWishlist({
+      id,
+      slug,
+      name,
+      imageUrl,
+      price,
+      discountPrice
+    });
+    
+    toast({
+      title: inWishlist ? "Removed from wishlist" : "Added to wishlist",
+      description: inWishlist 
+        ? `${name} has been removed from your wishlist.`
+        : `${name} has been added to your wishlist.`,
+    });
+  };
+
+  const handleQuickView = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setIsQuickViewOpen(true);
-  }, []);
+  };
+
+  const isInStock = stockLevel === "In Stock";
+  const isLowStock = stockLevel === "Low Stock";
+  const discountPercentage = discountPrice 
+    ? Math.round(((price - discountPrice) / price) * 100) 
+    : 0;
 
   return (
     <>
       <div className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-xl transition-all duration-300 group transform hover:-translate-y-1 border border-gray-100 h-full flex flex-col">
         <div className="block h-full">
           <div className="relative aspect-square overflow-hidden bg-gray-50">
-            <img
-              src={imageUrl}
-              alt={name}
+            <img 
+              src={imageUrl} 
+              alt={name} 
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
             />
 
             {/* Sale tag */}
             {discountPrice && (
               <div className="absolute top-3 left-3 bg-gradient-to-r from-red-500 to-red-400 text-white text-xs font-bold px-2.5 py-1 rounded-md shadow-md flex items-center">
-                <span>{discountPrice}% OFF</span>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {discountPercentage}% OFF
               </div>
             )}
 
             {/* New tag */}
             {isNew && !discountPrice && (
               <div className="absolute top-3 left-3 bg-gradient-to-r from-primary to-primary/80 text-white text-xs font-bold px-2.5 py-1 rounded-md shadow-md flex items-center">
-                <span>NEW</span>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                </svg>
+                NEW
               </div>
             )}
 
@@ -151,13 +143,16 @@ export default function ProductCard({
               variant="ghost"
               size="icon"
               className={`absolute top-3 right-3 z-10 h-8 w-8 rounded-full bg-white/90 backdrop-blur-sm shadow-md transition-colors ${
-                inWishlist
-                  ? "text-secondary hover:text-secondary/80"
-                  : "text-gray-600 hover:text-secondary"
+                inWishlist 
+                  ? 'text-secondary hover:text-secondary/80' 
+                  : 'text-gray-600 hover:text-secondary'
               }`}
               onClick={handleToggleWishlist}
             >
-              <Heart className="h-4 w-4" fill={inWishlist ? "currentColor" : "none"} />
+              <Heart 
+                className="h-4 w-4" 
+                fill={inWishlist ? 'currentColor' : 'none'} 
+              />
             </Button>
 
             {/* Overlay with buttons */}
@@ -172,7 +167,7 @@ export default function ProductCard({
                   <Eye className="h-3.5 w-3.5" />
                   <span>Quick View</span>
                 </Button>
-                <Button
+                <Button 
                   size="sm"
                   onClick={handleAddToCart}
                   disabled={isAdding || !isInStock}
@@ -194,34 +189,34 @@ export default function ProductCard({
             </div>
           </div>
 
-          <Link to={`/product/${slug}`} className="block">
+          <Link to ={`/product/${slug}`} className="block">
             <div className="p-4 flex flex-col flex-grow">
-              {/* Stock status */}
+              {/* Stock status above title */}
               <div className="mb-1.5">
                 {isInStock ? (
                   <span className="text-xs text-green-600 flex items-center">
                     <CheckCircle className="h-3 w-3 mr-1" />
-                    In Stock
+                    <span>In Stock</span>
                   </span>
                 ) : isLowStock ? (
                   <span className="text-xs text-amber-500 flex items-center">
                     <AlertCircle className="h-3 w-3 mr-1" />
-                    Low Stock
+                    <span>Low Stock</span>
                   </span>
                 ) : (
                   <span className="text-xs text-red-500 flex items-center">
                     <AlertCircle className="h-3 w-3 mr-1" />
-                    Out of Stock
+                    <span>Out of Stock</span>
                   </span>
                 )}
               </div>
-
+              
               {/* Product name */}
               <h3 className="font-medium text-gray-900 line-clamp-2 group-hover:text-primary transition-colors text-base/tight flex-grow">
                 {name}
               </h3>
-
-              {/* Price */}
+              
+              {/* Price display - Rwandan Francs */}
               <div className="flex items-center mt-2">
                 {discountPrice ? (
                   <>
@@ -239,7 +234,7 @@ export default function ProductCard({
                 )}
               </div>
 
-              {/* Status pill */}
+              {/* Pill-shaped tag showing product status */}
               <div className="mt-3">
                 {isInStock ? (
                   <span className="inline-block text-xs text-green-600 bg-green-50 px-2.5 py-1 rounded-full">
@@ -261,7 +256,7 @@ export default function ProductCard({
       </div>
 
       {/* Quick View Modal */}
-      <ProductQuickView
+      <ProductQuickView 
         open={isQuickViewOpen}
         onOpenChange={setIsQuickViewOpen}
         product={productDetail}

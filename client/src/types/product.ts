@@ -12,15 +12,15 @@ export type StockStatus = "In Stock" | "Low Stock" | "Out of Stock";
 
 export type Product = {
   imageUrl: string | undefined;
-  id: string;
+  id: Number;
   name: string;
   slug: string;
   description: string;
   price: number;
-  image: string;
-  categoryId: string;
-  stockLevel: number;
-  discountPrice?: number;
+  
+  categoryId: string | number;
+  stockLevel: number | string; 
+  discountPrice?: number | null;
   discountPercentage?: number;
   isNew?: boolean;
   createdAt?: string;

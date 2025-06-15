@@ -197,8 +197,7 @@ export default function Category() {
                 discountPrice={product.discountPrice ?? null}
                 stockLevel={product.stockLevel.toString()}
                 isNew={product.isNew}
-                description={product.description || ""}
-                categoryId={product.categoryId}
+                
               />
             ))}
           </div>

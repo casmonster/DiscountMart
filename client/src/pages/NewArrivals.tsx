@@ -110,9 +110,6 @@ export default function NewArrivals() {
                 discountPrice={product.discountPrice ?? null}
                 stockLevel={product.stockLevel.toString()}
                 isNew={product.isNew ?? true}
-                description={ ""}
-                image={String(product.imageUrl)}
-                categoryId={product.categoryId}
               />
             ))}
           </div>

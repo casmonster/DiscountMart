@@ -1,6 +1,6 @@
 // server/schema.ts
 
-import { pgTable, text, serial, integer, boolean, doublePrecision, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, doublePrecision, timestamp, varchar } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 // Category schema
@@ -27,7 +27,7 @@ export const products = pgTable("products", {
   stockLevel: integer("stock_level").notNull().default(0),
   isFeatured: boolean('is_featured').default(false),
   createdAt: timestamp('created_at').defaultNow(),
-  isNew: boolean("is_new").notNull().default(false),
+  isNew: boolean("is_new").default(false),
 });
 export const insertProductSchema = createInsertSchema(products).omit({
   id: true,
@@ -42,6 +42,16 @@ export const cartItems = pgTable("cart_items", {
 export const insertCartItemSchema = createInsertSchema(cartItems).omit({
   id: true,
 });
+// src/db/schema.ts
+export const users = pgTable("users", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  email: varchar("email", { length: 255 }).notNull().unique(),
+  password: varchar("password", { length: 255 }).notNull(),
+  phone: varchar("phone", { length: 20 }).notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+});
+
 // Order schema
 export const orders = pgTable("orders", {
   id: serial("id").primaryKey(),
@@ -90,4 +100,4 @@ export type Order = typeof orders.$inferSelect;
 export type InsertOrder = typeof orders.$inferInsert;
 export type OrderItem = typeof orderItems.$inferSelect;
 export type InsertOrderItem = typeof orderItems.$inferInsert;
-
+export type User = typeof users.$inferSelect;

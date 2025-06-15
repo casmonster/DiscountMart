@@ -24,9 +24,6 @@ export default function RecentlyViewedProducts() {
             price={product.price}
             discountPrice={product.discountPrice}
             stockLevel={product.stockLevel}
-            description={ ""}
-            image={product.imageUrl}
-            categoryId={product.categoryId}
             isNew={false}
           />
         ))}
