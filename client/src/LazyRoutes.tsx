@@ -23,6 +23,11 @@ const Wishlist = lazy(() => import('./pages/Wishlist'));
 const NotFound = lazy(() => import('./pages/not-found'));
 const ProductsPage = lazy(() => import('./pages/ProductsPage'));
 const SizeGuide = lazy(() => import('./pages/SizeGuide'));
+const MyAccount = lazy(() => import('./pages/MyAccount'));
+const OrderStatus = lazy(() => import('./pages/OrderStatus'));
+const HelpCenter = lazy(() => import('./pages/HelpCenter'));
+const FAQ = lazy(() => import('./pages/FAQ'));
+const Newsletter = lazy(() => import('./pages/Newsletter'));
 const RoutesComponent = () => (
     <Suspense fallback={<div>Loading...</div>}>
       <Routes>
@@ -45,6 +50,11 @@ const RoutesComponent = () => (
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="*" element={<NotFound />} />
         <Route path="/size-guide" element={<SizeGuide />} />
+        <Route path="/account" element={<MyAccount />} />
+        <Route path="/orders" element={<OrderStatus />} />
+        <Route path="/help" element={<HelpCenter />} />
+        <Route path="/faq" element={<FAQ />} />
+        <Route path="/newsletter" element={<Newsletter />} />
       </Routes>
     </Suspense>
 );
