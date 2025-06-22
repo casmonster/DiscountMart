@@ -11,20 +11,21 @@ export type ProductProperty = {
 export type StockStatus = "In Stock" | "Low Stock" | "Out of Stock";
 
 export type Product = {
-  imageUrl: string | undefined;
-  id: Number;
+  imageUrl: string ;
+  id: number;
   name: string;
   slug: string;
   description: string;
   price: number;
-  
   categoryId: string | number;
   stockLevel: number | string; 
-  discountPrice?: number | null;
+  discountPrice: number | null;
   discountPercentage?: number;
   isNew?: boolean;
   createdAt?: string;
   updatedAt?: string;
+  setPieces?: number;
+  unitType?: string;
   properties?: ProductProperty[];
 };
 

@@ -13,7 +13,9 @@ export default function Header() {
   const location = useLocation();
   const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
-  const { itemCount } = useCart();
+  
+  const {itemCount} = useCart();
+  
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 10);
@@ -140,7 +142,7 @@ export default function Header() {
               </span>
             )}
           </Button>
-          <Link to="/locations" aria-label="Store locations">
+          <Link to="/store-info" aria-label="Store locations">
             <Button type="button" variant="ghost" size="icon" className="text-gray-700 hover:text-primary p-2 hover:bg-primary/5 rounded-full">
               <MapPin className="h-6 w-6" />
             </Button>

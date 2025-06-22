@@ -108,7 +108,7 @@ export default function NewArrivals() {
                 imageUrl={product.imageUrl ?? ''}
                 price={product.price}
                 discountPrice={product.discountPrice ?? null}
-                stockLevel={product.stockLevel.toString()}
+                stockLevel={Number(product.stockLevel)}
                 isNew={product.isNew ?? true}
               />
             ))}

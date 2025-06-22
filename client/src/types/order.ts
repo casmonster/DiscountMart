@@ -3,6 +3,7 @@ export interface Order {
     createdAt: string;
     totalAmount: number;
     status: string;
+    customerName: string;
     customerEmail: string;
     customerPhone: string;
     items: OrderItem[];

@@ -28,6 +28,9 @@ export interface IStorage {
 
   placeOrder(order: InsertOrder, items: InsertOrderItem[]): Promise<Order>;
   getOrder(id: number): Promise<(Order & { items: (OrderItem & { product: Product })[] }) | undefined>;
+   updateOrderStatus(id: number, status: string): Promise<Order | undefined>;
+  getAllOrders(): Promise<(Order & { items: (OrderItem & { product: Product })[] })[]>;
+
 }
 
 export class MemStorage implements IStorage {
@@ -177,6 +180,41 @@ export class MemStorage implements IStorage {
 
     return { ...order, items };
   }
+    async updateOrderStatus(id: number, status: string): Promise<Order | undefined> {
+    const order = this.orders.get(id);
+    if (!order) {
+      return undefined;
+    }
+    
+    const updatedOrder = { ...order, status };
+    this.orders.set(id, updatedOrder);
+    return updatedOrder;
+  }
+
+  async getAllOrders(): Promise<(Order & { items: (OrderItem & { product: Product })[] })[]> {
+    const allOrders = Array.from(this.orders.values());
+    
+    const ordersWithItems = allOrders.map(order => {
+      const orderItemsList = Array.from(this.orderItems.values())
+        .filter(item => item.orderId === order.id);
+      
+      const orderItemsWithProducts = orderItemsList.map(item => {
+        const product = this.products.get(item.productId);
+        if (!product) {
+          throw new Error(`Product with ID ${item.productId} not found`);
+        }
+        return { ...item, product };
+      });
+
+      return {
+        ...order,
+        items: orderItemsWithProducts,
+      };
+    });
+
+    return ordersWithItems;
+  }
+   
 
   // ----------- Sample Data Seed -----------
   private initSampleData() {
@@ -235,7 +273,9 @@ export const getCartItems = async (cartId: string) => storage.getCartItems(cartI
 export const addCartItem = async (item: InsertCartItem) => storage.addCartItem(item);
 export const updateCartItemQuantity = async (id: number, quantity: number) => storage.updateCartItemQuantity(id, quantity);
 export const removeCartItem = async (id: number) => storage.removeCartItem(id);
+
 export const clearCart = async (cartId: string) => storage.clearCart(cartId);
+
 
 // Orders
 export const placeOrder = async (order: InsertOrder, items: InsertOrderItem[]) => storage.placeOrder(order, items);

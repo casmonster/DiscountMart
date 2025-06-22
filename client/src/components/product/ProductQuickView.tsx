@@ -1,4 +1,3 @@
-/* ⚠️ Consider wrapping this component with React.forwardRef if it needs to accept refs */
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
@@ -8,8 +7,9 @@ import {
   Dialog,
   DialogContent,
   DialogClose,
-} from "../ui/dialog";
-import { Button } from "../ui/button";
+  DialogTitle,
+} from "../../components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import { 
   X, 
   Heart, 
@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { convertToRwandanFrancs, formatRwandanFrancs } from "../../lib/currency";
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 interface ProductQuickViewProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -32,7 +33,7 @@ interface ProductQuickViewProps {
     imageUrl: string;
     price: number;
     discountPrice: number | null;
-    stockLevel: string;
+    stockLevel: number;
     description: string;
     categoryId: number;
     isNew?: boolean;
@@ -58,10 +59,12 @@ export default function ProductQuickView({
   }, [open, product]);
 
   if (!product) return null;
-
+  
+  const lowStockThreshold = 10;
   const inWishlist = isInWishlist(product.id);
-  const isInStock = product.stockLevel === "In Stock";
-  const isLowStock = product.stockLevel === "Low Stock";
+  
+   const isInStock = product.stockLevel > 0;
+  const isLowStock = product.stockLevel > 0 && product.stockLevel <= lowStockThreshold;
   const discountPercentage = product.discountPrice 
     ? Math.round(((product.price - product.discountPrice) / product.price) * 100) 
     : 0;
@@ -115,7 +118,8 @@ export default function ProductQuickView({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent aria-describedby="dialog-description" className="sm:max-w-[850px] p-0 gap-0 max-h-[90vh] overflow-auto">
+      <DialogContent className="sm:max-w-[850px] p-0 gap-0 max-h-[90vh] overflow-auto bg-white">
+        <DialogTitle className="sr-only">Shopping Cart</DialogTitle>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
           {/* Product Image */}
           <div className="relative bg-gray-50">
@@ -254,7 +258,7 @@ export default function ProductQuickView({
                   </Button>
                 </div>
                 
-                <Link onClick={() => onOpenChange(false)} to={""}>
+                <Link to={`/product/${product.slug}`} onClick={() => onOpenChange(false)}>
                   <Button
                     variant="outline"
                     className="w-full rounded-full"

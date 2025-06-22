@@ -5,6 +5,7 @@ import { useEffect, useState, useMemo, useRef } from "react";
 import ProductCard from "../../components/product/ProductCard";
 import type { Product } from "../../types/product"; 
 import debounce from "lodash.debounce";
+import { useCart } from "../../context/CartContext";
 
 export default function ProductsPage() {
   const router = useRouter();
@@ -15,6 +16,7 @@ export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const { addToCart } = useCart();
 
   useEffect(() => {
     setSearch(queryParam);
@@ -110,6 +112,7 @@ export default function ProductsPage() {
               isNew={product.isNew}
               // Name with highlight applied
                name= {product.name as string}
+               onAddToCart={() => addToCart(Number(product.id))} 
 
             />
           ))}

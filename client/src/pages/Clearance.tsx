@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import ProductCard from "../components/product/ProductCard";
 import { Skeleton } from "../components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
-import type { Product } from "../../../server/schema";
+import type { Product } from "../types/product";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -84,7 +84,7 @@ export default function Clearance() {
                 imageUrl={product.imageUrl}
                 price={product.price}
                 discountPrice={product.discountPrice}
-                stockLevel={String(product.stockLevel)}
+                stockLevel={Number(product.stockLevel)}
                 isNew={product.isNew || false}
               />
             ))}

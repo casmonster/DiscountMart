@@ -19,12 +19,10 @@ createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ErrorBoundary>
       <BrowserRouter basename={basename}>
-        <CartProvider>  {/* ← Is this here? */}
           <MyContextProvider>
             <App />
             <Toaster position="bottom-right" />
           </MyContextProvider>
-        </CartProvider>
       </BrowserRouter>
     </ErrorBoundary>
   </React.StrictMode>

@@ -195,7 +195,7 @@ export default function Category() {
                 imageUrl={product.imageUrl?.toLowerCase() || ""}
                 price={product.price}
                 discountPrice={product.discountPrice ?? null}
-                stockLevel={product.stockLevel.toString()}
+                stockLevel={Number(product.stockLevel)}
                 isNew={product.isNew}
                 
               />

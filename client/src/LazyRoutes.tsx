@@ -28,6 +28,11 @@ const OrderStatus = lazy(() => import('./pages/OrderStatus'));
 const HelpCenter = lazy(() => import('./pages/HelpCenter'));
 const FAQ = lazy(() => import('./pages/FAQ'));
 const Newsletter = lazy(() => import('./pages/Newsletter'));
+const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
+const TermsOfService = lazy(() => import('./pages/TermsOfService'));
+const Sitemap = lazy(() => import('./pages/Sitemap'));
+const AdminDashBoard = lazy(() => import('./pages/AdminDashBoard'));
+
 const RoutesComponent = () => (
     <Suspense fallback={<div>Loading...</div>}>
       <Routes>
@@ -55,6 +60,10 @@ const RoutesComponent = () => (
         <Route path="/help" element={<HelpCenter />} />
         <Route path="/faq" element={<FAQ />} />
         <Route path="/newsletter" element={<Newsletter />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/terms" element={<TermsOfService />} />
+        <Route path="/sitemap" element={<Sitemap />} />
+        <Route path="/admin/orders/manage" element={<AdminDashBoard />} />
       </Routes>
     </Suspense>
 );

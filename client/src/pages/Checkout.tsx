@@ -28,6 +28,8 @@ import { Input } from "../components/ui/input";
 import { Separator } from "../components/ui/separator";
 import { Trash2, Minus, Plus } from "lucide-react";
 import { convertToRwandanFrancs, formatRwandanFrancs } from "../lib/currency";
+import axios from "axios";
+
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const checkoutFormSchema = z.object({
@@ -74,7 +76,13 @@ const navigate = useNavigate();
       });
       return;
     }
-
+    if (!cartId) {
+      toast({
+        title: "Cart not found",
+        description: "Please refresh and try again.",
+      });
+      return;
+    }
     setIsSubmitting(true);
     try {
       // Prepare order data
@@ -82,29 +90,37 @@ const navigate = useNavigate();
         order: {
           ...data,
           totalAmount: getFinalTotal(),
+          status: "pending",
+          cartId,
         },
         items: cartItems.map(item => ({
           productId: item.productId,
           quantity: item.quantity,
-          price: item.product.discountPrice || item.product.price,
+          price: item.product.discountPrice || item.product.price * (item.product.setPieces || 1),
         })),
       };
 
       // Create order
-      const response = await apiRequest("POST", `${BASE_URL}/orders`, orderData);
-      const order = await response.json();
+      
+      const response = await axios.post(`${BASE_URL}/orders`, orderData);
+      const createdOrderId = response.data.order.id;
+      
+      // Clear cart on server
+    await axios.delete(`${BASE_URL}/cart/clear/${cartId}`);
 
-      // Clear the cart
-      await clearCart();
+      // Clear the cart on client
+       clearCart();
 
       // Navigate to order confirmation
-      navigate(`/order-confirmation/${order.id}`);
+      
+      navigate(`/order-confirmation/${createdOrderId}`);
 
       toast({
         title: "Order placed successfully",
         description: "Thank you for your order!",
       });
-    } catch (error) {
+    } catch (error:any) {
+      console.error("Order submission error:", error);
       toast({
         title: "Error placing order",
         description: "There was a problem placing your order. Please try again.",
@@ -266,8 +282,16 @@ const navigate = useNavigate();
                       />
                       <div className="ml-4 flex-grow">
                         <h3 className="font-medium">{item.product.name}</h3>
+                        {item.product.setPieces > 1 && (
+                          <p className="text-xs text-gray-600">
+                            {item.product.setPieces} {item.product.unitType === "set" ? "pieces per set" : `${item.product.unitType}s included`}
+                          </p>
+                        )}
                         <p className="text-blue-800 font-bold">
                           {formatRwandanFrancs(convertToRwandanFrancs(item.product.discountPrice || item.product.price))}
+                          {item.product.setPieces > 1 && (
+                            <span className="text-sm text-gray-600 ml-1">per {item.product.unitType}</span>
+                          )}
                         </p>
                         <div className="flex items-center mt-2">
                           <Button
@@ -307,16 +331,16 @@ const navigate = useNavigate();
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span>Subtotal:</span>
-                  <span className="font-medium text-blue-800">{formatRwandanFrancs(getCartTotal())}</span>
+                  <span className="font-medium text-blue-800">{formatRwandanFrancs(convertToRwandanFrancs(getCartTotal()))}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Tax (8%):</span>
-                  <span className="font-medium text-blue-800">{formatRwandanFrancs(getTaxAmount())}</span>
+                  <span className="font-medium text-blue-800">{formatRwandanFrancs(convertToRwandanFrancs(getTaxAmount()))}</span>
                 </div>
                 <Separator className="my-2" />
                 <div className="flex justify-between text-lg">
                   <span className="font-bold">Total:</span>
-                  <span className="font-bold text-blue-800">{formatRwandanFrancs(getFinalTotal())}</span>
+                  <span className="font-bold text-blue-800">{formatRwandanFrancs(convertToRwandanFrancs(getFinalTotal()))}</span>
                 </div>
               </div>
             </CardContent>
@@ -326,13 +350,6 @@ const navigate = useNavigate();
                   By placing your order, you agree to our terms and conditions. 
                   Your items will be available for pickup at our store location.
                 </p>
-                <Button
-                  className="w-full"
-                  onClick={form.handleSubmit(onSubmit)}
-                  disabled={isSubmitting || cartItems.length === 0}
-                >
-                  {isSubmitting ? "Processing..." : "Place Order"}
-                </Button>
               </div>
             </CardFooter>
           </Card>
@@ -341,3 +358,4 @@ const navigate = useNavigate();
     </div>
   );
 }
+

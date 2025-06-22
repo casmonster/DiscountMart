@@ -16,6 +16,7 @@ import { Skeleton } from "../components/ui/skeleton";
 import { CheckCircle, MapPin, Phone, Mail } from "lucide-react";
 import { formatRwandanFrancs, convertToRwandanFrancs } from "../lib/currency";
 import { Order } from "../types/order";
+import type { OrderItem, Product } from "../../../server/schema";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export default function OrderConfirmation() {
@@ -74,6 +75,16 @@ export default function OrderConfirmation() {
           <CardDescription>
             Thank you for your order. We've received your request and will begin processing it immediately.
           </CardDescription>
+                    {order && (
+            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <p className="text-sm text-blue-800 font-medium">
+                📋 Your Order ID: <span className="text-lg font-bold">#{order.id}</span>
+              </p>
+              <p className="text-xs text-blue-600 mt-1">
+                Save this number to track your order status
+              </p>
+            </div>
+          )}
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="bg-primary/5 p-4 rounded-lg">
@@ -86,7 +97,7 @@ export default function OrderConfirmation() {
               <div>
                 <p className="text-gray-500">Date:</p>
                 <p className="font-medium">
-                  {new Date(order.createdAt).toLocaleDateString()}
+                  {order?.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'N/A'}
                 </p>
               </div>
               <div>
@@ -170,7 +181,10 @@ export default function OrderConfirmation() {
             </div>
           </div>
         </CardContent>
-        <CardFooter className="flex justify-center">
+        <CardFooter className="flex justify-center space-x-4">
+          <Link to="/orders">
+            <Button variant="outline">Track This Order</Button>
+          </Link>
           <Link to="/">
             <Button>Continue Shopping</Button>
           </Link>

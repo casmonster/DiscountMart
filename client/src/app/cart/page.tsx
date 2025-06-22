@@ -1,58 +1,109 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import type { CartItem } from "../../types/cart"; 
-import Image from "next/image";
+import { useCart } from '../../context/CartContext';
 
-export default function CartPage() {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [loading, setLoading] = useState(false);
+interface CartItem {
+  id: number;
+  quantity: number;
+  product: {
+    name: string;
+    imageUrl: string;
+    price: number;
+    discountPrice?: number | null; // ✅ Allow null or undefined
+  };
+}
 
-  useEffect(() => {
-    const fetchCartItems = async () => {
-      setLoading(true);
-      try {
-        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/cart`);
-        if (!res.ok) throw new Error("Failed to fetch cart items");
-        const data: CartItem[] = await res.json();
-        setCartItems(data);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchCartItems();
-  }, []);
+const CartPage = () => {
+  const {
+    cartItems,
+    isLoading,
+    removeItem,
+    updateQuantity,
+  } = useCart();
+
+  // ✅ Normalize cart items to avoid TS errors with discountPrice
+  const normalizedCartItems: CartItem[] = cartItems.map((item) => ({
+    ...item,
+    product: {
+      ...item.product,
+      discountPrice:
+        item.product.discountPrice === null
+          ? undefined
+          : item.product.discountPrice,
+    },
+  }));
+
+  const handleQuantityChange = (
+    item: CartItem,
+    action: 'increase' | 'decrease'
+  ) => {
+    const newQty = action === 'increase' ? item.quantity + 1 : item.quantity - 1;
+    if (newQty < 1) return;
+    updateQuantity(item.id, newQty);
+  };
+
+  const handleRemove = (itemId: number) => {
+    removeItem(itemId);
+  };
+
+  if (isLoading) return <p className="p-4">Loading cart...</p>;
+  if (normalizedCartItems.length === 0)
+    return <p className="p-4">Your cart is empty.</p>;
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Your Cart</h1>
-
-      {loading ? (
-        <p>Loading cart items...</p>
-      ) : cartItems.length === 0 ? (
-        <p>Your cart is empty.</p>
-      ) : (
-        <ul className="space-y-4">
-          {cartItems.map((item) => (
-            <li key={item.id} className="flex gap-4 items-center">
-              <Image
+    <div className="p-4 max-w-3xl mx-auto">
+      <h1 className="text-2xl font-semibold mb-4">Your Cart</h1>
+      <ul className="space-y-4">
+        {normalizedCartItems.map((item) => (
+          <li
+            key={item.id}
+            className="flex items-center gap-4 border p-4 rounded-lg"
+          >
+            {item.product?.imageUrl && (
+              <img
                 src={item.product.imageUrl}
                 alt={item.product.name}
-                width={80}
-                height={80}
-                className="rounded-md object-cover"
+                className="w-20 h-20 object-cover rounded"
               />
-              <div>
-                <p className="font-medium">{item.product.name}</p>
-                <p className="text-sm text-gray-600">Quantity: {item.quantity}</p>
-                <p className="text-sm text-gray-600">Price: RWF {item.price}</p>
+            )}
+            <div className="flex-1">
+              <h2 className="font-semibold">
+                {item.product?.name ?? 'Unnamed product'}
+              </h2>
+              <p className="text-sm text-gray-500">
+                RWF{' '}
+                {(
+                  item.product?.discountPrice ?? item.product?.price ?? 0
+                ).toLocaleString()}{' '}
+                × {item.quantity}
+              </p>
+              <div className="mt-2 flex items-center gap-2">
+                <button
+                  onClick={() => handleQuantityChange(item, 'decrease')}
+                  className="px-2 py-1 bg-gray-200 hover:bg-gray-300 rounded"
+                >
+                  –
+                </button>
+                <span>{item.quantity}</span>
+                <button
+                  onClick={() => handleQuantityChange(item, 'increase')}
+                  className="px-2 py-1 bg-gray-200 hover:bg-gray-300 rounded"
+                >
+                  +
+                </button>
               </div>
-            </li>
-          ))}
-        </ul>
-      )}
+            </div>
+            <button
+              onClick={() => handleRemove(item.id)}
+              className="text-red-500 hover:underline"
+            >
+              Remove
+            </button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
-}
+};
+
+export default CartPage;

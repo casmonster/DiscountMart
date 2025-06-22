@@ -7,7 +7,10 @@
   "scripts": {
     "dev": "(echo 'Killing port 5000...'; fuser -k 5000/tcp || true) && nodemon --exec tsx index.ts",
     "start": "tsx index.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "db:generate": "drizzle-kit generate:pg",
+    "db:migrate": "drizzle-kit migrate"
+    
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.0",

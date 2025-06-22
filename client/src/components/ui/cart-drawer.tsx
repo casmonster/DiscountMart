@@ -1,34 +1,17 @@
-import * as React from "react";
-import { useState, useEffect } from 'react';
-import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
-import { Button } from "./button";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerOverlay,
-  DrawerClose,
-} from "./drawer";
-
-import { ShoppingCart, X, AlertCircle, Minus, Plus, Trash2 } from "lucide-react";
-import { Separator } from "./separator";
 import { useCart, CartItemWithProduct } from "../../context/CartContext";
-
-export const convertToRwandanFrancs = (amountInUSD: number): number => {
-  const exchangeRate = 1200;
-  return Math.round(amountInUSD * exchangeRate);
-};
-
-export const formatRwandanFrancs = (amount: number): string => {
-  return new Intl.NumberFormat('rw-RW', {
-    style: 'currency',
-    currency: 'RWF',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(amount);
-};
+import { useState } from "react";
+import { useLocation, useNavigate  } from "react-router-dom";
+import { 
+  Sheet, 
+  SheetContent, 
+  SheetHeader, 
+  SheetTitle, 
+  SheetFooter 
+} from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { Trash2, Plus, Minus, X, ShoppingCart, AlertCircle } from "lucide-react";
+import { convertToRwandanFrancs, formatRwandanFrancs } from "@/lib/currency";
 
 type CartDrawerProps = {
   open: boolean;
@@ -36,13 +19,12 @@ type CartDrawerProps = {
 };
 
 export default function CartDrawer({ open, onClose }: CartDrawerProps) {
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  const {
-    cartItems,
-    isLoading,
-    removeItem,
+  const  navigate =  useNavigate(); 
+  
+  const { 
+    cartItems, 
+    isLoading, 
+    removeItem, 
     updateQuantity,
     getCartTotal,
     getTaxAmount,
@@ -50,21 +32,9 @@ export default function CartDrawer({ open, onClose }: CartDrawerProps) {
     itemCount
   } = useCart();
 
-  useEffect(() => {
-    const link = document.createElement("link");
-    link.rel = "prefetch";
-    link.href = "/checkout";
-    document.head.appendChild(link);
-    return () => {
-      document.head.removeChild(link);
-    };
-  }, []);
-
   const handleCheckout = () => {
     onClose();
-    requestIdleCallback(() => {
-      navigate("/checkout");
-    });
+    navigate("/checkout");
   };
 
   const handleContinueShopping = () => {
@@ -75,29 +45,20 @@ export default function CartDrawer({ open, onClose }: CartDrawerProps) {
     return formatRwandanFrancs(convertToRwandanFrancs(amount));
   };
 
-  const MemoizedCartItem = React.memo(CartItem);
-
   return (
-    <Drawer open={open} onOpenChange={onClose}>
-      <DrawerOverlay className="z-[90] bg-black/50" />
-      <DrawerContent
-        className="z-[100] w-full sm:max-w-md flex flex-col h-full p-0 border-l shadow-xl"
-        aria-describedby="cart-description"
-      >
-        <div id="cart-description" className="sr-only">
-          Shopping cart with items, subtotal, and checkout options.
-        </div>
-        <DrawerHeader className="p-5 border-b border-gray-100">
+    <Sheet open={open} onOpenChange={onClose}>
+      <SheetContent className="w-full sm:max-w-md flex flex-col h-full p-0 border-l shadow-xl">
+        <SheetHeader className="p-5 border-b border-gray-100">
           <div className="flex justify-between items-center">
-            <DrawerTitle className="flex items-center text-xl">
+            <SheetTitle className="flex items-center text-xl">
               <ShoppingCart className="h-5 w-5 mr-2 text-primary" />
-              Your Cart
+              Your Cart 
               {itemCount > 0 && (
                 <span className="ml-2 bg-primary/10 text-primary text-sm px-2 py-0.5 rounded-full">
                   {itemCount} {itemCount === 1 ? 'item' : 'items'}
                 </span>
               )}
-            </DrawerTitle>
+            </SheetTitle>
             <Button
               variant="ghost"
               size="icon"
@@ -107,7 +68,7 @@ export default function CartDrawer({ open, onClose }: CartDrawerProps) {
               <X className="h-5 w-5" />
             </Button>
           </div>
-        </DrawerHeader>
+        </SheetHeader>
 
         {cartItems.length === 0 ? (
           <div className="flex-grow flex flex-col items-center justify-center p-6">
@@ -138,7 +99,7 @@ export default function CartDrawer({ open, onClose }: CartDrawerProps) {
               ) : (
                 <div className="space-y-5">
                   {cartItems.map((item) => (
-                    <MemoizedCartItem
+                    <CartItem
                       key={item.id}
                       item={item}
                       onRemove={removeItem}
@@ -153,18 +114,19 @@ export default function CartDrawer({ open, onClose }: CartDrawerProps) {
               <div className="space-y-3 mb-5">
                 <div className="flex justify-between text-gray-600">
                   <span>Subtotal</span>
-                  <span className="font-medium text-blue-800">{formatRwandanFrancs(getCartTotal())}</span>
+                  <span className="font-medium text-blue-800">{formatRwandanFrancs(convertToRwandanFrancs(getCartTotal()))}</span>
                 </div>
                 <div className="flex justify-between text-gray-600">
                   <span>Tax (8%)</span>
-                  <span className="font-medium text-blue-800">{formatRwandanFrancs(getTaxAmount())}</span>
+                  <span className="font-medium text-blue-800">{formatRwandanFrancs(convertToRwandanFrancs(getTaxAmount()))}</span>
                 </div>
                 <Separator className="my-2 bg-gray-200" />
                 <div className="flex justify-between text-lg">
                   <span className="font-bold">Total</span>
-                  <span className="font-bold text-blue-800">{formatRwandanFrancs(getFinalTotal())}</span>
+                  <span className="font-bold text-blue-800">{formatRwandanFrancs(convertToRwandanFrancs(getFinalTotal()))}</span>
                 </div>
               </div>
+
               <div className="space-y-3">
                 <Button
                   className="w-full rounded-full font-medium py-6 shadow-sm flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 transition-colors"
@@ -185,6 +147,7 @@ export default function CartDrawer({ open, onClose }: CartDrawerProps) {
                   Continue Shopping
                 </Button>
               </div>
+              
               <div className="mt-4 bg-primary/5 p-3 rounded-lg flex items-start">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary mt-0.5 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -196,10 +159,10 @@ export default function CartDrawer({ open, onClose }: CartDrawerProps) {
             </div>
           </>
         )}
-      </DrawerContent>
-    </Drawer>
+      </SheetContent>
+    </Sheet>
   );
-}
+};
 
 type CartItemProps = {
   item: CartItemWithProduct;
@@ -238,7 +201,6 @@ function CartItem({ item, onRemove, onUpdateQuantity }: CartItemProps) {
       <div className="flex items-center gap-3">
         <div className="relative rounded-md overflow-hidden">
           <img
-            loading="lazy"
             src={item.product.imageUrl}
             alt={item.product.name}
             className="w-20 h-20 object-cover rounded-md"
@@ -249,23 +211,41 @@ function CartItem({ item, onRemove, onUpdateQuantity }: CartItemProps) {
             </div>
           )}
         </div>
+        
         <div className="flex-grow">
           <h3 className="font-medium text-gray-800 pr-6">{item.product.name}</h3>
+
+                    {/* Set information */}
+          {item.product.setPieces > 1 && (
+            <p className="text-xs text-gray-600 mt-0.5">
+              {item.product.setPieces} {item.product.unitType === "set" ? "pieces per set" : `${item.product.unitType}s included`}
+            </p>
+          )}
+          
+          {/* Price display */}
+          {/* Price display */}
           <div className="flex items-center mt-1">
             {hasDiscount ? (
               <>
-                <span className="text-blue-800 font-bold">{formatRwandanFrancs(convertToRwandanFrancs(price))}</span>
-                <span className="text-gray-400 text-xs line-through ml-2">{formatRwandanFrancs(convertToRwandanFrancs(item.product.price))}</span>
+                <span className="text-blue-800 font-bold">{formatRwandanFrancs(convertToRwandanFrancs(price * item.product.setPieces))}</span>
+                <span className="text-gray-400 text-xs line-through ml-2">{formatRwandanFrancs(convertToRwandanFrancs(item.product.price * item.product.setPieces))}</span>
               </>
             ) : (
-              <span className="text-blue-800 font-bold">{formatRwandanFrancs(convertToRwandanFrancs(price))}</span>
+              <span className="text-blue-800 font-bold">{formatRwandanFrancs(convertToRwandanFrancs(price * item.product.setPieces))}</span>
+            )}
+            {item.product.setPieces > 1 && (
+              <span className="text-xs text-gray-500 ml-1">per {item.product.unitType}</span>
             )}
           </div>
+          
+          {/* Status indicator */}
           {item.product.stockLevel === "Low Stock" && (
             <span className="text-xs text-amber-500 bg-amber-50 px-1.5 py-0.5 rounded-full inline-flex items-center mt-1">
               <AlertCircle className="h-3 w-3 mr-1" /> Low Stock
             </span>
           )}
+          
+          {/* Quantity controls */}
           <div className="flex items-center mt-2">
             <div className="flex items-center border border-gray-200 rounded-full p-0.5">
               <Button
@@ -288,6 +268,7 @@ function CartItem({ item, onRemove, onUpdateQuantity }: CartItemProps) {
                 <Plus className="h-3 w-3 text-gray-600" />
               </Button>
             </div>
+            
             <div className="ml-auto text-right">
               <p className="text-xs text-gray-500">Subtotal</p>
               <p className="font-bold text-blue-800">{formatRwandanFrancs(convertToRwandanFrancs(subtotal))}</p>
@@ -295,6 +276,8 @@ function CartItem({ item, onRemove, onUpdateQuantity }: CartItemProps) {
           </div>
         </div>
       </div>
+      
+      {/* Remove button - positioned absolute so it doesn't disrupt layout */}
       <Button
         variant="ghost"
         size="icon"
@@ -304,6 +287,8 @@ function CartItem({ item, onRemove, onUpdateQuantity }: CartItemProps) {
       >
         <Trash2 className="h-4 w-4" />
       </Button>
+      
+      {/* Loading overlay */}
       {isUpdating && (
         <div className="absolute inset-0 bg-white/50 rounded-lg flex items-center justify-center">
           <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary"></div>

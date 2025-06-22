@@ -1,3 +1,4 @@
+import { Product } from './product';
 export interface CartItem {
   id: string;
   quantity: number;
@@ -5,8 +6,7 @@ export interface CartItem {
   product: Product;
 }
 
-export interface Product {
-  id: string;
-  name: string;
-  imageUrl: string;
-}
+
+
+
+

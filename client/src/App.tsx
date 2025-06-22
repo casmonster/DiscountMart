@@ -27,6 +27,10 @@ import OrderStatus from "./pages/OrderStatus";
 import HelpCenter from "./pages/HelpCenter";
 import FAQ from "./pages/FAQ";
 import Newsletter from "./pages/Newsletter";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
+import Sitemap from "./pages/Sitemap";
+import AdminDashBoard from "./pages/AdminDashBoard";
 // Lazy-loaded pages
 const Home = lazy(() => import("./pages/Home"));
 const Checkout = lazy(() => import("./pages/Checkout"));
@@ -69,7 +73,10 @@ function AppRoutes() {
           <Route path="/help" element={<HelpCenter />} />
           <Route path="/faq" element={<FAQ />} />
           <Route path="/newsletter" element={<Newsletter />} />
-          
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<TermsOfService />} />
+          <Route path="/sitemap" element={<Sitemap />} />
+          <Route path="/admin/orders/manage" element={<AdminDashBoard/>} />
         </Routes>
       </div>
       <Footer />

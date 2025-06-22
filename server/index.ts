@@ -10,7 +10,8 @@ import 'dotenv/config';
 // Import route modules
 import  {dbProductsRouter}  from './routes/products';
 import { dbCategoriesRouter } from './routes/categories';
-import  {ordersRouter}  from './routes/orders';
+import  ordersRouter  from './routes/orders';
+import cartRouter from './routes/cart';
 
 const app: Application = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -65,6 +66,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api/products', dbProductsRouter);
 app.use('/api/categories', dbCategoriesRouter);
 app.use('/api/orders', ordersRouter);
+app.use('/api/cart', cartRouter);
 
 // Error handler
 app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {

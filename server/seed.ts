@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { db } from "./db";
-import { categories, products, users, orders, orderItems, type InsertProduct, } from "./schema";
+import { categories, products, users, orders, orderItems,cartItems, type InsertProduct, } from "./schema";
 import { eq } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 
@@ -51,6 +51,8 @@ const rawProducts = [
     stockLevel: 60,
     isNew: false,
     isFeatured: true,
+    setPieces: 1,
+    unitType: "piece",
   },
   {
     name: "Knit Sweater",
@@ -64,19 +66,23 @@ const rawProducts = [
     stockLevel: 60,
     isNew: false,
     isFeatured: true,
+    setPieces: 1,
+    unitType: "piece",
     },
   {
     name: "Ceramic Dinner Plate",
     slug: "ceramic-dinner-plate",
     description: "Locally made ceramic plate, ideal for modern table settings.",
-    price: 44.99,
-    discountPrice: 10000,
+    price: 54.99,
+    discountPrice: 49.99,
     imageUrl: "https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
     categorySlug: "tableware",
     isNew: false,
     stockLevel: 100,
     inStock: true,
     isFeatured: true,
+    setPieces: 12,
+    unitType: "set",
   },
   {
     name: "Crystal Glass Set",
@@ -90,6 +96,8 @@ const rawProducts = [
     stockLevel: 100,
     isNew: true,
     isFeatured: false,
+    setPieces: 6,
+    unitType: "set",
   },
   {
     name: "Premium Cooking Pot Set",
@@ -103,6 +111,8 @@ const rawProducts = [
     stockLevel: 90,
     isNew: false,
     isFeatured: false,
+    setPieces: 5,
+     unitType: "set",
   },
   {
     name: "Glass Drinkware Collection",
@@ -116,6 +126,8 @@ const rawProducts = [
     stockLevel: 200,
     isNew: true,
     isFeatured: false,
+    setPieces: 8,
+    unitType: "set",
   },
   {
     name: "Modern Lamp",
@@ -129,6 +141,8 @@ const rawProducts = [
     stockLevel: 100,
     isNew: false,
     isFeatured: true,
+    setPieces: 1,
+    unitType: "piece",
   },
   {
     name: "Wall Art Canvas Set",
@@ -142,6 +156,8 @@ const rawProducts = [
     stockLevel: 50,
     inStock: true,
     isFeatured: true,
+    setPieces: 3,
+    unitType: "set",
   },
    
    {
@@ -156,6 +172,8 @@ const rawProducts = [
     stockLevel: 70,
     isNew: true,
     isFeatured: false,
+    setPieces: 1,
+     unitType: "piece",
   },
   {
     name: "Denim Jacket",
@@ -169,6 +187,8 @@ const rawProducts = [
     stockLevel: 50,
     isNew: false,
     isFeatured: true,
+    setPieces: 1,
+    unitType: "piece",
   },
   {
     name: "Cotton T-Shirt",
@@ -182,6 +202,8 @@ const rawProducts = [
     stockLevel: 200,
     isNew: true,
     isFeatured: false,
+    setPieces: 2,
+    unitType: "pack",
   },
   {
         name: "Leather Belt",
@@ -195,6 +217,8 @@ const rawProducts = [
         stockLevel: 150,
         isNew: false,
         isFeatured: true,
+        setPieces: 1,
+        unitType: "piece",
       },
       {
         name: "Casual Pants",
@@ -208,6 +232,8 @@ const rawProducts = [
         stockLevel: 60,
         isNew: false,
         isFeatured: true,
+        setPieces: 1,
+        unitType: "piece",
       },
       {
         name: "Winter Coat",
@@ -221,6 +247,8 @@ const rawProducts = [
         stockLevel: 50,
         isNew: true,
         isFeatured: false,
+        setPieces: 1,
+        unitType: "piece",
       },
       {    
         name: "Porcelain Tea Set",
@@ -234,6 +262,8 @@ const rawProducts = [
         stockLevel: 80,
         isNew: false,
         isFeatured:true,
+        setPieces: 8,
+        unitType: "set",
       },
       {
         name: "Stainless Steel Cutlery Set",
@@ -247,6 +277,8 @@ const rawProducts = [
         stockLevel: 80,
         isNew: false,
         isFeatured: true,
+        setPieces: 16,
+        unitType: "set",
       },
       {
         name: "Bamboo Serving Tray",
@@ -260,6 +292,8 @@ const rawProducts = [
         stockLevel: 200,
         isNew: true,
         isFeatured: false,
+        setPieces: 1,
+        unitType: "piece",
       },
       {
         name: "Wine Glass Collection",
@@ -273,6 +307,9 @@ const rawProducts = [
         stockLevel: 100,
         isNew: false,
         isFeatured: true,
+        setPieces: 4,
+        unitType: "set",
+
       },
       { 
         name: "Ceramic Plate Set",
@@ -286,6 +323,8 @@ const rawProducts = [
         stockLevel: 400,
         isNew: false,
         isFeatured: true,
+        setPieces: 6,
+        unitType: "set",
       },
       {
         name: "Non-Stick Pan Set",
@@ -299,6 +338,8 @@ const rawProducts = [
         stockLevel: 300,
         isNew: false,
         isFeatured: true,
+        setPieces: 3,
+        unitType: "set",
       },
       {
         name: "Kitchen Knife Set",
@@ -312,6 +353,8 @@ const rawProducts = [
         stockLevel: 80,
         isNew: true,
         isFeatured: false,
+        setPieces: 7,
+        unitType: "set",
       },
       {
         name: "Wooden Cutting Board",
@@ -325,6 +368,8 @@ const rawProducts = [
         stockLevel: 100,
         isNew: false,
         isFeatured: true,
+        setPieces: 1,
+        unitType: "piece",
       },
       {
         name: "Electric Coffee Maker",
@@ -338,6 +383,8 @@ const rawProducts = [
         stockLevel: 60,
         isNew: true,
         isFeatured: false,
+        setPieces: 1,
+        unitType: "piece",
       },
       {
         name: "Ceramic Vase Set",
@@ -351,6 +398,8 @@ const rawProducts = [
         stockLevel: 70,
         isNew: true,
         isFeatured: false,
+        setPieces: 3,
+        unitType: "set",
       },
       {
         name: "Cotton Throw Blanket",
@@ -364,6 +413,8 @@ const rawProducts = [
         stockLevel: 50,
         isNew: true,
         isFeatured: false,
+        setPieces: 1,
+        unitType: "piece",
       },
       {
         name: "Decorative Mirror",
@@ -377,6 +428,8 @@ const rawProducts = [
         stockLevel: 200,
         isNew: false,
         isFeatured: true,
+        setPieces: 1,
+        unitType: "piece",
       },
       {
         name: "Scented Candle Set",
@@ -390,6 +443,8 @@ const rawProducts = [
         stockLevel: 100,
         isNew: true,
         isFeatured: false,
+        setPieces: 4,
+        unitType: "set",
       },
       {
         name: "Indoor Plant Collection",
@@ -403,6 +458,8 @@ const rawProducts = [
         stockLevel: 80,
         isNew: true,
         isFeatured: false,
+        setPieces: 3,
+        unitType: "set",
       }, 
 ];
 
@@ -423,13 +480,14 @@ const rawUsers = [
 ];
 async function seed() {
   console.log("🌱 Seeding database...");
-
+  
+  await db.delete(cartItems);
   await db.delete(orderItems);
   await db.delete(orders);
   await db.delete(products);
   await db.delete(categories);
   await db.delete(users);
-
+  
   // Insert categories
   await db.insert(categories).values(demoCategories);
   console.log("✅ Categories seeded");

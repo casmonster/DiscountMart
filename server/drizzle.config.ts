@@ -5,7 +5,7 @@ import * as dotenv from 'dotenv';
 dotenv.config({path: './server/.env'});
 
 const config: Config = {
-  schema: ['./server/schema.ts'],
+  schema: './server/schema.ts',
   out: './server/drizzle',
   dialect: 'postgresql',
   dbCredentials: {

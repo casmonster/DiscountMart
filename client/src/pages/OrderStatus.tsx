@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import  {useLocation} from "react-router-dom";
 import { Search, Package, Clock, CheckCircle, AlertCircle } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
 import { Input } from "../components/ui/input";
@@ -13,10 +14,28 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export default function OrderStatus() {
   const [orderId, setOrderId] = useState("");
   const [searchOrderId, setSearchOrderId] = useState("");
+  
+  const location = useLocation();
+
+  // Check for order ID in URL parameters
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const urlOrderId = params.get('id');
+    if (urlOrderId) {
+      setOrderId(urlOrderId);
+      setSearchOrderId(urlOrderId);
+    }
+  }, [location]);
 
   const { data: order, isLoading, error } = useQuery<Order & { items: (OrderItem & { product: Product })[] }>({
     queryKey: [`${BASE_URL}/orders/${searchOrderId}`],
-    enabled: !!searchOrderId && searchOrderId.length > 0
+    queryFn: async () => {
+      const response = await fetch(`${BASE_URL}/orders/${searchOrderId}`);
+      if (!response.ok) throw new Error('Order not found');
+      return response.json();
+    },
+    enabled: !!searchOrderId && searchOrderId.length > 0,
+    retry: false
   });
 
   const handleSearch = () => {

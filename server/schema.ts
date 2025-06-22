@@ -2,7 +2,9 @@
 
 import { pgTable, text, serial, integer, boolean, doublePrecision, timestamp, varchar } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
-import { z } from "zod";
+import { z, ZodRawShape} from "zod";
+import { relations, sql } from "drizzle-orm";
+
 // Category schema
 export const categories = pgTable("categories", {
   id: serial("id").primaryKey(),
@@ -21,27 +23,46 @@ export const products = pgTable("products", {
   description: text("description").notNull(),
   imageUrl: text("image_url").notNull(),
   price: doublePrecision("price").notNull(),
-  discountPrice: doublePrecision("discount_price"),
+  discountPrice: doublePrecision("discount_price").default(sql`null`),
   categoryId: integer("category_id").notNull(),
   inStock: boolean("in_stock").notNull().default(true),
   stockLevel: integer("stock_level").notNull().default(0),
   isFeatured: boolean('is_featured').default(false),
   createdAt: timestamp('created_at').defaultNow(),
   isNew: boolean("is_new").default(false),
+  setPieces: integer("set_pieces").notNull().default(1), // Number of pieces per set
+  unitType: text("unit_type").notNull().default("piece"), // e.g., "piece", "pack", "box"
 });
 export const insertProductSchema = createInsertSchema(products).omit({
   id: true,
-});
+})
 // Cart Item schema
 export const cartItems = pgTable("cart_items", {
   id: serial("id").primaryKey(),
   cartId: text("cart_id").notNull(),
-  productId: integer("product_id").notNull(),
+  productId: integer("product_id")
+  .notNull()
+  .references(() => products.id),
   quantity: integer("quantity").notNull().default(1),
 });
-export const insertCartItemSchema = createInsertSchema(cartItems).omit({
-  id: true,
-});
+
+export const cartItemsRelations = relations(cartItems, ({ one }) => ({
+  product: one(products, {
+    fields: [cartItems.productId],
+    references: [products.id],
+  }),
+}));
+export const productRelations = relations(products, ({ many }) => ({
+  cartItems: many(cartItems),
+}));
+
+export const insertCartItemSchema = createInsertSchema(cartItems)
+  .omit({ id: true })
+  .extend({
+    quantity: z.number().int().positive() as any, // force compatibility
+  });
+// Used for array validation in order creation
+
 // src/db/schema.ts
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
@@ -63,10 +84,14 @@ export const orders = pgTable("orders", {
   createdAt: timestamp("created_at").defaultNow(),
   cartId: text("cart_id").notNull(), 
 });
-export const insertOrderSchema = createInsertSchema(orders).omit({
-  id: true,
-  createdAt: true,
-});
+export const insertOrderSchema = createInsertSchema(orders)
+  .omit({
+    id: true,
+    createdAt: true,
+  })
+  .extend({
+    status: z.enum(["pending", "processing", "shipped", "delivered", "cancelled"]).optional() as any,
+  });
 // Order Item schema
 export const orderItems = pgTable("order_items", {
   id: serial("id").primaryKey(),
@@ -79,14 +104,47 @@ export const orderItems = pgTable("order_items", {
 const baseOrderItemSchema = createInsertSchema(orderItems);
 export const insertOrderItemSchema = baseOrderItemSchema.omit({
   id: true,
+  orderId: true,
 });
 // Alternative fix: Create a pure Zod schema for order items
-export const orderItemValidationSchema = z.object({
+  
+  export const orderItemValidationSchema = z.object({
   orderId: z.number().int(),
   productId: z.number().int(),
   quantity: z.number().int().positive(),
   price: z.number().positive(),
 });
+  
+// Optional but recommended: relations for admin order fetch
+export const orderRelations = relations(orders, ({ many }) => ({
+  orderItems: many(orderItems),
+}));
+
+export const orderItemRelations = relations(orderItems, ({ one }) => ({
+  order: one(orders, {
+    fields: [orderItems.orderId],
+    references: [orders.id],
+  }),
+  product: one(products, {
+    fields: [orderItems.productId],
+    references: [products.id],
+  }),
+}));
+// Create Order validation schema used in routes
+export const createOrderSchema = z.object({
+  customerName: z.string(),
+  customerEmail: z.string().email(),
+  customerPhone: z.string(),
+  
+  cartId: z.string().uuid(),
+  items: z.array(
+    z.object({
+      productId: z.number().int(),
+      quantity: z.number().int().positive(),
+    })
+  ),
+});
+
 // For the array validation in routes.ts, use this:
 export const orderItemsArraySchema = z.array(orderItemValidationSchema);
 // Export types using Drizzle's built-in type inference

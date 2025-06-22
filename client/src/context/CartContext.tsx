@@ -1,18 +1,9 @@
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-  ReactNode,
-  useCallback,
-} from "react";
-import { useToast } from "../hooks/use-toast";
-import { apiRequest } from "../lib/queryClient";
-import { v4 as uuidv4 } from "uuid";
+import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
+import { v4 as uuidv4 } from 'uuid';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
 export type CartItemWithProduct = {
   id: number;
   cartId: string;
@@ -25,183 +16,196 @@ export type CartItemWithProduct = {
     discountPrice: number | null;
     imageUrl: string;
     stockLevel: string;
+    setPieces: number;
+    unitType: string;
   };
 };
 
-type CartError = { message: string; code?: string };
-
-interface CartContextType {
+type CartContextType = {
   cartItems: CartItemWithProduct[];
   cartId: string;
   isLoading: boolean;
-  isInitialized: boolean;
-  error: CartError | null;
-  itemCount: number;
-  getCartTotal: () => number;
-  getTaxAmount: () => number;
-  getFinalTotal: () => number;
   addToCart: (productId: number, quantity?: number) => Promise<void>;
   updateQuantity: (itemId: number, quantity: number) => Promise<void>;
   removeItem: (itemId: number) => Promise<void>;
   clearCart: () => Promise<void>;
-  resetError: () => void;
-}
+  getCartTotal: () => number;
+  getTaxAmount: () => number;
+  getFinalTotal: () => number;
+  itemCount: number;
+};
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const { toast } = useToast();
   const [cartItems, setCartItems] = useState<CartItemWithProduct[]>([]);
   const [cartId, setCartId] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
-  const [isInitialized, setIsInitialized] = useState(false);
-  const [error, setError] = useState<CartError | null>(null);
+  const { toast } = useToast();
 
-  const resetError = useCallback(() => setError(null), []);
-
-  // Cart ID initialization
+  // Initialize cart ID from localStorage or create a new one
   useEffect(() => {
     const storedCartId = localStorage.getItem("cartId");
     if (storedCartId) {
       setCartId(storedCartId);
     } else {
-      const newId = uuidv4();
-      localStorage.setItem("cartId", newId);
-      setCartId(newId);
+      const newCartId = uuidv4();
+      localStorage.setItem("cartId", newCartId);
+      setCartId(newCartId);
     }
   }, []);
 
-  // Fetch cart items when cartId is ready
+  // Fetch cart items when cartId is available
   useEffect(() => {
-    if (cartId) fetchCartItems();
+    if (cartId) {
+      fetchCartItems();
+    }
   }, [cartId]);
 
   const fetchCartItems = async () => {
     setIsLoading(true);
     try {
       const response = await fetch(`${BASE_URL}/cart/${cartId}`);
-      if (!response.ok) throw new Error(`Error ${response.status}`);
-      const data = await response.json();
-      setCartItems(data);
-      setIsInitialized(true);
-    } catch (err) {
-      const message = err instanceof Error ? err.message : "Failed to fetch cart";
-      setError({ message });
-      toast({ title: "Error", description: message, type: "background" });
+      if (response.ok) {
+        const data = await response.json();
+        setCartItems(data);
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to fetch cart items",
+        
+      });
     } finally {
       setIsLoading(false);
     }
   };
 
-  const validateQuantity = (qty: number) => {
-    if (qty < 0) throw new Error("Quantity cannot be negative");
-    if (qty > 99) throw new Error("Quantity cannot exceed 99");
-  };
-
-  const addToCart = useCallback(async (productId: number, quantity = 1) => {
+  const addToCart = async (productId: number, quantity = 1) => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
-      validateQuantity(quantity);
-      await apiRequest("POST", `${BASE_URL}/cart`, { cartId, productId, quantity });
+      await apiRequest("POST", `${BASE_URL}/cart`, {  cartId, productId, quantity });
+      
       await fetchCartItems();
-      toast({ title: "Added to cart", description: "Item added successfully" });
-    } catch {
-      toast({ title: "Error", description: "Failed to add item", type: "background" });
+      
+      toast({
+        title: "Added to cart",
+        description: "Item successfully added to your cart",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to add item to cart",
+        
+      });
     } finally {
       setIsLoading(false);
     }
-  }, [cartId]);
+  };
 
-  const updateQuantity = useCallback(async (itemId: number, quantity: number) => {
-    if (quantity <= 0) return removeItem(itemId);
+  const updateQuantity = async (itemId: number, quantity: number) => {
+    if (quantity <= 0) {
+      return removeItem(itemId);
+    }
+    
+    setIsLoading(true);
     try {
-      setIsLoading(true);
       await apiRequest("PUT", `${BASE_URL}/cart/${itemId}`, { quantity });
       await fetchCartItems();
-    } catch {
-      toast({ title: "Error", description: "Failed to update quantity", type: "background" });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update item quantity",
+        
+      });
     } finally {
       setIsLoading(false);
     }
-  }, [cartId]);
+  };
 
-  const removeItem = useCallback(async (itemId: number) => {
+  const removeItem = async (itemId: number) => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
       await apiRequest("DELETE", `${BASE_URL}/cart/${itemId}`);
       await fetchCartItems();
-      toast({ title: "Removed from cart", description: "Item removed successfully" });
-    } catch {
-      toast({ title: "Error", description: "Failed to remove item", type: "background" });
+      
+      toast({
+        title: "Removed from cart",
+        description: "Item successfully removed from your cart",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to remove item from cart",
+        
+      });
     } finally {
       setIsLoading(false);
     }
-  }, [cartId]);
+  };
 
-  const clearCart = useCallback(async () => {
+  const clearCart = async () => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
       await apiRequest("DELETE", `${BASE_URL}/cart/clear/${cartId}`);
       setCartItems([]);
-    } catch {
-      toast({ title: "Error", description: "Failed to clear cart", type: "background" });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to clear cart",
+        
+      });
     } finally {
       setIsLoading(false);
     }
-  }, [cartId]);
+  };
 
-  const itemCount = useMemo(() => cartItems.reduce((sum, item) => sum + item.quantity, 0), [cartItems]);
-
-  const getCartTotal = useCallback(() => {
-    return cartItems.reduce((sum, item) => {
-      const price = item.product.discountPrice ?? item.product.price;
-      return sum + price * item.quantity;
+  const getCartTotal = () => {
+    return cartItems.reduce((total, item) => {
+      const usdprice = item.product.discountPrice || item.product.price;
+      const setPieces = item.product.setPieces || 1;
+      return total + usdprice * item.quantity;
     }, 0);
-  }, [cartItems]);
+  };
 
-  const getTaxAmount = useCallback(() => getCartTotal() * 0.1, [getCartTotal]);
-  const getFinalTotal = useCallback(() => getCartTotal() + getTaxAmount(), [getCartTotal, getTaxAmount]);
+  const getTaxAmount = () => {
+    return getCartTotal() * 0.08; // 8% tax
+  };
 
-  const value = useMemo(
-    () => ({
-      cartItems,
-      cartId,
-      isLoading,
-      isInitialized,
-      error,
-      itemCount,
-      getCartTotal,
-      getTaxAmount,
-      getFinalTotal,
-      addToCart,
-      updateQuantity,
-      removeItem,
-      clearCart,
-      resetError,
-    }),
-    [
-      cartItems,
-      cartId,
-      isLoading,
-      isInitialized,
-      error,
-      itemCount,
-      getCartTotal,
-      getTaxAmount,
-      getFinalTotal,
-      addToCart,
-      updateQuantity,
-      removeItem,
-      clearCart,
-      resetError,
-    ]
+  const getFinalTotal = () => {
+    return getCartTotal() + getTaxAmount();
+  };
+
+  const itemCount = cartItems.reduce(
+    (count, item) => count + item.quantity,
+    0
   );
 
-  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
+  return (
+    <CartContext.Provider
+      value={{
+        cartItems,
+        cartId,
+        isLoading,
+        addToCart,
+        updateQuantity,
+        removeItem,
+        clearCart,
+        getCartTotal,
+        getTaxAmount,
+        getFinalTotal,
+        itemCount,
+      }}
+    >
+      {children}
+    </CartContext.Provider>
+  );
 };
 
 export const useCart = () => {
   const context = useContext(CartContext);
-  if (!context) throw new Error("useCart must be used within a CartProvider");
+  if (context === undefined) {
+    throw new Error("useCart must be used within a CartProvider");
+  }
   return context;
 };

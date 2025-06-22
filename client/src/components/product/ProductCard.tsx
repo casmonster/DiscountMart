@@ -3,12 +3,12 @@ import { Button } from "../ui/button";
 import { useCart } from "../../context/CartContext";
 import { useWishlist } from "../../context/WishlistContext";
 import { CheckCircle, AlertCircle, ShoppingCart, Eye, Heart } from "lucide-react";
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { useToast } from "../../hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import ProductQuickView from "./ProductQuickView";
 import { convertToRwandanFrancs, formatRwandanFrancs } from "../../lib/currency";
-import type { Product } from "../../types/product";
+import type { Product} from "../../types/product";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -19,8 +19,11 @@ type ProductCardProps = {
   imageUrl: string;
   price: number;
   discountPrice: number | null;
-  stockLevel: string;
+  stockLevel: number;
   isNew?: boolean;
+  onAddToCart?: () => void;
+  setPieces?: number;
+  unitType?: string;
 };
 
 export default function ProductCard({
@@ -32,6 +35,9 @@ export default function ProductCard({
   discountPrice,
   stockLevel,
   isNew = false,
+  onAddToCart,
+  setPieces = 1,
+  unitType = "piece",
 }: ProductCardProps) {
   const { addToCart } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
@@ -41,21 +47,22 @@ export default function ProductCard({
 
   const inWishlist = isInWishlist(id);
 
-  // Fetch product details when quick view is opened
-  const { data: productDetail } = useQuery({
-    queryKey: [`/api/products/${slug}`],
-    queryFn: async () => {
-      const response = await fetch(`/api/products/${slug}`);
+  const { data: productDetail } = useQuery<Product>({
+    queryKey: [`/api/products/${slug}`] as const,
+    queryFn: async ({ queryKey }) => {
+      const [path] = queryKey as [string]; // ✅ safely assert the type
+      const slug = path.split('/').pop()!;
+
+      const response = await fetch(`${BASE_URL}/products/${slug}`);
       if (!response.ok) throw new Error('Failed to fetch product details');
       return response.json();
     },
-    enabled: isQuickViewOpen, // Only fetch when the modal is open
+    enabled: isQuickViewOpen,
   });
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    
     setIsAdding(true);
     try {
       await addToCart(id, 1);
@@ -63,11 +70,10 @@ export default function ProductCard({
         title: "Added to cart",
         description: `${name} has been added to your cart.`,
       });
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to add item to cart. Please try again.",
-        
       });
     } finally {
       setIsAdding(false);
@@ -77,7 +83,7 @@ export default function ProductCard({
   const handleToggleWishlist = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     toggleWishlist({
       id,
       slug,
@@ -86,10 +92,10 @@ export default function ProductCard({
       price,
       discountPrice
     });
-    
+
     toast({
       title: inWishlist ? "Removed from wishlist" : "Added to wishlist",
-      description: inWishlist 
+      description: inWishlist
         ? `${name} has been removed from your wishlist.`
         : `${name} has been added to your wishlist.`,
     });
@@ -100,11 +106,12 @@ export default function ProductCard({
     e.stopPropagation();
     setIsQuickViewOpen(true);
   };
-
-  const isInStock = stockLevel === "In Stock";
-  const isLowStock = stockLevel === "Low Stock";
-  const discountPercentage = discountPrice 
-    ? Math.round(((price - discountPrice) / price) * 100) 
+  const lowStockThreshold = 10;
+  
+  const isInStock = stockLevel > 0;
+  const isLowStock = stockLevel > 0 && stockLevel <= lowStockThreshold;
+  const discountPercentage = discountPrice
+    ? Math.round(((price - discountPrice) / price) * 100)
     : 0;
 
   return (
@@ -112,13 +119,12 @@ export default function ProductCard({
       <div className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-xl transition-all duration-300 group transform hover:-translate-y-1 border border-gray-100 h-full flex flex-col">
         <div className="block h-full">
           <div className="relative aspect-square overflow-hidden bg-gray-50">
-            <img 
-              src={imageUrl} 
-              alt={name} 
+            <img
+              src={imageUrl}
+              alt={name}
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
             />
 
-            {/* Sale tag */}
             {discountPrice && (
               <div className="absolute top-3 left-3 bg-gradient-to-r from-red-500 to-red-400 text-white text-xs font-bold px-2.5 py-1 rounded-md shadow-md flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -128,7 +134,6 @@ export default function ProductCard({
               </div>
             )}
 
-            {/* New tag */}
             {isNew && !discountPrice && (
               <div className="absolute top-3 left-3 bg-gradient-to-r from-primary to-primary/80 text-white text-xs font-bold px-2.5 py-1 rounded-md shadow-md flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -138,24 +143,22 @@ export default function ProductCard({
               </div>
             )}
 
-            {/* Wishlist button */}
             <Button
               variant="ghost"
               size="icon"
               className={`absolute top-3 right-3 z-10 h-8 w-8 rounded-full bg-white/90 backdrop-blur-sm shadow-md transition-colors ${
-                inWishlist 
-                  ? 'text-secondary hover:text-secondary/80' 
+                inWishlist
+                  ? 'text-secondary hover:text-secondary/80'
                   : 'text-gray-600 hover:text-secondary'
               }`}
               onClick={handleToggleWishlist}
             >
-              <Heart 
-                className="h-4 w-4" 
-                fill={inWishlist ? 'currentColor' : 'none'} 
+              <Heart
+                className="h-4 w-4"
+                fill={inWishlist ? 'currentColor' : 'none'}
               />
             </Button>
 
-            {/* Overlay with buttons */}
             <div className="absolute inset-0 bg-gradient-to-t from-gray-900/70 via-gray-900/30 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-4">
               <div className="flex gap-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                 <Button
@@ -191,7 +194,6 @@ export default function ProductCard({
 
           <Link to ={`/product/${slug}`} className="block">
             <div className="p-4 flex flex-col flex-grow">
-              {/* Stock status above title */}
               <div className="mb-1.5">
                 {isInStock ? (
                   <span className="text-xs text-green-600 flex items-center">
@@ -210,31 +212,38 @@ export default function ProductCard({
                   </span>
                 )}
               </div>
-              
-              {/* Product name */}
               <h3 className="font-medium text-gray-900 line-clamp-2 group-hover:text-primary transition-colors text-base/tight flex-grow">
                 {name}
               </h3>
-              
-              {/* Price display - Rwandan Francs */}
+
+              {/* Set information */}
+              {setPieces > 1 && (
+                <div className="mt-1">
+                  <span className="text-xs text-gray-600 bg-gray-100 px-2 py-0.5 rounded-full">
+                    {setPieces} {unitType === "set" ? "pieces per set" : `${unitType}s included`}
+                  </span>
+                </div>
+              )}
+
               <div className="flex items-center mt-2">
                 {discountPrice ? (
                   <>
                     <span className="text-blue-800 font-bold mr-2 text-lg">
-                      {formatRwandanFrancs(convertToRwandanFrancs(discountPrice))}
+                      {formatRwandanFrancs(convertToRwandanFrancs(discountPrice * setPieces))}
                     </span>
                     <span className="text-gray-400 text-sm line-through">
-                      {formatRwandanFrancs(convertToRwandanFrancs(price))}
+                      {formatRwandanFrancs(convertToRwandanFrancs(price * setPieces))}
                     </span>
                   </>
                 ) : (
                   <span className="text-blue-800 font-bold mr-2 text-lg">
-                    {formatRwandanFrancs(convertToRwandanFrancs(price))}
+                    {formatRwandanFrancs(convertToRwandanFrancs(price * setPieces))}
                   </span>
                 )}
+                {setPieces > 1 && (
+                  <span className="text-xs text-gray-500">per {unitType}</span>
+                )}
               </div>
-
-              {/* Pill-shaped tag showing product status */}
               <div className="mt-3">
                 {isInStock ? (
                   <span className="inline-block text-xs text-green-600 bg-green-50 px-2.5 py-1 rounded-full">
@@ -254,12 +263,20 @@ export default function ProductCard({
           </Link>
         </div>
       </div>
-
+      
       {/* Quick View Modal */}
       <ProductQuickView 
         open={isQuickViewOpen}
         onOpenChange={setIsQuickViewOpen}
-        product={productDetail}
+        product={
+        productDetail
+        ? {
+          ...productDetail,
+           stockLevel: Number(productDetail.stockLevel),
+           categoryId: Number(productDetail.categoryId),
+        }
+        : null
+      }
       />
     </>
   );
