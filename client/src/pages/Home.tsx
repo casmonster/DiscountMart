@@ -172,12 +172,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-       <Button
-        onClick={() => toast({ title: "Hello 👋", description: "This is a test toast" })}
-         className="mt-4"
-       >
-         Show Test Toast
-       </Button>
 
       {/* Promo Section */}
       <section className="py-12 bg-white">

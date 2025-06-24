@@ -132,12 +132,12 @@ export default function Header() {
             variant="ghost"
             size="icon"
             aria-label="Open cart"
-            className="text-gray-700 hover:text-primary relative p-2 hover:bg-primary/5 rounded-full"
+            className="text-gray-700 hover:text-primary relative p-2 hover:bg-primary/5 rounded-full  transition-colors"
             onClick={() => setIsCartOpen(true)}
           >
             <ShoppingCart className="h-6 w-6" />
             {itemCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-secondary text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow-sm">
+              <span className="absolute -top-1 -right-1 bg-secondary text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow-lg">
                 {itemCount}
               </span>
             )}
