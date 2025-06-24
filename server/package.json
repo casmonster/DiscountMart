@@ -6,7 +6,7 @@
   "main": "index.ts",
   "scripts": {
     "dev": "(echo 'Killing port 5000...'; fuser -k 5000/tcp || true) && nodemon --exec tsx index.ts",
-    "start": "tsx index.ts",
+    "start": "node build/index.js",
     "build": "tsc",
     "db:generate": "drizzle-kit generate:pg",
     "db:migrate": "drizzle-kit migrate"

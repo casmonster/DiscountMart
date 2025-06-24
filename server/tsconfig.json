@@ -9,10 +9,9 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
-    "outDir": "./dist",
+    "outDir": "./build",
     "preserveSymlinks": true,
-    "allowImportingTsExtensions": true,
-    "noEmit": true,
+    "noEmit": false,
     "resolveJsonModule": true,
      "types": ["vite/client"],
     "paths": {

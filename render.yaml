@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: discountmart
+    env: node
+    buildCommand: |
+      npm install
+      npm run build --workspace=client
+      npm run build --workspace=server
+    startCommand: node server/build/index.js
+    envVars:
+      - key: NODE_VERSION
+        value: 18
+      - key: DATABASE_URL
+        sync: false
+    buildFilter:
+      paths:
+        - client/**
+        - server/**
+        - shared/**
+    autoDeploy: true
+    branch: main
+    rootDir: .
