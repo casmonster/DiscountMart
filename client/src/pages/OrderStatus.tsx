@@ -7,7 +7,7 @@ import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
 import { Skeleton } from "../components/ui/skeleton";
-import { formatRwandanFrancs } from "@/lib/currency";
+import { formatRwandanFrancs, convertToRwandanFrancs } from "@/lib/currency";
 import type { Order, OrderItem, Product } from "../../../server/schema";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -32,7 +32,12 @@ export default function OrderStatus() {
     queryFn: async () => {
       const response = await fetch(`${BASE_URL}/orders/${searchOrderId}`);
       if (!response.ok) throw new Error('Order not found');
-      return response.json();
+     
+      const data = await response.json();
+       return {
+        ...data.order,
+       items: data.items
+     };
     },
     enabled: !!searchOrderId && searchOrderId.length > 0,
     retry: false
@@ -162,12 +167,14 @@ export default function OrderStatus() {
                     }) : 'Unknown date'}
                   </CardDescription>
                 </div>
+                
                 <Badge className={getStatusColor(order.status)}>
                   {order.status?.charAt(0).toUpperCase() + order.status?.slice(1)}
                 </Badge>
               </div>
             </CardHeader>
             <CardContent>
+       
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div>
                   <h4 className="font-semibold text-gray-900 mb-2">Customer Information</h4>
@@ -203,7 +210,7 @@ export default function OrderStatus() {
                           </div>
                         </div>
                         <p className="font-semibold text-gray-900">
-                          {formatRwandanFrancs(item.price)}
+                          {formatRwandanFrancs(convertToRwandanFrancs(item.price))}
                         </p>
                       </div>
                     ))}
@@ -211,7 +218,7 @@ export default function OrderStatus() {
                   <div className="border-t pt-4">
                     <div className="flex justify-between items-center text-lg font-semibold text-gray-900">
                       <span>Total</span>
-                      <span>{formatRwandanFrancs(order.totalAmount)}</span>
+                      <span>{formatRwandanFrancs(convertToRwandanFrancs(order.totalAmount))}</span>
                     </div>
                   </div>
                 </div>

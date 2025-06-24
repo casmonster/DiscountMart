@@ -12,15 +12,19 @@ import  {dbProductsRouter}  from './routes/products';
 import { dbCategoriesRouter } from './routes/categories';
 import  ordersRouter  from './routes/orders';
 import cartRouter from './routes/cart';
+import adminOrdersRouter from './routes/adminOrders';
+import orderRoutes from './routes/orderRoutes';
 
 const app: Application = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const allowedOrigin = process.env.FRONTEND_URL;
 
 // ✅ Enable CORS
+
 app.use(cors({
-  origin:  process.env.FRONTEND_URL, // or use process.env.FRONTEND_URL if stored in .env
-  credentials: true,
+  origin: allowedOrigin,
+  credentials: true, // Needed for cookies or Authorization headers
 }));
 
 // Middleware
@@ -67,6 +71,9 @@ app.use('/api/products', dbProductsRouter);
 app.use('/api/categories', dbCategoriesRouter);
 app.use('/api/orders', ordersRouter);
 app.use('/api/cart', cartRouter);
+app.use('/api/admin/orders', adminOrdersRouter);
+app.use("/api/orders", orderRoutes);
+
 
 // Error handler
 app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {

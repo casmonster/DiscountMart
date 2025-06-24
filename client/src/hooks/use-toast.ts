@@ -1,29 +1,10 @@
-/** @jsx React.createElement */
 import * as React from "react"
-import * as ToastPrimitives from "@radix-ui/react-toast"
-import { Category, Product } from "../types";
 
+import type {
+  ToastActionElement,
+  ToastProps,
+} from "../components/ui/toast"
 
-export interface ToastProps extends React.ComponentPropsWithoutRef<typeof ToastPrimitives.Root> {
-  open?: boolean
-  onOpenChange?: (open: boolean) => void
-  children?: React.ReactNode
-}
-
-export type ToastActionElement = React.ReactElement
-
-export const Toast = Object.assign(
-  React.forwardRef<React.ElementRef<typeof ToastPrimitives.Root>, ToastProps>(
-    ({ children, ...props }, ref) => {
-      return React.createElement(
-        ToastPrimitives.Root,
-        { ...props, ref },
-        children
-      );
-    }
-  ),
-  { displayName: "Toast" }
-);
 const TOAST_LIMIT = 1
 const TOAST_REMOVE_DELAY = 1000000
 
@@ -174,7 +155,7 @@ function toast({ ...props }: Toast) {
       ...props,
       id,
       open: true,
-      onOpenChange: (open: boolean) => {
+      onOpenChange: (open) => {
         if (!open) dismiss()
       },
     },
@@ -184,24 +165,6 @@ function toast({ ...props }: Toast) {
     id: id,
     dismiss,
     update,
-  }
-}
-
-const toastQueue: Toast[] = []
-let isProcessingQueue = false
-
-const processToastQueue = () => {
-  if (isProcessingQueue || toastQueue.length === 0) return
-
-  isProcessingQueue = true
-  const toast = toastQueue.shift()
-
-  if (toast) {
-    // Implement actual toast display logic here
-    setTimeout(() => {
-      isProcessingQueue = false
-      processToastQueue()
-    }, 3000) // Adjust timing as needed
   }
 }
 

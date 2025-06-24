@@ -150,23 +150,76 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Category Navigation */}
-      <nav className={`bg-white border-t border-gray-100 py-3 overflow-x-auto whitespace-nowrap transition-shadow duration-300 ${isScrolled ? "shadow-sm" : ""}`}>
+        {/* Category Navigation */}
+      <nav className={`bg-white border-t border-gray-100 py-3 overflow-x-auto whitespace-nowrap transition-shadow duration-300 ${isScrolled ? 'shadow-sm' : ''}`}>
         <div className="container mx-auto px-4 flex space-x-8">
-          {navItems.map(({ label, path, special }) => (
-            <Link
-              key={path}
-              to={path}
-              className={`font-medium relative px-1 transition-colors ${
-                location.pathname === path ? (special ? "text-secondary" : "text-primary") : "text-gray-600 hover:text-primary"
-              }`}
-            >
-              <span className={special ? "text-secondary" : ""}>{label}</span>
-              {location.pathname === path && (
-                <span className={`absolute bottom-[-12px] left-0 w-full h-0.5 rounded-full ${special ? "bg-secondary" : "bg-primary"}`} />
-              )}
+          <Link 
+            to="/" 
+            className={`font-medium relative px-1 transition-colors ${location.pathname === '/' 
+              ? 'text-primary' 
+              : 'text-gray-600 hover:text-primary'}`}
+          >
+            <span>All Products</span>
+            {location.pathname === '/' && <span className="absolute bottom-[-12px] left-0 w-full h-0.5 bg-primary rounded-full"></span>}
+          </Link>
+          <Link 
+            to="/category/clothing" 
+            className={`font-medium relative px-1 transition-colors ${location.pathname === '/category/clothing' 
+              ? 'text-primary' 
+              : 'text-gray-600 hover:text-primary'}`}
+          >
+            <span>Clothing</span>
+            {location.pathname === '/category/clothing' && <span className="absolute bottom-[-12px] left-0 w-full h-0.5 bg-primary rounded-full"></span>}
+          </Link>
+          <Link 
+            to="/category/tableware" 
+            className={`font-medium relative px-1 transition-colors ${location.pathname === '/category/tableware' 
+              ? 'text-primary' 
+              : 'text-gray-600 hover:text-primary'}`}
+          >
+            <span>Tableware</span>
+            {location.pathname === '/category/tableware' && <span className="absolute bottom-[-12px] left-0 w-full h-0.5 bg-primary rounded-full"></span>}
+          </Link>
+          <Link 
+            to="/category/kitchen" 
+            className={`font-medium relative px-1 transition-colors ${location.pathname === '/category/kitchen' 
+              ? 'text-primary' 
+              : 'text-gray-600 hover:text-primary'}`}
+          >
+            <span>Kitchen</span>
+            {location.pathname === '/category/kitchen' && <span className="absolute bottom-[-12px] left-0 w-full h-0.5 bg-primary rounded-full"></span>}
+          </Link>
+          <Link 
+            to="/category/home-decor" 
+            className={`font-medium relative px-1 transition-colors ${location.pathname === '/category/home-decor' 
+              ? 'text-primary' 
+              : 'text-gray-600 hover:text-primary'}`}
+          >
+            <span>Home Decor</span>
+            {location.pathname === '/category/home-decor' && <span className="absolute bottom-[-12px] left-0 w-full h-0.5 bg-primary rounded-full"></span>}
+          </Link>
+          <Link 
+            to="/new-arrivals" 
+            className={`font-medium relative px-1 transition-colors ${location.pathname === '/new-arrivals' 
+              ? 'text-primary' 
+              : 'text-gray-600 hover:text-primary'}`}
+          >
+            <span>New Arrivals</span>
+            {location.pathname === '/new-arrivals' && <span className="absolute bottom-[-12px] left-0 w-full h-0.5 bg-primary rounded-full"></span>}
+          </Link>
+          <Link 
+            to="/clearance"
+            className={`font-bold relative px-3 py-1 transition-all duration-200 rounded-full ${location.pathname === '/clearance' 
+              ? 'bg-red-600 text-white shadow-lg' 
+              : 'bg-red-500 text-white hover:bg-red-600 hover:shadow-md'}`}
+          >
+            <span className="relative z-10 flex items-center gap-1">
+              <span className="text-xs">🔥</span>
+              <span>CLEARANCE</span>
+            </span>
+            <span className="absolute inset-0 bg-gradient-to-r from-red-500 to-red-600 rounded-full opacity-80"></span>
             </Link>
-          ))}
+          ))
         </div>
       </nav>
 

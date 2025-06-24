@@ -12,6 +12,29 @@ import { Package, Clock, Truck, CheckCircle, XCircle } from "lucide-react";
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 type OrderStatus = "pending" | "processing" | "shipped" | "delivered" | "cancelled";
 
+interface OrderItem {
+  id: number;
+  orderId: number;
+  productId: number;
+  quantity: number;
+  price: number;
+  product: {
+    id: number;
+    name: string;
+    slug: string;
+    description: string;
+    imageUrl: string;
+    price: number;
+    discountPrice: number | null;
+    categoryId: number;
+    inStock: boolean;
+    stockLevel: string;
+    isNew: boolean;
+    setPieces: number;
+    unitType: string;
+  };
+}
+
 interface Order {
   id: number;
   customerName: string;
@@ -20,29 +43,9 @@ interface Order {
   totalAmount: number;
   status: OrderStatus;
   createdAt: string;
-  items: Array<{
-    id: number;
-    orderId: number;
-    productId: number;
-    quantity: number;
-    price: number;
-    product: {
-      id: number;
-      name: string;
-      slug: string;
-      description: string;
-      imageUrl: string;
-      price: number;
-      discountPrice: number | null;
-      categoryId: number;
-      inStock: boolean;
-      stockLevel: string;
-      isNew: boolean;
-      setPieces: number;
-      unitType: string;
-    };
-  }>;
+  items: OrderItem[];
 }
+
 
 const statusConfig = {
   pending: { label: "Pending", icon: Clock, color: "bg-yellow-100 text-yellow-800" },
@@ -58,9 +61,15 @@ export default function AdminDashBoard() {
   const { toast } = useToast();
 
   // Fetch all orders
-  const { data: orders, isLoading } = useQuery<Order[]>({
-    queryKey: ["/api/admin/orders"],
-  });
+  const { data: orders = [], isLoading,isError, error } = useQuery<Order[]>({
+    queryKey: ["admin-orders"], // <-- key only
+    queryFn: async () => {
+    const res = await fetch(`${BASE_URL}/admin/orders`);
+    if (!res.ok) throw new Error("Failed to fetch orders");
+    const json = await res.json();
+    return Array.isArray(json.orders) ? json.orders: []; // <-- assuming backend returns { message, orders: [...] }
+  },
+});
 
   // Update order status mutation
   const updateStatusMutation = useMutation({
@@ -74,7 +83,7 @@ export default function AdminDashBoard() {
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["${BASE_URL}/admin/orders"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
       toast({
         title: "Order Updated",
         description: "Order status has been successfully updated.",
@@ -114,7 +123,13 @@ export default function AdminDashBoard() {
       minute: "2-digit",
     });
   };
-
+  if (isError) {
+  return (
+    <div className="container mx-auto p-6">
+      <p className="text-red-500 font-medium">Failed to load orders: {(error as Error).message}</p>
+    </div>
+  );
+}
   if (isLoading) {
     return (
       <div className="container mx-auto p-6">
@@ -140,7 +155,7 @@ export default function AdminDashBoard() {
       </div>
 
       <div className="grid gap-6">
-        {orders?.map((order) => {
+        {Array.isArray(orders) && orders?.map((order) => {
           const StatusIcon = statusConfig[order.status].icon;
           const nextStatus = getNextStatus(order.status);
           
@@ -205,7 +220,7 @@ export default function AdminDashBoard() {
                   <div>
                     <h4 className="font-semibold mb-2">Order Items</h4>
                     <div className="space-y-2">
-                      {order.items.map((item) => (
+                      {Array.isArray(order.items) && order.items.map((item) => (
                         <div key={item.id} className="flex justify-between text-sm">
                           <span>
                             {item.product.name} × {item.quantity}
@@ -227,7 +242,7 @@ export default function AdminDashBoard() {
         })}
       </div>
 
-      {!orders?.length && (
+      {!Array.isArray(orders) || orders.length === 0 ?(
         <Card>
           <CardContent className="text-center py-8">
             <Package className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
@@ -235,7 +250,7 @@ export default function AdminDashBoard() {
             <p className="text-muted-foreground">Orders will appear here once customers start placing them.</p>
           </CardContent>
         </Card>
-      )}
+      ):null}
     </div>
   );
 }

@@ -16,7 +16,7 @@ import { Skeleton } from "../components/ui/skeleton";
 import { CheckCircle, MapPin, Phone, Mail } from "lucide-react";
 import { formatRwandanFrancs, convertToRwandanFrancs } from "../lib/currency";
 import { Order } from "../types/order";
-import type { OrderItem, Product } from "../../../server/schema";
+import type {  OrderItem, Product } from "../../../server/schema";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export default function OrderConfirmation() {
@@ -28,7 +28,11 @@ export default function OrderConfirmation() {
     queryFn: async () => {
       const res = await fetch(`${BASE_URL}/orders/${id}`);
       if (!res.ok) throw new Error("Order not found");
-      return res.json();
+       const data = await res.json();
+       return {
+        ...data.order,
+        items: data.items,
+      };
     }
   });
 

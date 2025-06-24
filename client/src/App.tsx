@@ -80,6 +80,7 @@ function AppRoutes() {
         </Routes>
       </div>
       <Footer />
+      <Toaster />
     </div>
   );
 }
@@ -87,6 +88,7 @@ function App() {
   return (
     <Suspense fallback={<Spinner color="border-purple-600" label="Loading content..." responsive />}>
       <AppRoutes />
+      <Toaster />
     </Suspense>
   );
 }

@@ -144,9 +144,22 @@ export const createOrderSchema = z.object({
     })
   ),
 });
-
 // For the array validation in routes.ts, use this:
 export const orderItemsArraySchema = z.array(orderItemValidationSchema);
+
+export const createOrderPayload = z.object({
+  order: z.object({
+    customerName: z.string().min(1),
+    customerEmail: z.string().email(),
+    customerPhone: z.string().min(8),
+    totalAmount: z.number().positive(),
+    status: z.enum(["pending", "processing", "shipped", "delivered", "cancelled"]).optional(),
+    cartId: z.string().min(1),
+  }),
+  items: orderItemsArraySchema.min(1),
+});
+
+
 // Export types using Drizzle's built-in type inference
 export type Category = typeof categories.$inferSelect;
 export type InsertCategory = typeof categories.$inferInsert;

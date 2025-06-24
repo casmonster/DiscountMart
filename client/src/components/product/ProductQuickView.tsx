@@ -120,6 +120,9 @@ export default function ProductQuickView({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[850px] p-0 gap-0 max-h-[90vh] overflow-auto bg-white">
         <DialogTitle className="sr-only">Shopping Cart</DialogTitle>
+        <p id="product-description">
+         A brief description of the product goes here.
+        </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
           {/* Product Image */}
           <div className="relative bg-gray-50">

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef  } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useRecentlyViewed } from "../context/RecentlyViewedContext";
@@ -41,9 +41,10 @@ export default function ProductDetail() {
       return res.json();
     },
   });
-
+  const hasAddedToRecentlyViewed = useRef(false);
   useEffect(() => {
-    if (product && product.id) {
+    
+      if (!product?.id || hasAddedToRecentlyViewed.current) return;
       addToRecentlyViewed({
         id: product.id,
         slug: product.slug,
@@ -54,8 +55,8 @@ export default function ProductDetail() {
         stockLevel: product.stockLevel.toString(),
         categoryId: product.categoryId,
       });
-    }
-  }, [product, addToRecentlyViewed]);
+    hasAddedToRecentlyViewed.current = true;
+   },[product?.id]);
 
   useEffect(() => {
     if (!product && !isLoading) {

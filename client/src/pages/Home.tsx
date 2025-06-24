@@ -8,6 +8,7 @@ import ProductCard from "../components/product/ProductCard";
 import { Button } from "../components/ui/button";
 import CategoryCard from "../components/product/CategoryCard";
 import { useEffect, useState } from "react";
+import { toast } from "@/hooks/use-toast";
 
 interface Product {
   id: string | number;
@@ -165,12 +166,18 @@ export default function Home() {
                     imageUrl={product.imageUrl}
                     price={product.price}
                     discountPrice={product.discountPrice ?? null}
-                    stockLevel={product.stockLevel.toString()}
+                    stockLevel={Number(product.stockLevel)}
                   />
                 ))}
           </div>
         </div>
       </section>
+       <Button
+        onClick={() => toast({ title: "Hello 👋", description: "This is a test toast" })}
+         className="mt-4"
+       >
+         Show Test Toast
+       </Button>
 
       {/* Promo Section */}
       <section className="py-12 bg-white">
@@ -230,7 +237,7 @@ export default function Home() {
                     imageUrl={product.imageUrl}
                     price={product.price}
                     discountPrice={product.discountPrice ?? null}
-                    stockLevel={product.stockLevel.toString()}
+                    stockLevel={Number(product.stockLevel)}
                     isNew
                   />
                 ))}

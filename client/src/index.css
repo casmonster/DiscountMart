@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 :root {
-  --background: % 100% 100%;
+  --background: 0 0% 100%;
   --foreground: 240 10% 10%;
   --border: 240 5% 91%;
   --input: 240 5% 95%;

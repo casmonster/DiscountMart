@@ -2,7 +2,7 @@ export interface Order {
     id: string;
     createdAt: string;
     totalAmount: number;
-    status: string;
+    status: "pending" | "completed" | "cancelled";
     customerName: string;
     customerEmail: string;
     customerPhone: string;
@@ -14,6 +14,8 @@ export interface Order {
     quantity: number;
     price: number;
     product: Product;
+    orderId?: number;
+    productId: number;
   }
   
   export interface Product {
