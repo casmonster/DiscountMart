@@ -3,7 +3,9 @@ services:
     name: discountmart
     env: node
     buildCommand: |
-      npm install --workspaces
+      npm install --workspaces --include-workspace-root
+      cd client && npm install
+      cd .. 
       npm run build --workspace=client
       npm run build --workspace=server
     startCommand: node server/build/index.js
