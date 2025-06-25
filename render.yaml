@@ -4,8 +4,6 @@ services:
     env: node
     buildCommand: |
       npm install --workspaces --include-workspace-root
-      cd client && npm install
-      cd .. 
       npm run build --workspace=client
       npm run build --workspace=server
     startCommand: node server/build/index.js
@@ -18,7 +16,6 @@ services:
       paths:
         - client/**
         - server/**
-        - shared/**
     autoDeploy: true
     branch: main
     rootDir: .

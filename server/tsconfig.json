@@ -13,8 +13,7 @@
     "preserveSymlinks": true,
     "noEmit": false,
     "resolveJsonModule": true,
-     "types": ["vite/client"],
-    "paths": {
+      "paths": {
       "@shared/*": ["server/*"],
       "@/*": ["./*"]
     }
