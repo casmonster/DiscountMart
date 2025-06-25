@@ -10,13 +10,14 @@
     "build": "tsc",
     "db:generate": "drizzle-kit generate:pg",
     "db:migrate": "drizzle-kit migrate"
-    
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.0",
     "@types/ws": "^8.18.1",
     "@vitejs/plugin-react": "^4.5.0",
+    "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
     "drizzle-orm": "^0.44.1",
     "drizzle-zod": "^0.8.2",
     "express": "^5.1.0",
@@ -27,16 +28,17 @@
     "zod": "^3.25.42"
   },
   "devDependencies": {
-    "@types/cors": "^2.8.18",
-    "@types/express": "^5.0.1",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
     "@types/lodash.debounce": "^4.0.9",
-    "@types/node": "^22.15.29",
+    "@types/node": "^22.15.33",
     "@types/react": "18.3.23",
     "@types/react-dom": "^18.3.7",
     "nodemon": "^3.1.10",
     "rollup-plugin-visualizer": "^6.0.1",
     "ts-node": "^10.9.2",
     "tsx": "^4.19.4",
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+     "vite": "^6.3.5"
   }
 }
