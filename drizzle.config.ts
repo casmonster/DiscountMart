@@ -1,13 +1,13 @@
 // drizzle.config.ts
-import { type Config } from 'drizzle-kit';
+import type{ Config } from 'drizzle-kit';
 import * as dotenv from 'dotenv';
 
 dotenv.config({path: './server/.env'});
 
-const config: Config = {
+export default {
   schema: ['./server/schema.ts'],
   out: './server/drizzle',
-  dialect: 'postgresql',
+  driver: 'pg',
   dbCredentials: {
     host: process.env.DB_HOST!,
     port: Number(process.env.DB_PORT!),
@@ -22,4 +22,4 @@ const config: Config = {
 
 
 
-export default config;
+
