@@ -9,7 +9,8 @@
     "start": "npm run start --workspace server",
     "db:push": "drizzle-kit push",
     "db:generate": "drizzle-kit generate",
-    "seed": "tsx server/seed.ts"
+    "seed": "tsx server/seed.ts",
+    "generate": "drizzle-kit generate --config=drizzle.config.ts"
   },
   "devDependencies": {
     "@types/node": "^22.15.29",

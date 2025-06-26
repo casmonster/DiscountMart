@@ -9,7 +9,8 @@
     "start": "node build/index.js",
     "build": "tsc",
     "db:generate": "drizzle-kit generate:pg",
-    "db:migrate": "drizzle-kit migrate"
+    "db:migrate": "drizzle-kit migrate",
+    "generate": "drizzle-kit generate --config=../drizzle.config.ts"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.0",
