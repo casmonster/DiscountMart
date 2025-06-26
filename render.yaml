@@ -12,6 +12,8 @@ services:
         value: 18
       - key: DATABASE_URL
         sync: false
+     - key: FRONTEND_URL
+        value: https://discountmart.onrender.com
     buildFilter:
       paths:
         - client/**

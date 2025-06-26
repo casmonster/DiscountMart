@@ -49,7 +49,7 @@ dbProductsRouter.get('/featured', async (_req: Request, res: Response) => {
 // GET products by category slug
 dbProductsRouter.get(
   '/category/:slug',
-  async (req: Request<{ slug: string }>, res: Response) => {
+  async (req: Request<{ slug: string }>, res: Response): Promise<any> => {
     try {
       const { slug } = req.params;
 
@@ -78,7 +78,7 @@ dbProductsRouter.get(
 );
 
 // GET product by slug with category joined
-dbProductsRouter.get('/:slug', async (req: Request<{ slug: string }>, res: Response) => {
+dbProductsRouter.get('/:slug', async (req: Request<{ slug: string }>, res: Response): Promise<any> => {
   try {
     const { slug } = req.params;
 

@@ -8,7 +8,7 @@ import { eq } from "drizzle-orm";
 
 const router = Router();
 
-router.get("/", async (_req, res) => {
+router.get("/", async (_req: Request, res: Response): Promise<any> => {
   try {
     const allOrders = await db.query.orders.findMany({
       with: {
@@ -30,7 +30,7 @@ router.get("/", async (_req, res) => {
   }
 });
 // GET /admin/orders - Admin: get all orders with items and products
-router.get("/admin/orders", async (_req: Request, res: Response) => {
+router.get("/admin/orders", async (_req: Request, res: Response): Promise<any> => {
   try {
     const allOrders = await db.query.orders.findMany({
       with: {

@@ -4,7 +4,7 @@ import type { Config } from 'drizzle-kit';
 dotenv.config({ path: './server/.env' });
 
 const config: Config = {
-  schema: ['./schema.ts'],
+  schema: ['./server/schema.ts'],
   out: './server/drizzle',
   dialect: 'postgresql',
   

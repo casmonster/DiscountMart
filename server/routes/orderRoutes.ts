@@ -7,7 +7,7 @@ import { eq } from "drizzle-orm";
 const router = Router();
 
 // PATCH /orders/:id/status - Admin: update order status
-router.patch("/:id/status", async (req: Request, res: Response) => {
+router.patch("/:id/status", async (req: Request, res: Response): Promise<any> => {
   try {
     const id = Number(req.params.id);
     if (isNaN(id)) {

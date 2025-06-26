@@ -15,7 +15,7 @@ import { InferInsertModel } from "drizzle-orm";
 const router = Router();
 
 // POST /orders - Create a new order
-router.post("/", async (req: Request, res: Response) => {
+router.post("/", async (req: Request, res: Response): Promise<any> => {
   try {
     console.log("Order request body:", JSON.stringify(req.body, null, 2));
 
@@ -81,7 +81,7 @@ router.post("/", async (req: Request, res: Response) => {
 });
 
 // GET /orders/:id - Get a specific order and its items
-router.get("/:id", async (req: Request, res: Response) => {
+router.get("/:id", async (req: Request, res: Response): Promise<any> => {
   try {
     const orderId = Number(req.params.id);
     if (isNaN(orderId)) {
