@@ -1,7 +1,7 @@
 import { db } from "../db";
 import { cartItems } from "../schema";
 import { eq, and } from "drizzle-orm";
-import { Router, Request, Response } from "express";
+import { Router, Request, Response, NextFunction } from "express";
 
 
 import { z } from "zod";
@@ -32,7 +32,7 @@ export const clearCart = async (cartId: string): Promise<void> => {
 };
 
 // ✅ GET /cart/:cartId - Fetch all cart items
-router.get("/:cartId", async (req: Request, res: Response): Promise<any> => {
+router.get("/:cartId", async (req: Request, res: Response, next: NextFunction): Promise<any> => {
   const { cartId } = req.params;
   if (!cartId) return res.status(400).json({ error: "Missing cartId" });
 
@@ -107,7 +107,7 @@ router.put("/:id", async (req: Request, res: Response): Promise<any> => {
 });
 
 // ✅ DELETE /cart/:id - Remove one item
-router.delete("/:id", async (req: Request, res: Response): Promise<any> => {
+router.delete("/:id", async (req: Request, res: Response, next: NextFunction): Promise<any> => {
   const id = parseInt(req.params.id);
   if (isNaN(id)) return res.status(400).json({ message: "Invalid ID" });
 

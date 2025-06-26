@@ -1,4 +1,4 @@
-import { Router, Request, Response } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
 import { db } from '../db';
 import { products, categories } from '../schema';
 import { eq, desc } from 'drizzle-orm';
@@ -6,7 +6,7 @@ import { eq, desc } from 'drizzle-orm';
 export const dbProductsRouter = Router();
 
 // GET all products
-dbProductsRouter.get('/', async (_req: Request, res: Response) => {
+dbProductsRouter.get('/', async (_req: Request, res: Response, next: NextFunction) => {
   try {
     const allProducts = await db.select().from(products);
     res.json(allProducts);
@@ -49,7 +49,7 @@ dbProductsRouter.get('/featured', async (_req: Request, res: Response) => {
 // GET products by category slug
 dbProductsRouter.get(
   '/category/:slug',
-  async (req: Request<{ slug: string }>, res: Response): Promise<any> => {
+  async (req: Request<{ slug: string }>, res: Response, next: NextFunction): Promise<any> => {
     try {
       const { slug } = req.params;
 
@@ -78,7 +78,7 @@ dbProductsRouter.get(
 );
 
 // GET product by slug with category joined
-dbProductsRouter.get('/:slug', async (req: Request<{ slug: string }>, res: Response): Promise<any> => {
+dbProductsRouter.get('/:slug', async (req: Request<{ slug: string }>, res: Response, next: NextFunction): Promise<any> => {
   try {
     const { slug } = req.params;
 

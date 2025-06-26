@@ -1,5 +1,5 @@
 // File: server/routes/orderRoutes.ts
-import {Router,  Request, Response } from "express";
+import {Router,  Request, Response, NextFunction  } from "express";
 import { db } from "../db";
 import { z,  } from "zod";
 import{orders} from "../schema";
@@ -7,7 +7,7 @@ import { eq } from "drizzle-orm";
 const router = Router();
 
 // PATCH /orders/:id/status - Admin: update order status
-router.patch("/:id/status", async (req: Request, res: Response): Promise<any> => {
+router.patch("/:id/status", async (req: Request, res: Response, next: NextFunction): Promise<any> => {
   try {
     const id = Number(req.params.id);
     if (isNaN(id)) {

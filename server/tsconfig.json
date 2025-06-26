@@ -14,7 +14,6 @@
     "noEmit": false,
     "resolveJsonModule": true,
     "noImplicitAny": true,
-    "strictFunctionTypes": false,
       "paths": {
       "@shared/*": ["server/*"],
       "@/*": ["./*"]

@@ -1,4 +1,4 @@
-import { Router, Request, Response } from "express";
+import { Router, Request, Response, NextFunction } from "express";
 import { z,  } from "zod";
 import { db } from "../db";
 import {
@@ -15,7 +15,7 @@ import { InferInsertModel } from "drizzle-orm";
 const router = Router();
 
 // POST /orders - Create a new order
-router.post("/", async (req: Request, res: Response): Promise<any> => {
+router.post("/", async (req: Request, res: Response, next: NextFunction): Promise<any> => {
   try {
     console.log("Order request body:", JSON.stringify(req.body, null, 2));
 
