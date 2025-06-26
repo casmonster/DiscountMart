@@ -17,9 +17,12 @@
     "vite": "^7.0.0"
   },
   "dependencies": {
+    "@tailwindcss/typography": "^0.5.16",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "tailwindcss": "^4.1.11",
+    "tailwindcss-animate": "^1.0.7"
   },
   "generate": {
     "./drizzle.config.ts": true

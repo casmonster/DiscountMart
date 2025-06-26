@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.0",
+    "@tailwindcss/typography": "^0.5.16",
     "@types/ws": "^8.18.1",
     "@vitejs/plugin-react": "^4.5.0",
     "bcryptjs": "^3.0.2",
@@ -25,6 +26,8 @@
     "lodash.debounce": "^4.0.8",
     "next": "^15.3.3",
     "pg": "^8.16.0",
+    "tailwindcss": "^4.1.11",
+    "tailwindcss-animate": "^1.0.7",
     "ws": "^8.18.2",
     "zod": "^3.25.42"
   },

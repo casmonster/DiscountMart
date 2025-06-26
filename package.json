@@ -10,7 +10,8 @@
     "db:push": "drizzle-kit push",
     "db:generate": "drizzle-kit generate",
     "seed": "tsx server/seed.ts",
-    "generate": "drizzle-kit generate --config=drizzle.config.ts"
+    "generate": "drizzle-kit generate --config=drizzle.config.ts",
+     "postinstall": "npm rebuild lightningcss || true"
   },
   "devDependencies": {
     "@types/node": "^22.15.29",
