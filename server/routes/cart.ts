@@ -1,7 +1,7 @@
 import { db } from "../db";
 import { cartItems } from "../schema";
 import { eq, and } from "drizzle-orm";
-import { Router, Request, Response, NextFunction } from "express";
+import { Router, Request, Response } from "express";
 
 
 import { z } from "zod";
@@ -32,9 +32,12 @@ export const clearCart = async (cartId: string): Promise<void> => {
 };
 
 // ✅ GET /cart/:cartId - Fetch all cart items
-router.get("/:cartId", async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+router.get("/:cartId", async (req: Request, res: Response): Promise<void> => {
   const { cartId } = req.params;
-  if (!cartId) return res.status(400).json({ error: "Missing cartId" });
+  if (!cartId) {
+     res.status(400).json({ error: "Missing cartId" });
+    return;
+  }
 
   try {
     const items = await db.query.cartItems.findMany({
@@ -107,12 +110,18 @@ router.put("/:id", async (req: Request, res: Response): Promise<any> => {
 });
 
 // ✅ DELETE /cart/:id - Remove one item
-router.delete("/:id", async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+router.delete("/:id", async (req: Request, res: Response): Promise<void> => {
   const id = parseInt(req.params.id);
-  if (isNaN(id)) return res.status(400).json({ message: "Invalid ID" });
+  if (isNaN(id)){
+     res.status(400).json({ message: "Invalid ID" });
+      return;
+  }
 
   const success = await removeCartItem(id);
-  if (!success) return res.status(404).json({ message: "Cart item not found" });
+  if (!success){
+      res.status(404).json({ message: "Cart item not found" });
+      return;
+  }
 
   res.status(204).send();
 });

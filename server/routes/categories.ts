@@ -19,7 +19,7 @@ dbCategoriesRouter.get('/', async (req: Request, res: Response) => {
 });
 
 // ✅ GET /api/categories/:slug - fetch a category by slug with its products
-dbCategoriesRouter.get('/:slug', async (req, res): Promise<any> => {
+dbCategoriesRouter.get('/:slug', async (req, res): Promise<void> => {
   try {
     const { slug } = req.params;
 
@@ -29,7 +29,8 @@ dbCategoriesRouter.get('/:slug', async (req, res): Promise<any> => {
     });
 
     if (!category) {
-      return res.status(404).json({ message: 'Category not found' });
+       res.status(404).json({ message: 'Category not found' });
+       return;
     }
 
     // Get all products under this category

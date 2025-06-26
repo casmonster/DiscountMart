@@ -15,7 +15,7 @@ import { InferInsertModel } from "drizzle-orm";
 const router = Router();
 
 // POST /orders - Create a new order
-router.post("/", async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+router.post("/", async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     console.log("Order request body:", JSON.stringify(req.body, null, 2));
 
@@ -41,7 +41,8 @@ router.post("/", async (req: Request, res: Response, next: NextFunction): Promis
     const { order, items } = orderSchema.parse(req.body);
 
     if (items.length === 0) {
-      return res.status(400).json({ message: "Order must contain at least one item" });
+       res.status(400).json({ message: "Order must contain at least one item" });
+       return;
     }
 
     // Create the order
@@ -72,11 +73,13 @@ router.post("/", async (req: Request, res: Response, next: NextFunction): Promis
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return res.status(400).json({ message: "Invalid order data", errors: error.errors });
+       res.status(400).json({ message: "Invalid order data", errors: error.errors });
+        return;
     }
 
     console.error("Failed to create order:", error);
-    return res.status(500).json({ message: "Failed to create order" });
+     res.status(500).json({ message: "Failed to create order" });
+         return;
   }
 });
 

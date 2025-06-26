@@ -7,11 +7,12 @@ import { eq } from "drizzle-orm";
 const router = Router();
 
 // PATCH /orders/:id/status - Admin: update order status
-router.patch("/:id/status", async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+router.patch("/:id/status", async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const id = Number(req.params.id);
     if (isNaN(id)) {
-      return res.status(400).json({ message: "Invalid order ID provided" });
+       res.status(400).json({ message: "Invalid order ID provided" });
+        return;
     }
     const statusSchema = z.object({
       status: z.enum(["pending", "processing", "shipped", "delivered", "cancelled"]),
@@ -23,23 +24,24 @@ router.patch("/:id/status", async (req: Request, res: Response, next: NextFuncti
       .where(eq(orders.id, id))
       .returning();
     if (!updatedOrder) {
-      return res.status(404).json({ message: "Order not found to update" });
+       res.status(404).json({ message: "Order not found to update" });
+        return;
     }
-    return res.json({
+     res.json({
       message: `Order status updated to '${status}' successfully`,
       order: updatedOrder,
-    });
+    });return ;
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return res.status(400).json({
+      res.status(400).json({
         message: "Invalid status value submitted",
         errors: error.errors,
-      });
+      });return ;
     }
     console.error("Failed to update order status:", error);
-    return res.status(500).json({
+     res.status(500).json({
       message: "An unexpected error occurred while updating the order status",
-    });
+    });return;
   }
 });
 

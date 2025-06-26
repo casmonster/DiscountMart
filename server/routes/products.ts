@@ -49,7 +49,7 @@ dbProductsRouter.get('/featured', async (_req: Request, res: Response) => {
 // GET products by category slug
 dbProductsRouter.get(
   '/category/:slug',
-  async (req: Request<{ slug: string }>, res: Response, next: NextFunction): Promise<any> => {
+  async (req: Request<{ slug: string }>, res: Response, next: NextFunction): Promise<void> => {
     try {
       const { slug } = req.params;
 
@@ -58,7 +58,8 @@ dbProductsRouter.get(
       });
 
       if (!category) {
-        return res.status(404).json({ error: 'Category not found' });
+         res.status(404).json({ error: 'Category not found' });
+          return;
       }
 
       const productsInCategory = await db
@@ -78,7 +79,7 @@ dbProductsRouter.get(
 );
 
 // GET product by slug with category joined
-dbProductsRouter.get('/:slug', async (req: Request<{ slug: string }>, res: Response, next: NextFunction): Promise<any> => {
+dbProductsRouter.get('/:slug', async (req: Request<{ slug: string }>, res: Response, next: NextFunction): Promise<void> => {
   try {
     const { slug } = req.params;
 
@@ -87,7 +88,8 @@ dbProductsRouter.get('/:slug', async (req: Request<{ slug: string }>, res: Respo
     });
 
     if (!product) {
-      return res.status(404).json({ error: 'Product not found' });
+       res.status(404).json({ error: 'Product not found' });
+        return;
     }
 
     const category = await db.query.categories.findFirst({
