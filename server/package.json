@@ -36,12 +36,15 @@
     "@types/node": "^22.15.33",
     "@types/react": "18.3.23",
     "@types/react-dom": "^18.3.7",
-    "drizzle-kit": "^0.31.2",
+    "drizzle-kit": "^0.31.3",
     "nodemon": "^3.1.10",
     "rollup-plugin-visualizer": "^6.0.1",
     "ts-node": "^10.9.2",
     "tsx": "^4.19.4",
     "typescript": "^5.0.0",
     "vite": "^6.3.5"
+  },
+  "generate": {
+    "./drizzle.config.ts": true
   }
 }
