@@ -84,11 +84,12 @@ router.post("/", async (req: Request, res: Response, next: NextFunction): Promis
 });
 
 // GET /orders/:id - Get a specific order and its items
-router.get("/:id", async (req: Request, res: Response): Promise<any> => {
+router.get("/:id", async (req: Request, res: Response): Promise<void> => {
   try {
     const orderId = Number(req.params.id);
     if (isNaN(orderId)) {
-      return res.status(400).json({ message: "Invalid order ID provided" });
+      res.status(400).json({ message: "Invalid order ID provided" });
+      return;
     }
 
     const order = await db.query.orders.findFirst({
@@ -96,7 +97,8 @@ router.get("/:id", async (req: Request, res: Response): Promise<any> => {
     });
 
     if (!order) {
-      return res.status(404).json({ message: "Order not found" });
+       res.status(404).json({ message: "Order not found" });
+       return;
     }
 
     const items = await db.query.orderItems.findMany({
@@ -104,16 +106,16 @@ router.get("/:id", async (req: Request, res: Response): Promise<any> => {
       with: { product: true },
     });
 
-    return res.status(200).json({
+     res.status(200).json({
       message: "Order retrieved successfully",
       order,
       items,
-    });
+    });return;
   } catch (error) {
     console.error("Failed to fetch order:", error);
-    return res.status(500).json({
+     res.status(500).json({
       message: "An unexpected error occurred while fetching the order",
-    });
+    });return;
   }
 });
 

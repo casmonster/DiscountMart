@@ -19,7 +19,7 @@ dbCategoriesRouter.get('/', async (req: Request, res: Response) => {
 });
 
 // ✅ GET /api/categories/:slug - fetch a category by slug with its products
-dbCategoriesRouter.get('/:slug', async (req, res): Promise<void> => {
+dbCategoriesRouter.get('/:slug', async (req:  Request, res: Response): Promise<void> => {
   try {
     const { slug } = req.params;
 

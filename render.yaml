@@ -3,6 +3,7 @@ services:
     name: discountmart
     env: node
     buildCommand: |
+      corepack enable
       npm install --workspaces --include-workspace-root
       npm run build --workspace=client
       npm run build --workspace=server

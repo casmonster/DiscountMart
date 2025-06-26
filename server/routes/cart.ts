@@ -82,10 +82,13 @@ router.get("/:cartId", async (req: Request, res: Response) => {
 });
 
 // ✅ PUT /cart/:id - Update quantity
-router.put("/:id", async (req: Request, res: Response): Promise<any> => {
+router.put("/:id", async (req: Request, res: Response): Promise<void> => {
   try {
     const id = parseInt(req.params.id);
-    if (isNaN(id)) return res.status(400).json({ message: "Invalid cart item ID" });
+    if (isNaN(id)){
+        res.status(400).json({ message: "Invalid cart item ID" });
+        return;
+    }
 
     const { quantity } = quantitySchema.parse(req.body);
 
@@ -96,13 +99,15 @@ router.put("/:id", async (req: Request, res: Response): Promise<any> => {
       .returning();
 
     if (!updated) {
-      return res.status(404).json({ message: "Cart item not found" });
+       res.status(404).json({ message: "Cart item not found" });
+       return;
     }
 
     res.json({ message: "Quantity updated", item: updated });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return res.status(400).json({ message: "Invalid quantity", errors: error.errors });
+       res.status(400).json({ message: "Invalid quantity", errors: error.errors });
+        return;
     }
     console.error("Error updating cart item:", error);
     res.status(500).json({ message: "Failed to update cart item" });

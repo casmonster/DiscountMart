@@ -8,7 +8,7 @@ import { eq } from "drizzle-orm";
 
 const router = Router();
 
-router.get("/", async (_req: Request, res: Response, next: NextFunction): Promise<any> => {
+router.get("/", async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const allOrders = await db.query.orders.findMany({
       with: {
@@ -18,34 +18,34 @@ router.get("/", async (_req: Request, res: Response, next: NextFunction): Promis
       },
     });
 
-    return res.json({
+     res.json({
       message: "All orders retrieved successfully",
       orders: allOrders,
-    });
+    });return
   } catch (error) {
     console.error("Failed to fetch all orders:", error);
-    return res.status(500).json({
+     res.status(500).json({
       message: "An unexpected error occurred while fetching all orders",
-    });
+    });return;
   }
 });
 // GET /admin/orders - Admin: get all orders with items and products
-router.get("/admin/orders", async (_req: Request, res: Response): Promise<any> => {
+router.get("/admin/orders", async (_req: Request, res: Response): Promise<void> => {
   try {
     const allOrders = await db.query.orders.findMany({
       with: {
         orderItems: { with: { product: true } },
       },
     });
-    return res.json({
+     res.json({
       message: "All orders retrieved successfully",
       orders: allOrders,
-    });
+    });return;
   } catch (error) {
     console.error("Failed to fetch all orders:", error);
-    return res.status(500).json({
+     res.status(500).json({
       message: "An unexpected error occurred while fetching all orders",
-    });
+    });return;
   }
 });
 
