@@ -39,6 +39,7 @@
     "@types/react-dom": "^18.3.7",
     "drizzle-kit": "^0.31.3",
     "nodemon": "^3.1.10",
+    "rollup": "^4.44.1",
     "rollup-plugin-visualizer": "^6.0.1",
     "ts-node": "^10.9.2",
     "tsx": "^4.19.4",

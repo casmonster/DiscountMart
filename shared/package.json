@@ -12,6 +12,7 @@
     "@types/express": "^5.0.3",
     "@types/node": "^24.0.4",
     "drizzle-kit": "^0.31.3",
+    "rollup": "^4.44.1",
     "vite": "^7.0.0"
   },
   "dependencies": {
