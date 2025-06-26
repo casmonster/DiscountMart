@@ -1,5 +1,5 @@
 // server/routes/categories.ts
-
+import { Request, Response } from "express";
 import { Router } from 'express';
 import { db } from '../db';
 import { categories, products } from '../schema';
@@ -8,7 +8,7 @@ import { eq } from 'drizzle-orm';
 export const dbCategoriesRouter = Router();
 
 // ✅ GET /api/categories - fetch all categories
-dbCategoriesRouter.get('/', async (req, res) => {
+dbCategoriesRouter.get('/', async (req: Request, res: Response) => {
   try {
     const allCategories = await db.select().from(categories);
     res.json(allCategories);
