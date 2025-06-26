@@ -1,5 +1,6 @@
 {
   "name": "discountmart-client",
+  "type": "module",
   "version": "1.0.0",
   "private": true,
   "description": "DiscountMart E-commerce Platform",
@@ -12,7 +13,7 @@
   "homepage": "/",
   "scripts": {
     "dev": "vite",
-    "build": "npm rebuild lightningcss && vite build",
+    "build": "vite build",
     "serve": "vite preview",
     "preview": "vite preview",
     "predeploy": "npm run build",
@@ -81,6 +82,7 @@
   },
   "devDependencies": {
     "@alloc/quick-lru": "^5.2.0",
+    "@tailwindcss/postcss": "^4.1.11",
     "@types/cors": "^2.8.19",
     "@types/dotenv": "^6.1.1",
     "@types/estree": "^1.0.8",
