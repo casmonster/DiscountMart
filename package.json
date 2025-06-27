@@ -21,7 +21,6 @@
     "drizzle-kit": "^0.31.1",
     "postcss": "^8.5.6",
     "postcss-loader": "^8.1.1",
-    "tailwindcss": "^4.1.10",
     "tsx": "^4.19.4",
     "typescript": "^5.8.3",
     
@@ -32,6 +31,10 @@
     "server",
     "shared"
   ],
+   "overrides": {
+    "tailwindcss": "3.4.1",
+    "tailwindcss-animate": "1.0.2"
+  },
   "engines": {
   "node": ">=18.0.0"
   },
