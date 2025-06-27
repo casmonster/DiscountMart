@@ -16,7 +16,10 @@ import React from "react";
 // ... imports unchanged
 import debounce from "lodash.debounce";
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
+
+
 const PAGE_SIZE = 8;
 export default function NewArrivals() {
   const [sortBy, setSortBy] = useState<string>("default");
@@ -25,7 +28,7 @@ export default function NewArrivals() {
   const { data: products = [], isLoading } = useQuery<Product[]>({
     queryKey: ["new-products"],
     queryFn: async () => {
-      const res = await fetch(`${BASE_URL}/products/new`);
+      const res = await fetch(`${baseUrl}/products/new`);
       if (!res.ok) throw new Error("Failed to fetch new products");
       return res.json();
     },

@@ -23,7 +23,7 @@ export default function RecentlyViewedProducts() {
             imageUrl={product.imageUrl}
             price={product.price}
             discountPrice={product.discountPrice}
-            stockLevel={product.stockLevel}
+            stockLevel={Number(product.stockLevel)}
             isNew={false}
           />
         ))}

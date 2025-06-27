@@ -5,13 +5,14 @@ import { Skeleton } from "../components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import type { Product } from "../types/product";
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 export default function Clearance() {
   const { data: products = [], isLoading } = useQuery<Product[]>({
     queryKey: ["products"],
     queryFn: async () => {
-      const response = await fetch(`${BASE_URL}/products`);
+      const response = await fetch(`${baseUrl}/products`);
       if (!response.ok) throw new Error('Failed to fetch products');
       return response.json();
     },

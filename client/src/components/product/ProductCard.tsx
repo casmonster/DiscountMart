@@ -10,8 +10,8 @@ import ProductQuickView from "./ProductQuickView";
 import { convertToRwandanFrancs, formatRwandanFrancs } from "../../lib/currency";
 import type { Product} from "../../types/product";
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 type ProductCardProps = {
   id: number;
   slug: string;
@@ -53,7 +53,7 @@ export default function ProductCard({
       const [path] = queryKey as [string]; // ✅ safely assert the type
       const slug = path.split('/').pop()!;
 
-      const response = await fetch(`${BASE_URL}/products/${slug}`);
+      const response = await fetch(`${baseUrl}/products/${slug}`);
       if (!response.ok) throw new Error('Failed to fetch product details');
       return response.json();
     },

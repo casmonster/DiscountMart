@@ -108,7 +108,7 @@ export default function ProductsPage() {
                imageUrl={product.imageUrl as string}
               price={product.price}
               discountPrice={product.discountPrice || null}
-              stockLevel={String(product.stockLevel)}
+              stockLevel={Number(product.stockLevel)}
               isNew={product.isNew}
               // Name with highlight applied
                name= {product.name as string}

@@ -3,7 +3,8 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { v4 as uuidv4 } from 'uuid';
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 export type CartItemWithProduct = {
   id: number;
   cartId: string;
@@ -65,7 +66,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const fetchCartItems = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`${BASE_URL}/cart/${cartId}`);
+      const response = await fetch(`${baseUrl}/cart/${cartId}`);
       if (response.ok) {
         const data = await response.json();
         setCartItems(data);
@@ -84,7 +85,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const addToCart = async (productId: number, quantity = 1) => {
     setIsLoading(true);
     try {
-      await apiRequest("POST", `${BASE_URL}/cart`, {  cartId, productId, quantity });
+      await apiRequest("POST", `${baseUrl}/cart`, {  cartId, productId, quantity });
       
       await fetchCartItems();
       
@@ -110,7 +111,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     
     setIsLoading(true);
     try {
-      await apiRequest("PUT", `${BASE_URL}/cart/${itemId}`, { quantity });
+      await apiRequest("PUT", `${baseUrl}/cart/${itemId}`, { quantity });
       await fetchCartItems();
     } catch (error) {
       toast({
@@ -126,7 +127,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const removeItem = async (itemId: number) => {
     setIsLoading(true);
     try {
-      await apiRequest("DELETE", `${BASE_URL}/cart/${itemId}`);
+      await apiRequest("DELETE", `${baseUrl}/cart/${itemId}`);
       await fetchCartItems();
       
       toast({
@@ -147,7 +148,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const clearCart = async () => {
     setIsLoading(true);
     try {
-      await apiRequest("DELETE", `${BASE_URL}/cart/clear/${cartId}`);
+      await apiRequest("DELETE", `${baseUrl}/cart/clear/${cartId}`);
       setCartItems([]);
     } catch (error) {
       toast({

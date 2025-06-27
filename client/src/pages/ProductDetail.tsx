@@ -12,7 +12,7 @@ import { CheckCircle, AlertCircle, Minus, Plus, Heart } from "lucide-react";
 import { convertToRwandanFrancs, formatRwandanFrancs } from "../lib/currency";
 import type { Product } from "../../../server/schema";
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 export default function ProductDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -26,7 +26,7 @@ export default function ProductDetail() {
   const { data: product, isLoading } = useQuery<Product>({
     queryKey: [`/products/${slug}`],
     queryFn: async () => {
-      const res = await fetch(`${BASE_URL}/products/${slug}`);
+      const res = await fetch(`${baseUrl}/products/${slug}`);
       if (!res.ok) throw new Error("Product not found");
       return res.json();
     },
@@ -36,7 +36,7 @@ export default function ProductDetail() {
     queryKey: ["/products/category", product?.categoryId],
     enabled: !!product?.categoryId,
     queryFn: async () => {
-      const res = await fetch(`${BASE_URL}/products/category/${product?.categoryId}`);
+      const res = await fetch(`${baseUrl}/products/category/${product?.categoryId}`);
       if (!res.ok) throw new Error("Related products not found");
       return res.json();
     },

@@ -17,7 +17,7 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products, loading }) => {
          id={+product.id}
          imageUrl={product.imageUrl || ''}
          discountPrice={product.discountPrice ?? null}
-         stockLevel={product.stockLevel?.toString() || 'In Stock'}
+         stockLevel={Number(product.stockLevel) ??   'In Stock'}
         />
       ))}
       {loading &&

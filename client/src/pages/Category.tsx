@@ -16,7 +16,8 @@ import {
 import { Category as CategoryType } from "../types/category";
 import type { Product, ProductProperty } from "../types/product";
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 function getCategoryProperties(slug: string, product: Product): ProductProperty[] {
   const props: ProductProperty[] = [];
@@ -81,7 +82,7 @@ export default function Category() {
   }, Error>({
     queryKey: ["category", slug],
     queryFn: async () => {
-      const res = await fetch(`${BASE_URL}/categories/${slug}`);
+      const res = await fetch(`${baseUrl}/categories/${slug}`);
       if (!res.ok) throw new Error("Failed to fetch category");
       return res.json();
     },

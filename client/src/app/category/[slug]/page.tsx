@@ -59,7 +59,7 @@ export default function CategoryPage() {
               imageUrl={String(product.imageUrl)}
               price={product.price}
               discountPrice={product.discountPrice || null}
-              stockLevel={String(product.stockLevel)}
+              stockLevel={Number(product.stockLevel)}
               isNew={product.isNew}
               
             />

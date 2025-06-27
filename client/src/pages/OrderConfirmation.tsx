@@ -18,7 +18,9 @@ import { formatRwandanFrancs, convertToRwandanFrancs } from "../lib/currency";
 import { Order } from "../types/order";
 import type {  OrderItem, Product } from "../../../server/schema";
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
+
 export default function OrderConfirmation() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -26,7 +28,7 @@ export default function OrderConfirmation() {
   const { data: order, isLoading, error } = useQuery<Order>({
     queryKey: ["order", id],
     queryFn: async () => {
-      const res = await fetch(`${BASE_URL}/orders/${id}`);
+      const res = await fetch(`${baseUrl}/orders/${id}`);
       if (!res.ok) throw new Error("Order not found");
        const data = await res.json();
        return {

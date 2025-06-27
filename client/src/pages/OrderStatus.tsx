@@ -10,7 +10,9 @@ import { Skeleton } from "../components/ui/skeleton";
 import { formatRwandanFrancs, convertToRwandanFrancs } from "@/lib/currency";
 import type { Order, OrderItem, Product } from "../../../server/schema";
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
+
 export default function OrderStatus() {
   const [orderId, setOrderId] = useState("");
   const [searchOrderId, setSearchOrderId] = useState("");
@@ -28,9 +30,9 @@ export default function OrderStatus() {
   }, [location]);
 
   const { data: order, isLoading, error } = useQuery<Order & { items: (OrderItem & { product: Product })[] }>({
-    queryKey: [`${BASE_URL}/orders/${searchOrderId}`],
+    queryKey: [`${baseUrl}/orders/${searchOrderId}`],
     queryFn: async () => {
-      const response = await fetch(`${BASE_URL}/orders/${searchOrderId}`);
+      const response = await fetch(`${baseUrl}/orders/${searchOrderId}`);
       if (!response.ok) throw new Error('Order not found');
      
       const data = await response.json();

@@ -9,7 +9,8 @@ import { formatRwandanFrancs } from "@/lib/currency";
 import { useToast } from "@/hooks/use-toast";
 import { Package, Clock, Truck, CheckCircle, XCircle } from "lucide-react";
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 type OrderStatus = "pending" | "processing" | "shipped" | "delivered" | "cancelled";
 
 interface OrderItem {
@@ -64,7 +65,7 @@ export default function AdminDashBoard() {
   const { data: orders = [], isLoading,isError, error } = useQuery<Order[]>({
     queryKey: ["admin-orders"], // <-- key only
     queryFn: async () => {
-    const res = await fetch(`${BASE_URL}/admin/orders`);
+    const res = await fetch(`${baseUrl}/admin/orders`);
     if (!res.ok) throw new Error("Failed to fetch orders");
     const json = await res.json();
     return Array.isArray(json.orders) ? json.orders: []; // <-- assuming backend returns { message, orders: [...] }
@@ -74,7 +75,7 @@ export default function AdminDashBoard() {
   // Update order status mutation
   const updateStatusMutation = useMutation({
     mutationFn: async ({ orderId, status }: { orderId: number; status: OrderStatus }) => {
-      const response = await fetch(`${BASE_URL}/orders/${orderId}/status`, {
+      const response = await fetch(`${baseUrl}/orders/${orderId}/status`, {
         method: "PATCH",
         body: JSON.stringify({ status }),
         headers: { "Content-Type": "application/json" },

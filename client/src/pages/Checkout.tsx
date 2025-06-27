@@ -31,7 +31,8 @@ import { convertToRwandanFrancs, formatRwandanFrancs } from "../lib/currency";
 import axios from "axios";
 
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 const checkoutFormSchema = z.object({
   customerName: z.string().min(2, { message: "Name must be at least 2 characters" }),
   customerEmail: z.string().email({ message: "Please enter a valid email address" }),
@@ -102,11 +103,11 @@ const navigate = useNavigate();
 
       // Create order
       
-      const response = await axios.post(`${BASE_URL}/orders`, orderData);
+      const response = await axios.post(`${baseUrl}/orders`, orderData);
       const createdOrderId = response.data.order.id;
       
       // Clear cart on server
-    await axios.delete(`${BASE_URL}/cart/clear/${cartId}`);
+    await axios.delete(`${baseUrl}/cart/clear/${cartId}`);
 
       // Clear the cart on client
        clearCart();

@@ -30,7 +30,8 @@ interface Category {
   imageUrl?: string;
 }
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 export default function Home() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -39,7 +40,7 @@ export default function Home() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await fetch(`${BASE_URL}/categories`);
+        const res = await fetch(`${baseUrl}/categories`);
         const data = await res.json();
         setCategories(data);
       } catch (error) {
@@ -57,7 +58,7 @@ export default function Home() {
   } = useQuery<Product[]>({
     queryKey: ["featuredProducts"],
     queryFn: async () => {
-      const res = await fetch(`${BASE_URL}/products?featured=true`);
+      const res = await fetch(`${baseUrl}/products?featured=true`);
       return res.json();
     },
   });
@@ -68,7 +69,7 @@ export default function Home() {
   } = useQuery<Product[]>({
     queryKey: ["newArrivals"],
     queryFn: async () => {
-      const res = await fetch(`${BASE_URL}/products?new=true`);
+      const res = await fetch(`${baseUrl}/products?new=true`);
       return res.json();
     },
   });

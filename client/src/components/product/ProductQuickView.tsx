@@ -22,7 +22,8 @@ import {
 } from "lucide-react";
 import { convertToRwandanFrancs, formatRwandanFrancs } from "../../lib/currency";
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 interface ProductQuickViewProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;

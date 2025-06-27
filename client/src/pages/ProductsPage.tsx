@@ -1,9 +1,7 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import ProductGrid from "../components/product/ProductGrid";
 import type { Product } from "../types/product";
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
-
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const ProductsPage = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -16,7 +14,7 @@ const ProductsPage = () => {
     if (!hasMore || loading) return;
     setLoading(true);
     try {
-      const res = await fetch(`${BASE_URL}/products?page=${page}&limit=12`);
+      const res = await fetch(`${baseUrl}/products?page=${page}&limit=12`);
       if (!res.ok) throw new Error("Failed to load products.");
       const data = await res.json();
       setProducts((prev) => [...prev, ...data.products]);
