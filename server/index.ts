@@ -18,14 +18,16 @@ import orderRoutes from './routes/orderRoutes';
 const app: Application = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const allowedOrigin = process.env.FRONTEND_URL;
+const allowedOrigin = process.env.FRONTEND_URL ?? 'https://discountmart.onrender.com';
 
 // ✅ Enable CORS
 
 app.use(cors({
-  origin: 'https://discountmart.onrender.com',
+  origin: allowedOrigin,
   credentials: true, // Needed for cookies or Authorization headers
 }));
+console.log('✅ CORS enabled for:', allowedOrigin);
+
 
 // Middleware
 app.use(express.json());
