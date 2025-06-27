@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "main": "index.ts",
+  "main": "build/index.js",
   "scripts": {
     "dev": "(echo 'Killing port 5000...'; fuser -k 5000/tcp || true) && nodemon --exec tsx index.ts",
     "start": "node build/index.js",

@@ -16,6 +16,7 @@
     "build": "vite build",
     "serve": "vite preview",
     "preview": "vite preview",
+    "start": "vite preview --port 4173",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
   },
