@@ -8,9 +8,9 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/casmonster/DiscountMart"
+    "url": "git+https://github.com/casmonster/DiscountMart.git"
   },
-  "homepage": "/",
+  "homepage": "http:///",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -55,8 +55,8 @@
     "@radix-ui/react-use-previous": "^1.1.1",
     "@radix-ui/react-visually-hidden": "^1.2.3",
     "@rollup/rollup-linux-x64-gnu": "4.44.1",
-    "@tailwindcss/typography": "^0.5.16",
     "@tanstack/react-query": "^5.72.1",
+    "axios": "^1.10.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
@@ -75,33 +75,41 @@
     "recharts": "^2.15.3",
     "sonner": "^2.0.4",
     "tailwind-merge": "^3.2.0",
-    "tailwindcss-animate": "^1.0.7",
     "uuid": "^11.1.0",
     "vaul": "^1.1.2",
     "zod": "^3.25.42"
   },
   "devDependencies": {
     "@alloc/quick-lru": "^5.2.0",
-    "@tailwindcss/postcss": "^4.1.11",
+    "@tailwindcss/typography": "^0.5.16",
     "@types/cors": "^2.8.19",
     "@types/dotenv": "^6.1.1",
     "@types/estree": "^1.0.8",
     "@types/express": "^5.0.3",
     "@types/node": "^24.0.4",
+    "@types/pg": "^8.15.4",
     "@types/react": "^18.2.44",
     "@types/react-dom": "^18.2.17",
     "@vitejs/plugin-react": "^4.6.0",
     "autoprefixer": "^10.4.21",
     "drizzle-kit": "^0.31.3",
     "gh-pages": "^6.3.0",
+    "lightningcss": "^1.30.1",
     "postcss": "^8.5.6",
     "rollup": "^4.44.1",
-    "tailwindcss": "^4.1.11",
+    "tailwindcss": "^3.4.1",
+    "tailwindcss-animate": "^1.0.7",
+    "tailwindcss-cli": "^0.1.2",
     "typescript": "^5.4.2",
     "vite": "^5.4.19",
     "vite-plugin-svgr": "^4.3.0"
   },
   "generate": {
     "./drizzle.config.ts": true
+  },
+  "main": "vite.config.js",
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/casmonster/DiscountMart/issues"
   }
 }

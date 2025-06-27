@@ -32,6 +32,9 @@
     "server",
     "shared"
   ],
+  "engines": {
+  "node": ">=18.0.0"
+  },
   "dependencies": {
     "@radix-ui/react-icons": "^1.3.2",
     "@types/uuid": "^10.0.0",
@@ -44,8 +47,6 @@
     "framer-motion": "^12.18.1",
     "pg": "^8.16.0",
     "uuid": "^11.1.0"
-  },
-  "engines": {
-  "node": ">=18.0.0"
+  }
 }
-}
+
