@@ -23,7 +23,7 @@ const allowedOrigin = process.env.FRONTEND_URL;
 // ✅ Enable CORS
 
 app.use(cors({
-  origin: allowedOrigin,
+  origin: 'https://discountmart.onrender.com',
   credentials: true, // Needed for cookies or Authorization headers
 }));
 
