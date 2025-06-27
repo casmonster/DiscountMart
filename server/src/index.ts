@@ -97,13 +97,9 @@ const server = createServer(app);
   }
 
   
-  const port = process.env.PORT;
+  const port = Number(process.env.PORT) || 5000;
 
-if (!port) {
-  throw new Error("🚨 PORT environment variable is not defined.");
-}
-
-
-server.listen(Number(port), () => {
-  log(`🚀 Server is running on port ${port}`);
-})});
+  server.listen(port, '0.0.0.0', () => {
+    log(`🚀 Server is running on http://0.0.0.0:${port}`);
+  });
+})();
