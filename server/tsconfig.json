@@ -9,7 +9,7 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
-    "outDir": "./build",
+    "outDir": "build",
     "preserveSymlinks": true,
     "noEmit": false,
     "resolveJsonModule": true,
