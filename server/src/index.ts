@@ -96,9 +96,9 @@ const server = createServer(app);
     serveStatic(app);
   }
 
-  
- const port = process.env.PORT || 5000;
- server.listen(Number(port), '0.0.0.0', () => {
-  log(`🚀 Server is running on port ${port}`);
-});
-});
+  const port = process.env.PORT || 5000;
+  server.listen(Number(port), '0.0.0.0', () => {
+    log(`🚀 Server is running on port ${port}`);
+  });
+})();
+

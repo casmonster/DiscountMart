@@ -5,7 +5,7 @@ import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-dotenv.config({ path: resolve(__dirname, ".env") });
+dotenv.config({ path: resolve(__dirname, "../.env") });
 
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
@@ -32,7 +32,9 @@ const pool = new Pool({
   user: DB_USER,
   password: DB_PASSWORD.toString(), // <- force string cast
   database: DB_NAME,
-  ssl: false,
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });
 
 export const db = drizzle(pool, { schema });
