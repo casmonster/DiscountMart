@@ -1,11 +1,11 @@
-//server/index.ts
+//server/src/index.ts
 import express, { type Request, type Response, type NextFunction, type Application } from 'express';
 import { createServer } from 'http';
 import cors from 'cors'; // ✅ Import CORS
-import { setupVite, serveStatic, log } from './vite.js'; 
 import path from 'path';
 import { fileURLToPath } from 'url';
 import 'dotenv/config';
+import { setupVite, log } from './vite.js';
 
 // Import route modules
 import  {dbProductsRouter}  from './routes/products.js';
@@ -92,9 +92,7 @@ const server = createServer(app);
 (async () => {
   if (app.get('env') === 'development') {
     await setupVite(app, server);
-  } else {
-    serveStatic(app);
-  }
+  } 
 
   const port = process.env.PORT || 5000;
   server.listen(Number(port), '0.0.0.0', () => {
