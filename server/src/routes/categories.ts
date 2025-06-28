@@ -1,9 +1,9 @@
 // server/routes/categories.ts
 import { Request, Response } from "express";
 import { Router } from 'express';
-import { db } from '../db';
-import { categories, products } from '../schema';
-import { eq } from 'drizzle-orm';
+import { db } from '../db.js'; 
+import { categories, products } from '../schema.js';
+
 
 export const dbCategoriesRouter = Router();
 

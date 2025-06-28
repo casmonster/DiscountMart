@@ -1,8 +1,8 @@
 // File: server/routes/orderRoutes.ts
 import {Router,  Request, Response } from "express";
-import { db } from "../db";
+import { db } from "../db.js";
 import { z,  } from "zod";
-import{orders} from "../schema";
+import{orders} from "../schema.js";
 import { eq } from "drizzle-orm";
 const router = Router();
 

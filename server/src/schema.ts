@@ -2,7 +2,7 @@
 
 import { pgTable, text, serial, integer, boolean, doublePrecision, timestamp, varchar } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
-import { z, ZodRawShape} from "zod";
+import { z} from "zod";
 import { relations, sql } from "drizzle-orm";
 
 // Category schema

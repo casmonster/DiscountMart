@@ -1,5 +1,5 @@
-import { db } from "../db";
-import { cartItems } from "../schema";
+import { db } from "../db.js"; 
+import { cartItems } from "../schema.js";
 import { eq, and } from "drizzle-orm";
 import { Router, Request, Response } from "express";
 

@@ -1,10 +1,7 @@
 // routes/adminOrders.ts
 
 import {Router,  Request, Response, NextFunction } from "express";
-import { db } from "../db";
-import { z,  } from "zod";
-import{orders} from "../schema";
-import { eq } from "drizzle-orm";
+import { db } from "../db.js"; 
 
 const router = Router();
 

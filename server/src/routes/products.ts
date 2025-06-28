@@ -1,6 +1,6 @@
 import { Router, Request, Response} from 'express';
-import { db } from '../db';
-import { products, categories } from '../schema';
+import { db } from '../db.js';
+import { products, categories } from '../schema.js';
 import { eq, desc } from 'drizzle-orm';
 
 export const dbProductsRouter = Router();

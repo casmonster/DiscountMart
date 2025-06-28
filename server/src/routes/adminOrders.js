@@ -1,6 +1,6 @@
 // routes/adminOrders.ts
 import { Router } from "express";
-import { db } from "../db";
+import { db } from "../db.js"; 
 const router = Router();
 router.get("/", async (_req, res, next) => {
     try {

@@ -1,13 +1,10 @@
 import { Router, Request, Response, NextFunction } from "express";
 import { z,  } from "zod";
-import { db } from "../db";
+import { db } from "../db.js";
 import {
-  insertOrderSchema,
-  orderItemValidationSchema,
   orders,
-  orderItems,
-  createOrderSchema,
-} from "../schema";
+  orderItems
+} from "../schema.js";
 import { eq } from "drizzle-orm";
 import { InferInsertModel } from "drizzle-orm";
 
