@@ -20,6 +20,6 @@
     },
     "types": ["node"]
   },
-  "include": ["index.ts","../shared/**/*"],
+  "include": ["src","../shared/**/*"],
   "exclude": ["node_modules","dist"]
 }
