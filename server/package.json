@@ -4,14 +4,13 @@
   "private": true,
   "type": "module",
   "main": "build/index.js",
-   "engines": {
+  "engines": {
     "node": ">=18.0.0"
   },
   "scripts": {
     "dev": "kill-port 5000 && nodemon --exec tsx src/index.ts",
     "start": "node build/index.js",
     "build": "tsc",
-    "postbuild": "cp ../.env ./build/.env",
     "db:generate": "drizzle-kit generate:pg",
     "db:migrate": "drizzle-kit migrate",
     "generate": "drizzle-kit generate --config=../drizzle.config.ts"
@@ -46,6 +45,7 @@
     "@types/react-dom": "^18.3.7",
     "autoprefixer": "^10.4.21",
     "drizzle-kit": "^0.31.3",
+    "kill-port": "^2.0.1",
     "nodemon": "^3.1.10",
     "postcss": "^8.5.6",
     "rollup": "^4.44.1",
