@@ -2,6 +2,7 @@ services:
   - type: web
     name: discountmart
     env: node
+    rootDir: .
     buildCommand: |
       npm install --workspaces --include-workspace-root
       npm run build --workspace=client
@@ -20,4 +21,4 @@ services:
         - server/**
     autoDeploy: true
     branch: main
-    rootDir: .
+    

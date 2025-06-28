@@ -4,10 +4,14 @@
   "private": true,
   "type": "module",
   "main": "build/index.js",
+   "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
-    "dev": "(echo 'Killing port 5000...'; fuser -k 5000/tcp || true) && nodemon --exec tsx src/index.ts",
+    "dev": "kill-port 5000 && nodemon --exec tsx src/index.ts",
     "start": "node build/index.js",
     "build": "tsc",
+    "postbuild": "cp ../.env ./build/.env",
     "db:generate": "drizzle-kit generate:pg",
     "db:migrate": "drizzle-kit migrate",
     "generate": "drizzle-kit generate --config=../drizzle.config.ts"
