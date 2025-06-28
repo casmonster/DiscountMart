@@ -9,7 +9,7 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
-    "outDir": "build",
+    "outDir": "./build",
     "preserveSymlinks": true,
     "noEmit": false,
     "resolveJsonModule": true,
@@ -20,6 +20,6 @@
     },
     "types": ["node"]
   },
-  "include": ["src","../shared/**/*"],
+  "include": ["src/**/*","../shared/**/*"],
   "exclude": ["node_modules","dist"]
 }
