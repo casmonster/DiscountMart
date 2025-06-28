@@ -10,16 +10,17 @@
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "outDir": "./build",
+    "rootDir": "./src",  
     "preserveSymlinks": true,
-    "noEmit": false,
     "resolveJsonModule": true,
     "noImplicitAny": true,
+    "types": ["node"],
       "paths": {
-      "@shared/*": ["server/*"],
-      "@/*": ["./*"]
-    },
-    "types": ["node"]
+      "@shared/*": ["shared/*"],
+      "@/*": ["./*"],
+      "@server/*": ["./src/*"]
+    }
   },
-  "include": ["src/**/*","../shared/**/*"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules","dist"]
 }

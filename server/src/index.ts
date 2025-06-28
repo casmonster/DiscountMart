@@ -2,18 +2,18 @@
 import express, { type Request, type Response, type NextFunction, type Application } from 'express';
 import { createServer } from 'http';
 import cors from 'cors'; // ✅ Import CORS
-import { setupVite, serveStatic, log } from '../vite';
+import { setupVite, serveStatic, log } from './vite';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import 'dotenv/config';
 
 // Import route modules
-import  {dbProductsRouter}  from '../routes/products';
-import { dbCategoriesRouter } from '../routes/categories';
-import  ordersRouter  from '../routes/orders';
-import cartRouter from '../routes/cart';
-import adminOrdersRouter from '../routes/adminOrders';
-import orderRoutes from '../routes/orderRoutes';
+import  {dbProductsRouter}  from './routes/products';
+import { dbCategoriesRouter } from './routes/categories';
+import  ordersRouter  from './routes/orders';
+import cartRouter from './routes/cart';
+import adminOrdersRouter from './routes/adminOrders';
+import orderRoutes from './routes/orderRoutes';
 
 const app: Application = express();
 const __filename = fileURLToPath(import.meta.url);
