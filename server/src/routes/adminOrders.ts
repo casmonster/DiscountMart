@@ -30,7 +30,7 @@ router.get("/", async (_req: Request, res: Response, next: NextFunction): Promis
 });
 
 // Admin endpoint to delete order
-  router.delete("/orders/:id", async (req: Request, res: Response): Promise<void> => {
+  router.delete("/:id", async (req: Request, res: Response): Promise<void> => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
