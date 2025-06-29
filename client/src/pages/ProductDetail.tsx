@@ -11,6 +11,7 @@ import { Separator } from "../components/ui/separator";
 import { CheckCircle, AlertCircle, Minus, Plus, Heart } from "lucide-react";
 import { convertToRwandanFrancs, formatRwandanFrancs } from "../lib/currency";
 import type { Product} from "../../../server/src/schema";
+import { useWishlist } from "@/context/WishlistContext";
 type ProductWithCategory = Product & {
   category: {
     id: number;
@@ -27,7 +28,7 @@ export default function ProductDetail() {
   const navigate = useNavigate();
   const [quantity, setQuantity] = useState(1);
   const [shouldRedirect, setShouldRedirect] = useState(false);
-
+  const { isInWishlist, toggleWishlist } = useWishlist();
   const { addToCart, isLoading: isCartLoading } = useCart();
   const { addToRecentlyViewed } = useRecentlyViewed();
 
@@ -85,7 +86,18 @@ export default function ProductDetail() {
       addToCart(product.id, quantity);
     }
   };
-
+   const handleToggleWishlist = () => {
+    if (product) {
+      toggleWishlist({
+        id: product.id,
+        slug: product.slug,
+        name: product.name,
+        imageUrl: product.imageUrl,
+        price: product.price,
+        discountPrice: product.discountPrice,
+      });
+    }
+  };
   const incrementQuantity = () => setQuantity((q) => q + 1);
   const decrementQuantity = () => setQuantity((q) => Math.max(1, q - 1));
 
@@ -117,7 +129,7 @@ export default function ProductDetail() {
     : 0;
 
   const filteredRelatedProducts = relatedProducts.filter((p) => p.id !== product?.id).slice(0, 4);
-
+  const inWishlist = product ? isInWishlist(product.id) : false;
 
   if (isLoading) {
     return (
@@ -229,7 +241,11 @@ export default function ProductDetail() {
             >
               Add to Cart
             </Button>
-            <Button variant="outline" size="icon" className="text-gray-500">
+            <Button variant={inWishlist ? "default" : "outline"} 
+              size="icon" 
+              className={inWishlist ? "text-white bg-secondary hover:bg-secondary/90" : "text-gray-500 hover:text-secondary"}
+              onClick={handleToggleWishlist}
+            >
               <Heart className="h-5 w-5" />
             </Button>
           </div>
