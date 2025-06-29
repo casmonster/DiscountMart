@@ -6,6 +6,7 @@ import { useCart } from "../context/CartContext";
 import { useState } from "react";
 import { useToast } from "../hooks/use-toast";
 import { Heart, ShoppingCart, Trash2, ChevronLeft } from "lucide-react";
+import { convertToRwandanFrancs, formatRwandanFrancs } from "../lib/currency";
 
 export default function Wishlist() {
   const { wishlistItems, removeFromWishlist, wishlistCount } = useWishlist();
@@ -96,11 +97,11 @@ export default function Wishlist() {
                 <div className="flex items-center mb-4">
                   {product.discountPrice ? (
                     <>
-                      <span className="text-secondary font-bold mr-2">${product.discountPrice.toFixed(2)}</span>
-                      <span className="text-gray-400 text-sm line-through">${product.price.toFixed(2)}</span>
+                      <span className="text-secondary font-bold mr-2">${formatRwandanFrancs(convertToRwandanFrancs(product.discountPrice))}</span>
+                      <span className="text-gray-400 text-sm line-through">${formatRwandanFrancs(convertToRwandanFrancs(product.price))}</span>
                     </>
                   ) : (
-                    <span className="font-bold">${product.price.toFixed(2)}</span>
+                    <span className="font-bold">${formatRwandanFrancs(convertToRwandanFrancs(product.price))}</span>
                   )}
                 </div>
                 <Button
