@@ -1,6 +1,6 @@
 import { Router, Request, Response} from 'express';
 import { db } from '../db.js';
-import { products, categories } from '../schema.js';
+import { products, categories, } from '../schema.js';
 import { eq, desc } from 'drizzle-orm';
 
 export const dbProductsRouter = Router();
@@ -108,3 +108,23 @@ dbProductsRouter.get('/:slug', async (req: Request<{ slug: string }>, res: Respo
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+// GET /products/category/:categoryId
+dbProductsRouter.get("/category/:categoryId", async (req, res): Promise<void> => {
+  const categoryId = parseInt(req.params.categoryId);
+  if (isNaN(categoryId)) {
+    res.status(400).json({ error: "Invalid category ID" });
+     return;
+  }
+
+  try {
+    const related = await db.query.products.findMany({
+      where: eq(products.categoryId, categoryId),
+    });
+
+    res.json({ products });
+  } catch (err) {
+    console.error("Error fetching related products:", err);
+    res.status(500).json({ error: "Failed to fetch related products" });
+  }
+});
+
