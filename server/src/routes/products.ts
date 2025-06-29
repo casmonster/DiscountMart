@@ -121,7 +121,7 @@ dbProductsRouter.get("/category/:categoryId", async (req, res): Promise<void> =>
       where: eq(products.categoryId, categoryId),
     });
 
-    res.json({ products });
+    res.json({ products: related });
   } catch (err) {
     console.error("Error fetching related products:", err);
     res.status(500).json({ error: "Failed to fetch related products" });
