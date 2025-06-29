@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { formatRwandanFrancs } from "@/lib/currency";
+import { convertToRwandanFrancs, formatRwandanFrancs } from "@/lib/currency";
 import { useToast } from "@/hooks/use-toast";
 import { Package, Clock, Truck, CheckCircle, XCircle } from "lucide-react";
 
@@ -173,7 +173,7 @@ export default function AdminDashBoard() {
                       </Badge>
                     </CardTitle>
                     <CardDescription>
-                      Placed on {formatDate(order.createdAt)} • {formatRwandanFrancs(order.totalAmount)}
+                      Placed on {formatDate(order.createdAt)} • {formatRwandanFrancs(convertToRwandanFrancs(order.totalAmount))}
                     </CardDescription>
                   </div>
                   <div className="flex gap-2">
@@ -226,13 +226,13 @@ export default function AdminDashBoard() {
                           <span>
                             {item.product.name} × {item.quantity}
                           </span>
-                          <span>{formatRwandanFrancs(item.price)}</span>
+                          <span>{formatRwandanFrancs(convertToRwandanFrancs(item.price))}</span>
                         </div>
                       ))}
                       <Separator />
                       <div className="flex justify-between font-semibold">
                         <span>Total</span>
-                        <span>{formatRwandanFrancs(order.totalAmount)}</span>
+                        <span>{formatRwandanFrancs(convertToRwandanFrancs(order.totalAmount))}</span>
                       </div>
                     </div>
                   </div>
