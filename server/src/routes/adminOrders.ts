@@ -2,7 +2,7 @@
 
 import {Router,  Request, Response, NextFunction } from "express";
 import { db } from "../db.js"; 
-import { orders, orderItems } from "../schema";
+import { orders, orderItems } from "../schema.js";
 import { eq } from "drizzle-orm";
 
 const router = Router();
