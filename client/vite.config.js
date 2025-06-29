@@ -4,7 +4,6 @@ import svgr from 'vite-plugin-svgr'
 import path from 'path'
 
 export default defineConfig(({ mode }) => {
-  // Load .env.[mode] files
   const env = loadEnv(mode, process.cwd(), '')
 
   return {
@@ -42,7 +41,6 @@ export default defineConfig(({ mode }) => {
           target: env.VITE_API_URL || 'http://localhost:5000',
           changeOrigin: true,
           secure: false,
-          rewrite: path => path.replace(/^\/api/, ''),
         },
       },
     },
