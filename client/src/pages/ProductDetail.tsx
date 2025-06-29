@@ -33,10 +33,9 @@ export default function ProductDetail() {
   });
 
   const { data: relatedProducts = [], isLoading: relatedLoading } = useQuery<Product[]>({
-    queryKey: ["/products/category", product?.categoryId],
-    enabled: !!product?.categoryId,
+    queryKey: [`/products/${slug}`],
     queryFn: async () => {
-      const res = await fetch(`${baseUrl}/products/category/${product?.categoryId}`);
+      const res = await fetch(`${baseUrl}/products/${slug}}`);
       if (!res.ok) throw new Error("Related products not found");
       return res.json();
     },

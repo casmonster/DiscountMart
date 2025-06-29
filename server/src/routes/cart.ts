@@ -53,7 +53,7 @@ router.get("/:cartId", async (req: Request, res: Response): Promise<void> => {
 });
 
 // ✅ POST /cart - Add or update item
-router.get("/:cartId", async (req: Request, res: Response) => {
+router.post("/", async (req: Request, res: Response) => {
   console.log("POST /api/cart body:", req.body);
   try {
     const validatedData = cartSchema.parse(req.body);

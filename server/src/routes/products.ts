@@ -95,7 +95,10 @@ dbProductsRouter.get('/:slug', async (req: Request<{ slug: string }>, res: Respo
     const category = await db.query.categories.findFirst({
       where: (cat, { eq }) => eq(cat.id, product.categoryId),
     });
-
+     if (!category) {
+      res.status(500).json({ error: 'Category not found for product' });
+      return;
+    }
     res.json({
       ...product,
       category,
