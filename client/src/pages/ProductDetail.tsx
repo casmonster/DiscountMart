@@ -33,15 +33,24 @@ export default function ProductDetail() {
   });
 
   const { data: relatedProducts = [], isLoading: relatedLoading } = useQuery<Product[]>({
-    queryKey: [`/products/category/${product?.categoryId}`],
-    enabled: !!product?.categoryId, 
-    queryFn: async () => {
-      const res = await fetch(`${baseUrl}/products/category/${product?.categoryId}`);
-      if (!res.ok) throw new Error("Related products not found");
-       const json = await res.json();
-       return json.products; // ✅ safely extract the array
-    },
-  });
+  queryKey: ['related-products', product?.categoryId],
+  enabled: !!product?.categoryId && typeof product.categoryId === 'number',
+  queryFn: async () => {
+    const categoryId = product?.categoryId;
+
+    if (!categoryId || typeof categoryId !== "number") return [];
+
+    const res = await fetch(`${baseUrl}/products/category/${categoryId}`);
+    if (!res.ok) {
+      console.warn("No related products found for category:", categoryId);
+      return [];
+    }
+
+    const json = await res.json();
+    return json.products;
+  },
+});
+
   const hasAddedToRecentlyViewed = useRef(false);
   useEffect(() => {
     
