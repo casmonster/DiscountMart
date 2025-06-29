@@ -10,7 +10,15 @@ import { Skeleton } from "../components/ui/skeleton";
 import { Separator } from "../components/ui/separator";
 import { CheckCircle, AlertCircle, Minus, Plus, Heart } from "lucide-react";
 import { convertToRwandanFrancs, formatRwandanFrancs } from "../lib/currency";
-import type { Product } from "../../../server/schema";
+import type { Product} from "../../../server/src/schema";
+type ProductWithCategory = Product & {
+  category: {
+    id: number;
+    name: string;
+    slug: string;
+  };
+};
+
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -23,7 +31,7 @@ export default function ProductDetail() {
   const { addToCart, isLoading: isCartLoading } = useCart();
   const { addToRecentlyViewed } = useRecentlyViewed();
 
-  const { data: product, isLoading } = useQuery<Product>({
+  const { data: product, isLoading } = useQuery<ProductWithCategory>({
     queryKey: [`/products/${slug}`],
     queryFn: async () => {
       const res = await fetch(`${baseUrl}/products/${slug}`);
@@ -33,16 +41,15 @@ export default function ProductDetail() {
   });
 
   const { data: relatedProducts = [], isLoading: relatedLoading } = useQuery<Product[]>({
-  queryKey: ['related-products', product?.categoryId],
-  enabled: !!product?.categoryId && typeof product.categoryId === 'number',
+  queryKey: ['related-products', product?.category?.slug],
+  enabled: !!product?.category?.slug,
   queryFn: async () => {
-    const categoryId = product?.categoryId;
+    const slug = product?.category?.slug;
+    if (!slug) return [];
 
-    if (!categoryId || typeof categoryId !== "number") return [];
-
-    const res = await fetch(`${baseUrl}/products/category/${categoryId}`);
+    const res = await fetch(`${baseUrl}/products/category/${slug}`);
     if (!res.ok) {
-      console.warn("No related products found for category:", categoryId);
+      console.warn("No related products found for category slug:", slug);
       return [];
     }
 
@@ -51,20 +58,12 @@ export default function ProductDetail() {
   },
 });
 
+
   const hasAddedToRecentlyViewed = useRef(false);
   useEffect(() => {
     
       if (!product?.id || hasAddedToRecentlyViewed.current) return;
-      addToRecentlyViewed({
-        id: product.id,
-        slug: product.slug,
-        name: product.name,
-        imageUrl: product.imageUrl,
-        price: product.price,
-        discountPrice: product.discountPrice,
-        stockLevel: product.stockLevel.toString(),
-        categoryId: product.categoryId,
-      });
+     
     hasAddedToRecentlyViewed.current = true;
    },[product?.id]);
 
@@ -118,6 +117,7 @@ export default function ProductDetail() {
     : 0;
 
   const filteredRelatedProducts = relatedProducts.filter((p) => p.id !== product?.id).slice(0, 4);
+
 
   if (isLoading) {
     return (
