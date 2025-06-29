@@ -6,7 +6,7 @@ import {
   cartItems, CartItem, InsertCartItem,
   orders, Order, InsertOrder,
   orderItems, OrderItem, InsertOrderItem,
-} from "./schema";
+} from "./src/schema";
 
 export interface IStorage {
   getCategories(): Promise<Category[]>;
@@ -29,6 +29,7 @@ export interface IStorage {
   placeOrder(order: InsertOrder, items: InsertOrderItem[]): Promise<Order>;
   getOrder(id: number): Promise<(Order & { items: (OrderItem & { product: Product })[] }) | undefined>;
    updateOrderStatus(id: number, status: string): Promise<Order | undefined>;
+   deleteOrder(id: number): Promise<boolean>;
   getAllOrders(): Promise<(Order & { items: (OrderItem & { product: Product })[] })[]>;
 
 }
@@ -180,7 +181,7 @@ export class MemStorage implements IStorage {
 
     return { ...order, items };
   }
-    async updateOrderStatus(id: number, status: string): Promise<Order | undefined> {
+    async updateOrderStatus(id: number, status: string): Promise<Order | undefined > {
     const order = this.orders.get(id);
     if (!order) {
       return undefined;
@@ -214,7 +215,28 @@ export class MemStorage implements IStorage {
 
     return ordersWithItems;
   }
-   
+     async deleteOrder(id: number): Promise<boolean> {
+    const order = this.orders.get(id);
+    if (!order) {
+      return false;
+    }
+    
+    // Delete associated order items
+    const orderItemsToDelete: number[] = [];
+    this.orderItems.forEach((orderItem, itemId) => {
+      if (orderItem.orderId === id) {
+        orderItemsToDelete.push(itemId);
+      }
+    });
+    
+    orderItemsToDelete.forEach(itemId => {
+      this.orderItems.delete(itemId);
+    });
+    
+    // Delete the order
+    this.orders.delete(id);
+    return true;
+  }
 
   // ----------- Sample Data Seed -----------
   private initSampleData() {
