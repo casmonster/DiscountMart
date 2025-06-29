@@ -1,4 +1,8 @@
-import { QueryClient, QueryFunction } from "@tanstack/react-query";
+import {
+  QueryClient,
+  QueryFunction,
+  QueryFunctionContext,
+} from "@tanstack/react-query";
 
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
@@ -10,36 +14,57 @@ async function throwIfResNotOk(res: Response) {
 export async function apiRequest(
   method: string,
   url: string,
-  data?: unknown | undefined,
+  data?: unknown,
 ): Promise<Response> {
-  const res = await fetch(url, {
+  const config: RequestInit = {
     method,
-    headers: data ? { "Content-Type": "application/json" } : {},
-    body: data ? JSON.stringify(data) : undefined,
+    headers: {
+      "Content-Type": "application/json",
+    },
     credentials: "include",
-  });
-
+  };
+  if (data && ["POST", "PUT", "PATCH"].includes(method)) {
+    config.body = JSON.stringify(data);
+  }
+  const res = await fetch(url, config);
   await throwIfResNotOk(res);
   return res;
 }
 
-type UnauthorizedBehavior = "returnNull" | "throw";
-export const getQueryFn: <T>(options: {
-  on401: UnauthorizedBehavior;
-}) => QueryFunction<T> =
-  ({ on401: unauthorizedBehavior }) =>
-  async ({ queryKey }) => {
-    const res = await fetch(queryKey[0] as string, {
-      credentials: "include",
-    });
+export async function apiJsonRequest<T>(
+  method: string,
+  url: string,
+  data?: unknown,
+): Promise<T> {
+  const res = await apiRequest(method, url, data);
+  return res.json() as Promise<T>;
+}
 
+type UnauthorizedBehavior = "returnNull" | "throw";
+
+export const getQueryFn = <T>(options: {
+  on401: UnauthorizedBehavior;
+}): QueryFunction<T | null> => {
+  const { on401: unauthorizedBehavior } = options;
+  const fn: QueryFunction<T | null> = async (
+    context: QueryFunctionContext<readonly unknown[]>
+  ) => {
+    const [url] = context.queryKey;
+    if (typeof url !== "string") {
+      throw new Error("Expected the first element of queryKey to be a string URL.");
+    }
+    const res = await fetch(url, {
+      credentials: "include",
+      signal: context.signal,
+    });
     if (unauthorizedBehavior === "returnNull" && res.status === 401) {
       return null;
     }
-
     await throwIfResNotOk(res);
-    return await res.json();
+    return (await res.json()) as T;
   };
+  return fn;
+};
 
 export const queryClient = new QueryClient({
   defaultOptions: {
