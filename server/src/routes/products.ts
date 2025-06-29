@@ -95,8 +95,12 @@ dbProductsRouter.get('/:slug', async (req: Request<{ slug: string }>, res: Respo
     const category = await db.query.categories.findFirst({
       where: (cat, { eq }) => eq(cat.id, product.categoryId),
     });
-     if (!category) {
-      res.status(500).json({ error: 'Category not found for product' });
+     // ✅ Graceful fallback if category not found
+    if (!category) {
+      res.json({
+        ...product,
+        category: null,
+      });
       return;
     }
     res.json({
@@ -108,23 +112,3 @@ dbProductsRouter.get('/:slug', async (req: Request<{ slug: string }>, res: Respo
     res.status(500).json({ error: 'Internal server error' });
   }
 });
-// GET /products/category/:categoryId
-dbProductsRouter.get("/category/:categoryId", async (req, res): Promise<void> => {
-  const categoryId = parseInt(req.params.categoryId);
-  if (isNaN(categoryId)) {
-    res.status(400).json({ error: "Invalid category ID" });
-     return;
-  }
-
-  try {
-    const related = await db.query.products.findMany({
-      where: eq(products.categoryId, categoryId),
-    });
-
-    res.json({ products: related });
-  } catch (err) {
-    console.error("Error fetching related products:", err);
-    res.status(500).json({ error: "Failed to fetch related products" });
-  }
-});
-
