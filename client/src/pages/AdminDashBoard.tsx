@@ -102,7 +102,7 @@ export default function AdminDashBoard() {
    // Delete order mutation
   const deleteOrderMutation = useMutation({
     mutationFn: async (orderId: number) => {
-      const response = await fetch(`/api/admin/orders/${orderId}`, {
+      const response = await fetch(`${baseUrl}/admin/orders/${orderId}`, {
         method: "DELETE",
       });
       if (!response.ok) throw new Error("Failed to delete order");
