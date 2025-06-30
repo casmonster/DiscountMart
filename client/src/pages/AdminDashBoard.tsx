@@ -106,7 +106,7 @@ export default function AdminDashBoard() {
         method: "DELETE",
       });
       if (!response.ok) throw new Error("Failed to delete order");
-      return response.json();
+      return  null;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/orders"] });
