@@ -15,8 +15,6 @@ import {
 
 import { Category as CategoryType } from "../types/category";
 import type { Product, ProductProperty } from "../types/product";
-
-
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 function getCategoryProperties(slug: string, product: Product): ProductProperty[] {
