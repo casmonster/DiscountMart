@@ -1,6 +1,6 @@
 import "dotenv/config";
-import { db } from "./db";
-import { categories, products, users, orders, orderItems,cartItems, type InsertProduct, } from "./schema";
+import { db } from "./src/db.js";
+ import { categories, products, users, orders, orderItems,cartItems, type InsertProduct, } from "./src/schema.js";
 import { eq } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 
