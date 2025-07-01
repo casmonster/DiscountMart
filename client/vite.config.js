@@ -47,7 +47,7 @@ export default defineConfig(({ mode }) => {
     preview: {
       port: 4173,
       open: true,
-      allowedHosts: ['discountmart.onrender.com'],
+      allowedHosts: ['discountmart.onrender.com','www.discountmart.it.com', 'discountmart.it.com'],
     },
     build: {
       sourcemap: true,
