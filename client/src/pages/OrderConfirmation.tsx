@@ -19,7 +19,7 @@ import { Order } from "../types/order";
 import type {  OrderItem, Product } from "../../../server/schema";
 
 
-const baseUrl = import.meta.env.VITE_API_BASE_URL;
+const baseUrl = "https://discountmart-server-886159419683.us-central1.run.app";
 
 export default function OrderConfirmation() {
   const { id } = useParams<{ id: string }>();

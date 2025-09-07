@@ -21,7 +21,7 @@ type ProductWithCategory = Product & {
 };
 
 
-const baseUrl = import.meta.env.VITE_API_BASE_URL;
+const baseUrl = "https://discountmart-server-886159419683.us-central1.run.app";
 
 export default function ProductDetail() {
   const { slug } = useParams<{ slug: string }>();

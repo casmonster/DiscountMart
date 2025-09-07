@@ -1,5 +1,5 @@
 import { db } from "../db.js"; 
-import { cartItems } from "../schema.js";
+import { cartItems, type InsertCartItem } from "../schema.js";
 import { eq, and } from "drizzle-orm";
 import { Router, Request, Response } from "express";
 
@@ -70,7 +70,7 @@ router.post("/", async (req: Request, res: Response) => {
         .where(eq(cartItems.id, existingItem.id));
       console.log(`Updated cart item for cartId=${cartId}, productId=${productId}`);
     } else {
-      await db.insert(cartItems).values({ cartId, productId, quantity });
+      await db.insert(cartItems).values({ cartId, productId, quantity } as InsertCartItem);
       console.log(`Inserted new cart item for cartId=${cartId}, productId=${productId}`);
     }
 

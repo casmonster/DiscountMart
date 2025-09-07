@@ -1,5 +1,5 @@
 import { eq, ilike, or, isNotNull } from "drizzle-orm";
-import { db } from "./db";
+import { db } from "./db.js";
 import { 
   categories, 
   products, 
@@ -16,8 +16,8 @@ import {
   type InsertCartItem,
   type InsertOrder,
   type InsertOrderItem
-} from "./src/schema";
-import type { IStorage } from "./storage";
+} from "./schema.js";
+import type { IStorage } from "./storage.js";
 
 export class DatabaseStorage implements IStorage {
   // Categories

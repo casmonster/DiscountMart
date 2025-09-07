@@ -13,6 +13,7 @@
     "build": "tsc",
     "db:generate": "drizzle-kit generate:pg",
     "db:migrate": "drizzle-kit migrate",
+    "db:seed": "tsx seed.ts",
     "generate": "drizzle-kit generate --config=../drizzle.config.ts"
   },
   "dependencies": {

@@ -1,8 +1,9 @@
 // File: server/routes/orderRoutes.ts
+// File: server/routes/orderRoutes.ts
 import {Router,  Request, Response } from "express";
 import { db } from "../db.js";
 import { z,  } from "zod";
-import{orders} from "../schema.js";
+import{orders, type InsertOrder} from "../schema.js";
 import { eq } from "drizzle-orm";
 const router = Router();
 
@@ -20,7 +21,7 @@ router.patch("/:id/status", async (req: Request, res: Response): Promise<void> =
     const { status } = statusSchema.parse(req.body);
     const [updatedOrder] = await db
       .update(orders)
-      .set({ status })
+      .set({ status } as Partial<InsertOrder>)
       .where(eq(orders.id, id))
       .returning();
     if (!updatedOrder) {

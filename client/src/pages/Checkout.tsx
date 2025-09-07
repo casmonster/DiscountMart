@@ -31,7 +31,7 @@ import axios from "axios";
 
 
 
-const baseUrl = import.meta.env.VITE_API_BASE_URL;
+const baseUrl = "https://discountmart-server-886159419683.us-central1.run.app";
 const checkoutFormSchema = z.object({
   customerName: z.string().min(2, { message: "Name must be at least 2 characters" }),
   customerEmail: z.string().email({ message: "Please enter a valid email address" }),

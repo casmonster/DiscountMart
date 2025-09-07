@@ -1,0 +1,25 @@
+steps:
+  # Build the container image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/discountmart/discountmart-server', '.', '--build-arg=CACHEBUST=$(date +%s)']
+  # Push the container image to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/discountmart/discountmart-server']
+  # Deploy container image to Cloud Run
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'discountmart-server'
+      - '--image'
+      - 'gcr.io/discountmart/discountmart-server'
+      - '--region'
+      - 'us-central1'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+      - '--add-cloudsql-instances=discountmart:us-central1:discountmart-db'
+      - '--set-env-vars=DB_HOST=/cloudsql/discountmart:us-central1:discountmart-db'
+  # List bucket contents
+  - name: 'gcr.io/cloud-builders/gsutil'
+    args: ['ls', 'gs://discountmart_cloudbuild/']
