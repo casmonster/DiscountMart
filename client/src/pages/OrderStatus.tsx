@@ -11,7 +11,7 @@ import { formatRwandanFrancs, convertToRwandanFrancs } from "@/lib/currency";
 import type { Order, OrderItem, Product } from "../../../server/schema";
 
 
-const baseUrl = "https://discountmart-server-886159419683.us-central1.run.app";
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 export default function OrderStatus() {
   const [orderId, setOrderId] = useState("");

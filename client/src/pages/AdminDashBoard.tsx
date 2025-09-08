@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Package, Clock, Truck, CheckCircle, XCircle, Trash2 } from "lucide-react";
 
 
-const baseUrl = "https://discountmart-server-886159419683.us-central1.run.app";
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 type OrderStatus = "pending" | "processing" | "shipped" | "delivered" | "cancelled";
 
 interface OrderItem {

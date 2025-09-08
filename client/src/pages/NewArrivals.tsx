@@ -17,7 +17,7 @@ import React from "react";
 import debounce from "lodash.debounce";
 
 
-const baseUrl = "https://discountmart-server-886159419683.us-central1.run.app";
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 
 const PAGE_SIZE = 8;

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import ProductGrid from "../components/product/ProductGrid";
 import type { Product } from "../types/product";
-const baseUrl = "https://discountmart-server-886159419683.us-central1.run.app";
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const ProductsPage = () => {
   const [products, setProducts] = useState<Product[]>([]);

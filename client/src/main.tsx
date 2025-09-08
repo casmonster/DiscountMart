@@ -13,17 +13,13 @@ import MyContextProvider from "./MyContextProvider";
 import { CartProvider } from "./context/CartContext";
 
 
-const basename = import.meta.env.MODE === 'production' ? '/DiscountMart' : '';
-
-createRoot(document.getElementById("root")!).render(
+      createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <ErrorBoundary>
-      <BrowserRouter basename={basename}>
+      <BrowserRouter>
           <MyContextProvider>
             <App />
             <Toaster position="bottom-right" />
           </MyContextProvider>
       </BrowserRouter>
-    </ErrorBoundary>
   </React.StrictMode>
 );

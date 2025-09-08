@@ -22,22 +22,12 @@ const allowedOrigins = process.env.FRONTEND_URLS?.split(',') ?? [
   'https://discountmart.onrender.com',
   'https://discountmart.it.com',
   'https://www.discountmart.it.com',
+  'https://discountmartapp-cc4bf.web.app',
 ]
 
 // ✅ Enable CORS
 
-app.use(cors({
-   origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps or curl)
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    } else {
-      return callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true, // Needed for cookies or Authorization headers
-}));
+app.use(cors({ origin: allowedOrigins }));
 console.log('✅ CORS enabled for:', allowedOrigins);
 
 
